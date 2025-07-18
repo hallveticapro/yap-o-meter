@@ -39,7 +39,7 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
     }
 
     if (themeInstanceRef.current) {
-      themeInstanceRef.current.init(canvas.width, canvas.height);
+      themeInstanceRef.current.init(window.innerWidth, window.innerHeight);
     }
   }, [theme]);
 
