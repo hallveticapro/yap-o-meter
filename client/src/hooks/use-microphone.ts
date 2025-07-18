@@ -5,6 +5,7 @@ export function useMicrophone(sensitivity: number = 5) {
   const [isPermissionGranted, setIsPermissionGranted] = useState(false);
   const [isMicrophoneActive, setIsMicrophoneActive] = useState(false);
   const [isCalibrating, setIsCalibrating] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -66,7 +67,7 @@ export function useMicrophone(sensitivity: number = 5) {
       // Clamp between 0 and 100
       volume = Math.max(0, Math.min(100, volume));
       
-      setVolumeLevel(volume);
+      setVolumeLevel(isPaused ? 0 : volume);
       
       // Store calibration data if calibrating
       if (isCalibrating) {
@@ -140,12 +141,18 @@ export function useMicrophone(sensitivity: number = 5) {
     };
   }, []);
 
+  const togglePause = useCallback(() => {
+    setIsPaused(prev => !prev);
+  }, []);
+
   return {
     volumeLevel,
     isPermissionGranted,
     isMicrophoneActive,
     isCalibrating,
+    isPaused,
     requestPermission,
     calibrate,
+    togglePause,
   };
 }

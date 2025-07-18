@@ -68,6 +68,18 @@ interface Emojiface {
   emoji: string;
 }
 
+interface Shape {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  baseSize: number;
+  crossedThreshold: boolean;
+  shape: string;
+  color: string;
+}
+
 export class BouncingBallsTheme implements Theme {
   private ctx: CanvasRenderingContext2D;
   private balls: Ball[] = [];
@@ -75,10 +87,12 @@ export class BouncingBallsTheme implements Theme {
   private height = 0;
   private volumeLevel = 0;
   private onThresholdCrossed?: () => void;
+  private colorTheme: string;
 
-  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void, colorTheme: string = 'rainbow') {
     this.ctx = ctx;
     this.onThresholdCrossed = onThresholdCrossed;
+    this.colorTheme = colorTheme;
   }
 
   init(width: number, height: number): void {
@@ -230,6 +244,1190 @@ export class BouncingBallsTheme implements Theme {
 
   dispose(): void {
     this.balls = [];
+  }
+}
+
+// Stars Theme
+export class StarsTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private stars: Shape[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.stars = [];
+
+    for (let i = 0; i < 50; i++) {
+      const baseSize = Math.random() * 15 + 20;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.stars.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        shape: 'star',
+        color: `hsl(${Math.random() * 60 + 30}, 80%, 70%)`,
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const star of this.stars) {
+      const prevY = star.y;
+      star.x += star.vx;
+      star.y += star.vy;
+
+      if (prevY >= thresholdY && star.y < thresholdY && !star.crossedThreshold) {
+        star.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (star.y >= thresholdY) {
+        star.crossedThreshold = false;
+      }
+
+      if (star.x - star.size/2 < 0 || star.x + star.size/2 > this.width) {
+        star.vx *= -0.8;
+        star.x = Math.max(star.size/2, Math.min(this.width - star.size/2, star.x));
+      }
+
+      const floorY = this.height - star.size/2;
+      if (star.y >= floorY) {
+        star.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          star.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          star.vy = 0;
+        }
+        if (Math.abs(star.vx) < 1) {
+          star.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        star.vy += 0.6;
+      }
+
+      if (star.y - star.size/2 < 0) {
+        star.vy = Math.abs(star.vy) * 0.8;
+        star.y = star.size/2;
+      }
+
+      star.vx *= 0.99;
+      star.vy *= 0.995;
+      star.size = star.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        star.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const star of this.stars) {
+      this.ctx.save();
+      this.ctx.fillStyle = star.color;
+      this.ctx.shadowColor = star.color;
+      this.ctx.shadowBlur = this.volumeLevel / 5;
+      
+      const size = star.size;
+      const x = star.x;
+      const y = star.y;
+      
+      this.ctx.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const angle = (i * 144 - 90) * Math.PI / 180;
+        const x1 = x + Math.cos(angle) * size / 2;
+        const y1 = y + Math.sin(angle) * size / 2;
+        if (i === 0) this.ctx.moveTo(x1, y1);
+        else this.ctx.lineTo(x1, y1);
+        
+        const innerAngle = ((i + 0.5) * 144 - 90) * Math.PI / 180;
+        const x2 = x + Math.cos(innerAngle) * size / 4;
+        const y2 = y + Math.sin(innerAngle) * size / 4;
+        this.ctx.lineTo(x2, y2);
+      }
+      this.ctx.closePath();
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.stars.length; i++) {
+        const star = this.stars[i];
+        star.x = Math.random() * (this.width - star.baseSize) + star.baseSize / 2;
+        star.y = Math.min(star.y, this.height - star.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.stars = [];
+  }
+}
+
+// Hearts Theme  
+export class HeartsTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private hearts: Shape[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.hearts = [];
+
+    for (let i = 0; i < 40; i++) {
+      const baseSize = Math.random() * 15 + 25;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.hearts.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        shape: 'heart',
+        color: `hsl(${Math.random() * 40 + 340}, 80%, 70%)`,
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const heart of this.hearts) {
+      const prevY = heart.y;
+      heart.x += heart.vx;
+      heart.y += heart.vy;
+
+      if (prevY >= thresholdY && heart.y < thresholdY && !heart.crossedThreshold) {
+        heart.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (heart.y >= thresholdY) {
+        heart.crossedThreshold = false;
+      }
+
+      if (heart.x - heart.size/2 < 0 || heart.x + heart.size/2 > this.width) {
+        heart.vx *= -0.8;
+        heart.x = Math.max(heart.size/2, Math.min(this.width - heart.size/2, heart.x));
+      }
+
+      const floorY = this.height - heart.size/2;
+      if (heart.y >= floorY) {
+        heart.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          heart.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          heart.vy = 0;
+        }
+        if (Math.abs(heart.vx) < 1) {
+          heart.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        heart.vy += 0.6;
+      }
+
+      if (heart.y - heart.size/2 < 0) {
+        heart.vy = Math.abs(heart.vy) * 0.8;
+        heart.y = heart.size/2;
+      }
+
+      heart.vx *= 0.99;
+      heart.vy *= 0.995;
+      heart.size = heart.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        heart.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const heart of this.hearts) {
+      this.ctx.save();
+      this.ctx.fillStyle = heart.color;
+      this.ctx.shadowColor = heart.color;
+      this.ctx.shadowBlur = this.volumeLevel / 5;
+      
+      const size = heart.size;
+      const x = heart.x;
+      const y = heart.y;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, y + size/4);
+      this.ctx.bezierCurveTo(x - size/2, y - size/4, x - size/2, y + size/6, x, y + size/2);
+      this.ctx.bezierCurveTo(x + size/2, y + size/6, x + size/2, y - size/4, x, y + size/4);
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.hearts.length; i++) {
+        const heart = this.hearts[i];
+        heart.x = Math.random() * (this.width - heart.baseSize) + heart.baseSize / 2;
+        heart.y = Math.min(heart.y, this.height - heart.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.hearts = [];
+  }
+}
+
+// Geometric Shapes Theme
+export class GeometricTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private shapes: Shape[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.shapes = [];
+
+    const shapeTypes = ['triangle', 'square', 'pentagon', 'hexagon'];
+    for (let i = 0; i < 45; i++) {
+      const baseSize = Math.random() * 15 + 20;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.shapes.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        shape: shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
+        color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const shape of this.shapes) {
+      const prevY = shape.y;
+      shape.x += shape.vx;
+      shape.y += shape.vy;
+
+      if (prevY >= thresholdY && shape.y < thresholdY && !shape.crossedThreshold) {
+        shape.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (shape.y >= thresholdY) {
+        shape.crossedThreshold = false;
+      }
+
+      if (shape.x - shape.size/2 < 0 || shape.x + shape.size/2 > this.width) {
+        shape.vx *= -0.8;
+        shape.x = Math.max(shape.size/2, Math.min(this.width - shape.size/2, shape.x));
+      }
+
+      const floorY = this.height - shape.size/2;
+      if (shape.y >= floorY) {
+        shape.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          shape.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          shape.vy = 0;
+        }
+        if (Math.abs(shape.vx) < 1) {
+          shape.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        shape.vy += 0.6;
+      }
+
+      if (shape.y - shape.size/2 < 0) {
+        shape.vy = Math.abs(shape.vy) * 0.8;
+        shape.y = shape.size/2;
+      }
+
+      shape.vx *= 0.99;
+      shape.vy *= 0.995;
+      shape.size = shape.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        shape.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const shape of this.shapes) {
+      this.ctx.save();
+      this.ctx.fillStyle = shape.color;
+      this.ctx.shadowColor = shape.color;
+      this.ctx.shadowBlur = this.volumeLevel / 5;
+      
+      const size = shape.size;
+      const x = shape.x;
+      const y = shape.y;
+      
+      this.ctx.beginPath();
+      
+      switch (shape.shape) {
+        case 'triangle':
+          this.ctx.moveTo(x, y - size/2);
+          this.ctx.lineTo(x - size/2, y + size/2);
+          this.ctx.lineTo(x + size/2, y + size/2);
+          break;
+        case 'square':
+          this.ctx.rect(x - size/2, y - size/2, size, size);
+          break;
+        case 'pentagon':
+        case 'hexagon':
+          const sides = shape.shape === 'pentagon' ? 5 : 6;
+          for (let i = 0; i < sides; i++) {
+            const angle = (i * 2 * Math.PI) / sides - Math.PI / 2;
+            const px = x + Math.cos(angle) * size / 2;
+            const py = y + Math.sin(angle) * size / 2;
+            if (i === 0) this.ctx.moveTo(px, py);
+            else this.ctx.lineTo(px, py);
+          }
+          break;
+      }
+      
+      this.ctx.closePath();
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.shapes.length; i++) {
+        const shape = this.shapes[i];
+        shape.x = Math.random() * (this.width - shape.baseSize) + shape.baseSize / 2;
+        shape.y = Math.min(shape.y, this.height - shape.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.shapes = [];
+  }
+}
+
+// Science Emojis Theme
+export class ScienceTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private faces: Emojiface[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+  private scienceEmojis = ['🧪', '🔬', '🧬', '⚗️', '🔭', '🌡️', '🧲', '⚛️', '🚀', '🌌', '⚡', '🔋', '💡', '🌍', '🌙'];
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.faces = [];
+
+    for (let i = 0; i < 60; i++) {
+      const baseSize = Math.random() * 20 + 25;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.faces.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        emoji: this.scienceEmojis[Math.floor(Math.random() * this.scienceEmojis.length)],
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const face of this.faces) {
+      const prevY = face.y;
+      face.x += face.vx;
+      face.y += face.vy;
+
+      if (prevY >= thresholdY && face.y < thresholdY && !face.crossedThreshold) {
+        face.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (face.y >= thresholdY) {
+        face.crossedThreshold = false;
+      }
+
+      if (face.x - face.size/2 < 0 || face.x + face.size/2 > this.width) {
+        face.vx *= -0.8;
+        face.x = Math.max(face.size/2, Math.min(this.width - face.size/2, face.x));
+      }
+
+      const floorY = this.height - face.size/2;
+      if (face.y >= floorY) {
+        face.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          face.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          face.vy = 0;
+        }
+        if (Math.abs(face.vx) < 1) {
+          face.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        face.vy += 0.6;
+      }
+
+      if (face.y - face.size/2 < 0) {
+        face.vy = Math.abs(face.vy) * 0.8;
+        face.y = face.size/2;
+      }
+
+      face.vx *= 0.99;
+      face.vy *= 0.995;
+      face.size = face.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const face of this.faces) {
+      this.ctx.save();
+      this.ctx.font = `${face.size}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      
+      if (this.volumeLevel > 10) {
+        this.ctx.shadowColor = '#00bcd4';
+        this.ctx.shadowBlur = this.volumeLevel / 3;
+      }
+      
+      this.ctx.fillText(face.emoji, face.x, face.y);
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.faces.length; i++) {
+        const face = this.faces[i];
+        face.x = Math.random() * (this.width - face.baseSize) + face.baseSize / 2;
+        face.y = Math.min(face.y, this.height - face.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.faces = [];
+  }
+}
+
+// Math Emojis Theme
+export class MathTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private faces: Emojiface[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+  private mathEmojis = ['🔢', '➕', '➖', '✖️', '➗', '🟰', '📐', '📏', '📊', '📈', '📉', '🧮', '💯', '🔣', '🆔'];
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.faces = [];
+
+    for (let i = 0; i < 60; i++) {
+      const baseSize = Math.random() * 20 + 25;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.faces.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        emoji: this.mathEmojis[Math.floor(Math.random() * this.mathEmojis.length)],
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const face of this.faces) {
+      const prevY = face.y;
+      face.x += face.vx;
+      face.y += face.vy;
+
+      if (prevY >= thresholdY && face.y < thresholdY && !face.crossedThreshold) {
+        face.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (face.y >= thresholdY) {
+        face.crossedThreshold = false;
+      }
+
+      if (face.x - face.size/2 < 0 || face.x + face.size/2 > this.width) {
+        face.vx *= -0.8;
+        face.x = Math.max(face.size/2, Math.min(this.width - face.size/2, face.x));
+      }
+
+      const floorY = this.height - face.size/2;
+      if (face.y >= floorY) {
+        face.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          face.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          face.vy = 0;
+        }
+        if (Math.abs(face.vx) < 1) {
+          face.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        face.vy += 0.6;
+      }
+
+      if (face.y - face.size/2 < 0) {
+        face.vy = Math.abs(face.vy) * 0.8;
+        face.y = face.size/2;
+      }
+
+      face.vx *= 0.99;
+      face.vy *= 0.995;
+      face.size = face.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const face of this.faces) {
+      this.ctx.save();
+      this.ctx.font = `${face.size}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      
+      if (this.volumeLevel > 10) {
+        this.ctx.shadowColor = '#ff9800';
+        this.ctx.shadowBlur = this.volumeLevel / 3;
+      }
+      
+      this.ctx.fillText(face.emoji, face.x, face.y);
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.faces.length; i++) {
+        const face = this.faces[i];
+        face.x = Math.random() * (this.width - face.baseSize) + face.baseSize / 2;
+        face.y = Math.min(face.y, this.height - face.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.faces = [];
+  }
+}
+
+// Spring Theme
+export class SpringTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private faces: Emojiface[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+  private springEmojis = ['🌸', '🌺', '🌻', '🌷', '🌼', '🦋', '🐝', '🌱', '🌿', '☀️', '🌤️', '🐛', '🦗', '🌳', '🍀'];
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.faces = [];
+
+    for (let i = 0; i < 50; i++) {
+      const baseSize = Math.random() * 20 + 25;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.faces.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        emoji: this.springEmojis[Math.floor(Math.random() * this.springEmojis.length)],
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const face of this.faces) {
+      const prevY = face.y;
+      face.x += face.vx;
+      face.y += face.vy;
+
+      if (prevY >= thresholdY && face.y < thresholdY && !face.crossedThreshold) {
+        face.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (face.y >= thresholdY) {
+        face.crossedThreshold = false;
+      }
+
+      if (face.x - face.size/2 < 0 || face.x + face.size/2 > this.width) {
+        face.vx *= -0.8;
+        face.x = Math.max(face.size/2, Math.min(this.width - face.size/2, face.x));
+      }
+
+      const floorY = this.height - face.size/2;
+      if (face.y >= floorY) {
+        face.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          face.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          face.vy = 0;
+        }
+        if (Math.abs(face.vx) < 1) {
+          face.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        face.vy += 0.6;
+      }
+
+      if (face.y - face.size/2 < 0) {
+        face.vy = Math.abs(face.vy) * 0.8;
+        face.y = face.size/2;
+      }
+
+      face.vx *= 0.99;
+      face.vy *= 0.995;
+      face.size = face.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const face of this.faces) {
+      this.ctx.save();
+      this.ctx.font = `${face.size}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      
+      if (this.volumeLevel > 10) {
+        this.ctx.shadowColor = '#4caf50';
+        this.ctx.shadowBlur = this.volumeLevel / 3;
+      }
+      
+      this.ctx.fillText(face.emoji, face.x, face.y);
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.faces.length; i++) {
+        const face = this.faces[i];
+        face.x = Math.random() * (this.width - face.baseSize) + face.baseSize / 2;
+        face.y = Math.min(face.y, this.height - face.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.faces = [];
+  }
+}
+
+// Summer Theme
+export class SummerTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private faces: Emojiface[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+  private summerEmojis = ['☀️', '🌞', '🏖️', '🌊', '🏄', '🍉', '🍦', '🩱', '👙', '🕶️', '🌴', '🐚', '⛱️', '🦀', '🌺'];
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.faces = [];
+
+    for (let i = 0; i < 50; i++) {
+      const baseSize = Math.random() * 20 + 25;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.faces.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        emoji: this.summerEmojis[Math.floor(Math.random() * this.summerEmojis.length)],
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const face of this.faces) {
+      const prevY = face.y;
+      face.x += face.vx;
+      face.y += face.vy;
+
+      if (prevY >= thresholdY && face.y < thresholdY && !face.crossedThreshold) {
+        face.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (face.y >= thresholdY) {
+        face.crossedThreshold = false;
+      }
+
+      if (face.x - face.size/2 < 0 || face.x + face.size/2 > this.width) {
+        face.vx *= -0.8;
+        face.x = Math.max(face.size/2, Math.min(this.width - face.size/2, face.x));
+      }
+
+      const floorY = this.height - face.size/2;
+      if (face.y >= floorY) {
+        face.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          face.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          face.vy = 0;
+        }
+        if (Math.abs(face.vx) < 1) {
+          face.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        face.vy += 0.6;
+      }
+
+      if (face.y - face.size/2 < 0) {
+        face.vy = Math.abs(face.vy) * 0.8;
+        face.y = face.size/2;
+      }
+
+      face.vx *= 0.99;
+      face.vy *= 0.995;
+      face.size = face.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const face of this.faces) {
+      this.ctx.save();
+      this.ctx.font = `${face.size}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      
+      if (this.volumeLevel > 10) {
+        this.ctx.shadowColor = '#ff5722';
+        this.ctx.shadowBlur = this.volumeLevel / 3;
+      }
+      
+      this.ctx.fillText(face.emoji, face.x, face.y);
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.faces.length; i++) {
+        const face = this.faces[i];
+        face.x = Math.random() * (this.width - face.baseSize) + face.baseSize / 2;
+        face.y = Math.min(face.y, this.height - face.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.faces = [];
+  }
+}
+
+// Autumn Theme
+export class AutumnTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private faces: Emojiface[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+  private autumnEmojis = ['🍂', '🍁', '🌰', '🎃', '🦃', '🌽', '🥧', '🍎', '🍊', '🌾', '🕯️', '🧡', '🤎', '🍄', '☂️'];
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.faces = [];
+
+    for (let i = 0; i < 50; i++) {
+      const baseSize = Math.random() * 20 + 25;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.faces.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        emoji: this.autumnEmojis[Math.floor(Math.random() * this.autumnEmojis.length)],
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const face of this.faces) {
+      const prevY = face.y;
+      face.x += face.vx;
+      face.y += face.vy;
+
+      if (prevY >= thresholdY && face.y < thresholdY && !face.crossedThreshold) {
+        face.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (face.y >= thresholdY) {
+        face.crossedThreshold = false;
+      }
+
+      if (face.x - face.size/2 < 0 || face.x + face.size/2 > this.width) {
+        face.vx *= -0.8;
+        face.x = Math.max(face.size/2, Math.min(this.width - face.size/2, face.x));
+      }
+
+      const floorY = this.height - face.size/2;
+      if (face.y >= floorY) {
+        face.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          face.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          face.vy = 0;
+        }
+        if (Math.abs(face.vx) < 1) {
+          face.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        face.vy += 0.6;
+      }
+
+      if (face.y - face.size/2 < 0) {
+        face.vy = Math.abs(face.vy) * 0.8;
+        face.y = face.size/2;
+      }
+
+      face.vx *= 0.99;
+      face.vy *= 0.995;
+      face.size = face.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const face of this.faces) {
+      this.ctx.save();
+      this.ctx.font = `${face.size}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      
+      if (this.volumeLevel > 10) {
+        this.ctx.shadowColor = '#ff9800';
+        this.ctx.shadowBlur = this.volumeLevel / 3;
+      }
+      
+      this.ctx.fillText(face.emoji, face.x, face.y);
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.faces.length; i++) {
+        const face = this.faces[i];
+        face.x = Math.random() * (this.width - face.baseSize) + face.baseSize / 2;
+        face.y = Math.min(face.y, this.height - face.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.faces = [];
+  }
+}
+
+// Winter Theme
+export class WinterTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private faces: Emojiface[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+  private winterEmojis = ['❄️', '☃️', '⛄', '🎿', '⛷️', '🏂', '🧊', '🥶', '🧥', '🧤', '🧣', '❄️', '⛸️', '🎄', '🎅'];
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.faces = [];
+
+    for (let i = 0; i < 50; i++) {
+      const baseSize = Math.random() * 20 + 25;
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.faces.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2,
+        size: baseSize,
+        baseSize: baseSize,
+        emoji: this.winterEmojis[Math.floor(Math.random() * this.winterEmojis.length)],
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const face of this.faces) {
+      const prevY = face.y;
+      face.x += face.vx;
+      face.y += face.vy;
+
+      if (prevY >= thresholdY && face.y < thresholdY && !face.crossedThreshold) {
+        face.crossedThreshold = true;
+        if (this.onThresholdCrossed) this.onThresholdCrossed();
+      } else if (face.y >= thresholdY) {
+        face.crossedThreshold = false;
+      }
+
+      if (face.x - face.size/2 < 0 || face.x + face.size/2 > this.width) {
+        face.vx *= -0.8;
+        face.x = Math.max(face.size/2, Math.min(this.width - face.size/2, face.x));
+      }
+
+      const floorY = this.height - face.size/2;
+      if (face.y >= floorY) {
+        face.y = floorY;
+        if (volumeLevel > 5 && Math.random() < 0.15) {
+          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
+          face.vy = -(volumeLevel / 100) * maxBounceVelocity;
+        } else {
+          face.vy = 0;
+        }
+        if (Math.abs(face.vx) < 1) {
+          face.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        face.vy += 0.6;
+      }
+
+      if (face.y - face.size/2 < 0) {
+        face.vy = Math.abs(face.vy) * 0.8;
+        face.y = face.size/2;
+      }
+
+      face.vx *= 0.99;
+      face.vy *= 0.995;
+      face.size = face.baseSize * (1 + volumeLevel / 200);
+
+      if (volumeLevel > 20) {
+        face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const face of this.faces) {
+      this.ctx.save();
+      this.ctx.font = `${face.size}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      
+      if (this.volumeLevel > 10) {
+        this.ctx.shadowColor = '#2196f3';
+        this.ctx.shadowBlur = this.volumeLevel / 3;
+      }
+      
+      this.ctx.fillText(face.emoji, face.x, face.y);
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    this.width = width;
+    this.height = height;
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      for (let i = 0; i < this.faces.length; i++) {
+        const face = this.faces[i];
+        face.x = Math.random() * (this.width - face.baseSize) + face.baseSize / 2;
+        face.y = Math.min(face.y, this.height - face.baseSize / 2);
+      }
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.faces = [];
   }
 }
 

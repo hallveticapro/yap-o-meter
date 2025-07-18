@@ -1,9 +1,14 @@
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff, Play, Pause } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface StatusPanelProps {
   volumeLevel: number;
   theme: string;
   isMicrophoneActive: boolean;
+  isPaused: boolean;
+  onTogglePause: () => void;
+  onCalibrate: () => void;
+  isCalibrating: boolean;
 }
 
 const themeNames: { [key: string]: string } = {
@@ -12,7 +17,7 @@ const themeNames: { [key: string]: string } = {
   bubbles: "Floating Bubbles",
 };
 
-export default function StatusPanel({ volumeLevel, theme, isMicrophoneActive }: StatusPanelProps) {
+export default function StatusPanel({ volumeLevel, theme, isMicrophoneActive, isPaused, onTogglePause, onCalibrate, isCalibrating }: StatusPanelProps) {
   return (
     <div className="glass-morphism rounded-2xl p-4 max-w-md">
       <div className="flex items-center space-x-3 mb-3">
@@ -37,9 +42,41 @@ export default function StatusPanel({ volumeLevel, theme, isMicrophoneActive }: 
         </div>
       </div>
       
+      {/* Microphone Controls */}
+      <div className="flex gap-2 mb-3">
+        <Button
+          onClick={onTogglePause}
+          size="sm"
+          variant={isPaused ? "default" : "secondary"}
+          className="flex-1 h-8 text-xs"
+        >
+          {isPaused ? (
+            <>
+              <Play className="w-3 h-3 mr-1" />
+              Resume
+            </>
+          ) : (
+            <>
+              <Pause className="w-3 h-3 mr-1" />
+              Pause
+            </>
+          )}
+        </Button>
+        
+        <Button
+          onClick={onCalibrate}
+          disabled={isCalibrating}
+          size="sm"
+          variant="outline"
+          className="h-8 text-xs"
+        >
+          {isCalibrating ? 'Calibrating...' : 'Calibrate'}
+        </Button>
+      </div>
+      
       {/* Current Theme Display */}
       <div className="text-xs text-slate-300">
-        <span className="text-cyan-400 font-medium">Bouncing Balls</span>
+        <span className="text-cyan-400 font-medium">{theme}</span>
       </div>
     </div>
   );

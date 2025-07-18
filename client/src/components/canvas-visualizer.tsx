@@ -1,7 +1,16 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { 
   BouncingBallsTheme,
   HappyFacesTheme,
+  StarsTheme,
+  HeartsTheme,
+  GeometricTheme,
+  ScienceTheme,
+  MathTheme,
+  SpringTheme,
+  SummerTheme,
+  AutumnTheme,
+  WinterTheme,
   type Theme 
 } from "@/lib/audio-themes";
 
@@ -32,10 +41,40 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
     }
 
     // Create new theme instance based on theme type
-    if (theme === 'faces') {
-      themeInstanceRef.current = new HappyFacesTheme(ctx, onThresholdCrossed);
-    } else {
-      themeInstanceRef.current = new BouncingBallsTheme(ctx, onThresholdCrossed);
+    switch (theme) {
+      case 'faces':
+        themeInstanceRef.current = new HappyFacesTheme(ctx, onThresholdCrossed);
+        break;
+      case 'stars':
+        themeInstanceRef.current = new StarsTheme(ctx, onThresholdCrossed);
+        break;
+      case 'hearts':
+        themeInstanceRef.current = new HeartsTheme(ctx, onThresholdCrossed);
+        break;
+      case 'geometric':
+        themeInstanceRef.current = new GeometricTheme(ctx, onThresholdCrossed);
+        break;
+      case 'science':
+        themeInstanceRef.current = new ScienceTheme(ctx, onThresholdCrossed);
+        break;
+      case 'math':
+        themeInstanceRef.current = new MathTheme(ctx, onThresholdCrossed);
+        break;
+      case 'spring':
+        themeInstanceRef.current = new SpringTheme(ctx, onThresholdCrossed);
+        break;
+      case 'summer':
+        themeInstanceRef.current = new SummerTheme(ctx, onThresholdCrossed);
+        break;
+      case 'autumn':
+        themeInstanceRef.current = new AutumnTheme(ctx, onThresholdCrossed);
+        break;
+      case 'winter':
+        themeInstanceRef.current = new WinterTheme(ctx, onThresholdCrossed);
+        break;
+      default:
+        themeInstanceRef.current = new BouncingBallsTheme(ctx, onThresholdCrossed);
+        break;
     }
 
     if (themeInstanceRef.current) {
@@ -135,10 +174,30 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
     };
   }, []);
 
+  // Handle click/touch interactions
+  const handleClick = useCallback((event: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas || !themeInstanceRef.current) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+    
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    // Add temporary boost effect to nearby elements
+    if ('addClickEffect' in themeInstanceRef.current) {
+      (themeInstanceRef.current as any).addClickEffect(x, y);
+    }
+  }, []);
+
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
+      className="absolute inset-0 w-full h-full cursor-pointer"
+      onClick={handleClick}
+      onTouchStart={handleClick}
       style={{ display: "block" }}
     />
   );

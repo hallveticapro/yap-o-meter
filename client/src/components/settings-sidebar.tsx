@@ -18,6 +18,16 @@ interface SettingsSidebarProps {
 
 const themes = [
   { id: "balls", name: "Bouncing Balls", icon: Circle, color: "text-cyan-400", description: "Colorful balls that bounce with volume" },
+  { id: "faces", name: "Happy Faces", icon: Sparkles, color: "text-yellow-400", description: "Cheerful emoji faces bouncing around" },
+  { id: "stars", name: "Stars", icon: Sparkles, color: "text-purple-400", description: "Twinkling stars that dance to sound" },
+  { id: "hearts", name: "Hearts", icon: Sparkles, color: "text-pink-400", description: "Loving hearts bouncing with joy" },
+  { id: "geometric", name: "Geometric Shapes", icon: Circle, color: "text-green-400", description: "Various geometric shapes in motion" },
+  { id: "science", name: "Science Lab", icon: Sparkles, color: "text-blue-400", description: "Science emojis for STEM learning" },
+  { id: "math", name: "Math Class", icon: Sparkles, color: "text-orange-400", description: "Math symbols and numbers" },
+  { id: "spring", name: "Spring Garden", icon: Sparkles, color: "text-green-500", description: "Flowers and spring elements" },
+  { id: "summer", name: "Summer Beach", icon: Sparkles, color: "text-orange-500", description: "Sun, waves, and summer fun" },
+  { id: "autumn", name: "Autumn Leaves", icon: Sparkles, color: "text-amber-600", description: "Fall leaves and harvest themes" },
+  { id: "winter", name: "Winter Wonderland", icon: Sparkles, color: "text-blue-300", description: "Snowflakes and winter magic" },
 ];
 
 export default function SettingsSidebar({ 

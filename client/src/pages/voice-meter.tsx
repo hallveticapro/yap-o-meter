@@ -44,6 +44,8 @@ export default function VoiceMeter() {
     requestPermission,
     calibrate,
     isCalibrating,
+    isPaused,
+    togglePause,
   } = useMicrophone(settings.sensitivity);
 
   // Handle threshold crossing alerts
@@ -147,6 +149,10 @@ export default function VoiceMeter() {
               volumeLevel={volumeLevel}
               theme={settings.theme}
               isMicrophoneActive={isMicrophoneActive}
+              isPaused={isPaused}
+              onTogglePause={togglePause}
+              onCalibrate={calibrate}
+              isCalibrating={isCalibrating}
             />
           </div>
 
