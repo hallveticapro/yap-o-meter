@@ -105,6 +105,21 @@ export default function VoiceMeter() {
     await calibrate();
   };
 
+  const handleStatusHover = () => {
+    setShowStatusPanel(true);
+    // Clear any existing timeout
+    if (statusPanelTimeoutRef.current) {
+      clearTimeout(statusPanelTimeoutRef.current);
+    }
+  };
+
+  const handleStatusLeave = () => {
+    // Restart the fade out timer
+    statusPanelTimeoutRef.current = setTimeout(() => {
+      setShowStatusPanel(false);
+    }, 5000);
+  };
+
   if (!isPermissionGranted) {
     return <PermissionOverlay onRequestPermission={requestPermission} />;
   }
@@ -122,7 +137,11 @@ export default function VoiceMeter() {
 
         {/* Top Control Panel */}
         <div className="absolute top-6 left-6 right-6 flex justify-between items-start z-10">
-          <div className={`transition-opacity duration-1000 ${showStatusPanel ? 'opacity-100' : 'opacity-0'}`}>
+          <div 
+            className={`transition-opacity duration-1000 ${showStatusPanel ? 'opacity-100' : 'opacity-0'}`}
+            onMouseEnter={handleStatusHover}
+            onMouseLeave={handleStatusLeave}
+          >
             <StatusPanel
               volumeLevel={volumeLevel}
               theme={settings.theme}

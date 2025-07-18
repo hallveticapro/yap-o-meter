@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, ChevronDown, Sparkles, Snowflake, TreePine, Waves, Circle, Settings as SettingsIcon } from "lucide-react";
+import { X, ChevronDown, Sparkles, Waves, Circle, Settings as SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -18,8 +18,6 @@ interface SettingsSidebarProps {
 
 const themes = [
   { id: "balls", name: "Bouncing Balls", icon: Circle, color: "text-cyan-400", description: "Colorful balls that bounce with volume" },
-  { id: "snow", name: "Snowfall", icon: Snowflake, color: "text-blue-400", description: "Snow falls from clouds based on volume" },
-  { id: "tree", name: "Growing Tree", icon: TreePine, color: "text-green-400", description: "Tree branches grow with sound levels" },
   { id: "waves", name: "Liquid Waves", icon: Waves, color: "text-purple-400", description: "Color-changing waves with particles" },
   { id: "bubbles", name: "Floating Bubbles", icon: Sparkles, color: "text-pink-400", description: "Dense bubbles that change size" },
 ];

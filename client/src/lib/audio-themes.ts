@@ -76,7 +76,7 @@ export class BouncingBallsTheme implements Theme {
     for (let i = 0; i < 80; i++) {
       this.balls.push({
         x: Math.random() * width,
-        y: height - (Math.random() * 50 + 50), // Start at bottom
+        y: height - (Math.random() * 100 + 50), // Start at bottom
         vx: (Math.random() - 0.5) * 4,
         vy: (Math.random() - 0.5) * 4,
         radius: Math.random() * 15 + 5,
@@ -129,6 +129,8 @@ export class BouncingBallsTheme implements Theme {
       // Add glow effect
       this.ctx.shadowColor = ball.color;
       this.ctx.shadowBlur = this.volumeLevel / 5;
+      this.ctx.beginPath();
+      this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
       this.ctx.fill();
       this.ctx.restore();
     }
@@ -380,18 +382,18 @@ export class LiquidWavesTheme implements Theme {
 
   update(volumeLevel: number): void {
     this.volumeLevel = volumeLevel;
-    this.time += 0.02;
+    this.time += 0.05 + (volumeLevel / 100) * 0.05; // Speed varies with volume
 
-    for (const particle of this.particles) {
-      // Update wave motion with more dramatic volume response
-      particle.y = particle.baseY + Math.sin(this.time * particle.frequency + particle.phase) * particle.amplitude * (1 + volumeLevel / 50);
+    for (let i = 0; i < this.particles.length; i++) {
+      const particle = this.particles[i];
       
-      // Update amplitude based on volume
-      particle.amplitude = (20 + Math.random() * 30) * (1 + volumeLevel / 100);
+      // Update wave motion with more dramatic volume response
+      const volumeMultiplier = 1 + (volumeLevel / 30);
+      particle.y = particle.baseY + Math.sin(this.time * particle.frequency + particle.phase + i * 0.1) * particle.amplitude * volumeMultiplier;
       
       // Shift colors based on volume
-      const hue = (200 + volumeLevel * 3) % 360;
-      particle.color = `hsl(${hue}, 70%, ${50 + volumeLevel / 5}%)`;
+      const hue = (200 + volumeLevel * 2 + i * 0.5) % 360;
+      particle.color = `hsl(${hue}, 80%, ${40 + volumeLevel / 3}%)`;
     }
   }
 

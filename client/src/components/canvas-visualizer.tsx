@@ -1,8 +1,6 @@
 import { useRef, useEffect } from "react";
 import { 
   BouncingBallsTheme, 
-  SnowfallTheme, 
-  GrowingTreeTheme, 
   LiquidWavesTheme, 
   FloatingBubblesTheme,
   type Theme 
@@ -37,12 +35,6 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
     switch (theme) {
       case "balls":
         themeInstanceRef.current = new BouncingBallsTheme(ctx);
-        break;
-      case "snow":
-        themeInstanceRef.current = new SnowfallTheme(ctx);
-        break;
-      case "tree":
-        themeInstanceRef.current = new GrowingTreeTheme(ctx);
         break;
       case "waves":
         themeInstanceRef.current = new LiquidWavesTheme(ctx);

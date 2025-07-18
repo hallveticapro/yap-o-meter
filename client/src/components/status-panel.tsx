@@ -8,8 +8,6 @@ interface StatusPanelProps {
 
 const themeNames: { [key: string]: string } = {
   balls: "Bouncing Balls",
-  snow: "Snowfall",
-  tree: "Growing Tree",
   waves: "Liquid Waves",
   bubbles: "Floating Bubbles",
 };

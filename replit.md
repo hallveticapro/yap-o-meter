@@ -35,18 +35,18 @@ Preferred communication style: Simple, everyday language.
 
 #### Visual Themes
 - **Canvas-based Rendering**: HTML5 Canvas for smooth animations
-- **Multiple Themes**: 
-  - Bouncing Balls: Animated balls that respond to volume
-  - Snowfall: Snow particles that fall based on audio levels
-  - Growing Tree: Tree branches that grow with sound
-  - Liquid Waves: Color-changing wave patterns
-  - Floating Bubbles: Bubble density changes with volume
+- **Three Core Themes**: 
+  - Bouncing Balls: High-density animated balls that start at bottom and bounce with volume
+  - Liquid Waves: Color-changing wave patterns with enhanced volume response
+  - Floating Bubbles: High-density bubbles that grow and change with volume
 - **Real-time Animation**: 60fps animations with requestAnimationFrame
 
 #### Settings Management
+- **Hidden Sidebar**: Collapsible settings panel that slides in from the right
 - **Local Storage**: Persistent user preferences
 - **Configurable Options**: Theme selection, volume thresholds, alert settings
 - **Calibration Tools**: Automatic and manual threshold adjustment
+- **Status Panel**: Auto-hiding status display with mouse hover reactivation
 
 ### Data Flow
 
