@@ -191,10 +191,30 @@ export class BouncingBallsTheme implements Theme {
   }
 
   resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    const oldHeight = this.height;
     this.width = width;
     this.height = height;
-    // Reinitialize balls with new dimensions
-    this.init(width, height);
+    
+    // Only redistribute balls if this is the first resize or significant size change
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      this.redistributeBalls();
+    }
+  }
+
+  private redistributeBalls(): void {
+    // Redistribute existing balls across new width
+    for (let i = 0; i < this.balls.length; i++) {
+      const ball = this.balls[i];
+      // Spread balls randomly across the full width
+      ball.x = Math.random() * (this.width - ball.baseRadius * 2) + ball.baseRadius;
+      // Keep current Y position but ensure it's within bounds
+      ball.y = Math.min(ball.y, this.height - ball.baseRadius);
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
   }
 
   dispose(): void {
