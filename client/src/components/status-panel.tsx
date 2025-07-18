@@ -39,8 +39,7 @@ export default function StatusPanel({ volumeLevel, theme, isMicrophoneActive }: 
       
       {/* Current Theme Display */}
       <div className="text-xs text-slate-300">
-        <span>Theme: </span>
-        <span className="text-cyan-400 font-medium">{themeNames[theme] || theme}</span>
+        <span className="text-cyan-400 font-medium">Bouncing Balls</span>
       </div>
     </div>
   );

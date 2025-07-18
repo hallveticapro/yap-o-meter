@@ -74,13 +74,14 @@ export class BouncingBallsTheme implements Theme {
 
     // Create high-density balls at the bottom
     for (let i = 0; i < 80; i++) {
+      const baseRadius = Math.random() * 12 + 8;
       this.balls.push({
-        x: Math.random() * width,
-        y: height - (Math.random() * 100 + 50), // Start at bottom
-        vx: (Math.random() - 0.5) * 4,
-        vy: (Math.random() - 0.5) * 4,
-        radius: Math.random() * 15 + 5,
-        baseRadius: Math.random() * 15 + 5,
+        x: Math.random() * (width - baseRadius * 2) + baseRadius,
+        y: height - baseRadius, // Start exactly at bottom
+        vx: (Math.random() - 0.5) * 2,
+        vy: 0, // Start with no vertical velocity
+        radius: baseRadius,
+        baseRadius: baseRadius,
         color: `hsl(${Math.random() * 360}, 70%, 60%)`,
       });
     }
@@ -90,29 +91,56 @@ export class BouncingBallsTheme implements Theme {
     this.volumeLevel = volumeLevel;
 
     for (const ball of this.balls) {
-      // Update position
+      // Update horizontal position
       ball.x += ball.vx;
+
+      // Update vertical position
       ball.y += ball.vy;
 
-      // Bounce off walls
+      // Bounce off side walls
       if (ball.x - ball.radius < 0 || ball.x + ball.radius > this.width) {
         ball.vx *= -0.8;
         ball.x = Math.max(ball.radius, Math.min(this.width - ball.radius, ball.x));
       }
-      if (ball.y - ball.radius < 0 || ball.y + ball.radius > this.height) {
-        ball.vy *= -0.8;
-        ball.y = Math.max(ball.radius, Math.min(this.height - ball.radius, ball.y));
+
+      // Handle floor collision - stick to bottom when no volume
+      const floorY = this.height - ball.radius;
+      if (ball.y >= floorY) {
+        ball.y = floorY;
+        
+        if (volumeLevel > 10) {
+          // Bounce based on volume intensity
+          ball.vy = -(volumeLevel / 100) * 15; // Stronger bounce with higher volume
+        } else {
+          // Stick to floor when quiet
+          ball.vy = 0;
+        }
+        
+        // Add some horizontal movement when bouncing
+        if (Math.abs(ball.vx) < 1) {
+          ball.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        // Apply gravity when in air
+        ball.vy += 0.5;
       }
 
-      // Apply gravity
-      ball.vy += 0.2;
+      // Handle ceiling collision
+      if (ball.y - ball.radius < 0) {
+        ball.vy = Math.abs(ball.vy) * 0.8;
+        ball.y = ball.radius;
+      }
+
+      // Apply air resistance
+      ball.vx *= 0.99;
+      ball.vy *= 0.995;
 
       // Scale radius based on volume
-      ball.radius = ball.baseRadius * (1 + volumeLevel / 100);
+      ball.radius = ball.baseRadius * (1 + volumeLevel / 200);
 
-      // Add bounce energy based on volume
-      if (volumeLevel > 20) {
-        ball.vy -= volumeLevel / 50;
+      // Add random movement when volume is high
+      if (volumeLevel > 30) {
+        ball.vx += (Math.random() - 0.5) * (volumeLevel / 100);
       }
     }
   }

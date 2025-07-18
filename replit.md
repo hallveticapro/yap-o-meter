@@ -33,12 +33,14 @@ Preferred communication style: Simple, everyday language.
 - **Calibration**: Dynamic threshold adjustment based on ambient noise
 - **Alert System**: Configurable audio alerts when volume thresholds are exceeded
 
-#### Visual Themes
+#### Visual Theme
 - **Canvas-based Rendering**: HTML5 Canvas for smooth animations
-- **Three Core Themes**: 
-  - Bouncing Balls: High-density animated balls that start at bottom and bounce with volume
-  - Liquid Waves: Color-changing wave patterns with enhanced volume response
-  - Floating Bubbles: High-density bubbles that grow and change with volume
+- **Bouncing Balls Theme**: 
+  - High-density animated balls (80 balls) that start at screen bottom
+  - Balls stick to floor when quiet, bounce higher with increased volume
+  - Volume-responsive physics: louder sound = more intense bouncing
+  - Colorful balls with slight size variations based on volume
+  - Proper gravity system with floor collision detection
 - **Real-time Animation**: 60fps animations with requestAnimationFrame
 
 #### Settings Management

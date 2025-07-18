@@ -1,8 +1,6 @@
 import { useRef, useEffect } from "react";
 import { 
-  BouncingBallsTheme, 
-  LiquidWavesTheme, 
-  FloatingBubblesTheme,
+  BouncingBallsTheme,
   type Theme 
 } from "@/lib/audio-themes";
 
@@ -31,20 +29,8 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
       themeInstanceRef.current.dispose();
     }
 
-    // Create new theme instance
-    switch (theme) {
-      case "balls":
-        themeInstanceRef.current = new BouncingBallsTheme(ctx);
-        break;
-      case "waves":
-        themeInstanceRef.current = new LiquidWavesTheme(ctx);
-        break;
-      case "bubbles":
-        themeInstanceRef.current = new FloatingBubblesTheme(ctx);
-        break;
-      default:
-        themeInstanceRef.current = new BouncingBallsTheme(ctx);
-    }
+    // Create new theme instance - only bouncing balls
+    themeInstanceRef.current = new BouncingBallsTheme(ctx);
 
     if (themeInstanceRef.current) {
       themeInstanceRef.current.init(canvas.width, canvas.height);
