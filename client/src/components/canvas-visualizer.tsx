@@ -9,9 +9,10 @@ interface CanvasVisualizerProps {
   volumeLevel: number;
   threshold: number;
   showThreshold: boolean;
+  onThresholdCrossed?: () => void;
 }
 
-export default function CanvasVisualizer({ theme, volumeLevel, threshold, showThreshold }: CanvasVisualizerProps) {
+export default function CanvasVisualizer({ theme, volumeLevel, threshold, showThreshold, onThresholdCrossed }: CanvasVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const themeInstanceRef = useRef<Theme | null>(null);
@@ -30,7 +31,7 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
     }
 
     // Create new theme instance - only bouncing balls
-    themeInstanceRef.current = new BouncingBallsTheme(ctx);
+    themeInstanceRef.current = new BouncingBallsTheme(ctx, onThresholdCrossed);
 
     if (themeInstanceRef.current) {
       themeInstanceRef.current.init(canvas.width, canvas.height);
@@ -79,7 +80,7 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (themeInstanceRef.current) {
-        themeInstanceRef.current.update(volumeLevel);
+        themeInstanceRef.current.update(volumeLevel, threshold);
         themeInstanceRef.current.draw();
       }
 

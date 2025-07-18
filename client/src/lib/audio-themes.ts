@@ -1,6 +1,6 @@
 export interface Theme {
   init(width: number, height: number): void;
-  update(volumeLevel: number): void;
+  update(volumeLevel: number, threshold?: number): void;
   draw(): void;
   resize(width: number, height: number): void;
   dispose(): void;
@@ -14,6 +14,7 @@ interface Ball {
   radius: number;
   color: string;
   baseRadius: number;
+  crossedThreshold: boolean;
 }
 
 interface Snowflake {
@@ -62,9 +63,11 @@ export class BouncingBallsTheme implements Theme {
   private width = 0;
   private height = 0;
   private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
 
-  constructor(ctx: CanvasRenderingContext2D) {
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
     this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
   }
 
   init(width: number, height: number): void {
@@ -72,30 +75,45 @@ export class BouncingBallsTheme implements Theme {
     this.height = height;
     this.balls = [];
 
-    // Create high-density balls at the bottom
+    // Create high-density balls spread out and falling
     for (let i = 0; i < 80; i++) {
       const baseRadius = Math.random() * 12 + 8;
       this.balls.push({
         x: Math.random() * (width - baseRadius * 2) + baseRadius,
-        y: height - baseRadius, // Start exactly at bottom
+        y: Math.random() * (height * 0.6) + baseRadius, // Start spread out in upper 60% of screen
         vx: (Math.random() - 0.5) * 2,
-        vy: 0, // Start with no vertical velocity
+        vy: Math.random() * 2, // Start falling
         radius: baseRadius,
         baseRadius: baseRadius,
         color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+        crossedThreshold: false,
       });
     }
   }
 
-  update(volumeLevel: number): void {
+  update(volumeLevel: number, threshold: number = 70): void {
     this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
 
     for (const ball of this.balls) {
+      // Store previous position for threshold crossing detection
+      const prevY = ball.y;
+      
       // Update horizontal position
       ball.x += ball.vx;
 
       // Update vertical position
       ball.y += ball.vy;
+
+      // Check for threshold crossing
+      if (prevY >= thresholdY && ball.y < thresholdY && !ball.crossedThreshold) {
+        ball.crossedThreshold = true;
+        if (this.onThresholdCrossed) {
+          this.onThresholdCrossed();
+        }
+      } else if (ball.y >= thresholdY) {
+        ball.crossedThreshold = false;
+      }
 
       // Bounce off side walls
       if (ball.x - ball.radius < 0 || ball.x + ball.radius > this.width) {
@@ -109,8 +127,12 @@ export class BouncingBallsTheme implements Theme {
         ball.y = floorY;
         
         if (volumeLevel > 10) {
-          // Bounce based on volume intensity
-          ball.vy = -(volumeLevel / 100) * 15; // Stronger bounce with higher volume
+          // Only bounce random balls (about 10 at a time)
+          if (Math.random() < 0.15) {
+            ball.vy = -(volumeLevel / 100) * 20; // More intense bounce
+          } else {
+            ball.vy = 0;
+          }
         } else {
           // Stick to floor when quiet
           ball.vy = 0;
@@ -122,7 +144,7 @@ export class BouncingBallsTheme implements Theme {
         }
       } else {
         // Apply gravity when in air
-        ball.vy += 0.5;
+        ball.vy += 0.6;
       }
 
       // Handle ceiling collision

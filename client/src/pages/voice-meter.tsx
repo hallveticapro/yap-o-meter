@@ -46,9 +46,9 @@ export default function VoiceMeter() {
     isCalibrating,
   } = useMicrophone(settings.sensitivity);
 
-  // Check threshold and trigger alerts
-  useEffect(() => {
-    if (volumeLevel > settings.threshold && settings.enableAlerts) {
+  // Handle threshold crossing alerts
+  const handleThresholdCrossed = () => {
+    if (settings.enableAlerts) {
       const now = Date.now();
       // Throttle alerts to once every 2 seconds
       if (now - lastAlertTimeRef.current > 2000) {
@@ -67,7 +67,7 @@ export default function VoiceMeter() {
         playAlert(settings.alertSound, settings.alertVolume);
       }
     }
-  }, [volumeLevel, settings.threshold, settings.enableAlerts, settings.alertSound, settings.alertVolume]);
+  };
 
   // Auto-hide status panel after 5 seconds
   useEffect(() => {
@@ -133,6 +133,7 @@ export default function VoiceMeter() {
           volumeLevel={volumeLevel}
           threshold={settings.threshold}
           showThreshold={settings.showThreshold}
+          onThresholdCrossed={handleThresholdCrossed}
         />
 
         {/* Top Control Panel */}
