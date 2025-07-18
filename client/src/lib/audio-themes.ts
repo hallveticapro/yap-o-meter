@@ -193,6 +193,8 @@ export class BouncingBallsTheme implements Theme {
   resize(width: number, height: number): void {
     this.width = width;
     this.height = height;
+    // Reinitialize balls with new dimensions
+    this.init(width, height);
   }
 
   dispose(): void {

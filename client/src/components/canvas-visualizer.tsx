@@ -36,7 +36,7 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
     if (themeInstanceRef.current) {
       themeInstanceRef.current.init(canvas.width, canvas.height);
     }
-  }, [theme]);
+  }, [theme, onThresholdCrossed]);
 
   // Resize canvas
   useEffect(() => {

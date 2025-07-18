@@ -1,5 +1,6 @@
 export function playAlert(alertType: string, volume: number = 50): void {
   // Use Web Audio API for all alerts to ensure they work
+  console.log('Playing alert:', alertType, 'volume:', volume);
   switch (alertType) {
     case 'shush':
       createShushSound(volume);
