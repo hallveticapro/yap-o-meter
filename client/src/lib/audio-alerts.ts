@@ -1,5 +1,6 @@
 export function playAlert(alertType: string, volume: number = 50): void {
   // Use Web Audio API for all alerts to ensure they work
+  console.log('Playing alert:', alertType, 'at volume:', volume);
   switch (alertType) {
     case 'shush':
       createShushSound(volume);
@@ -22,6 +23,12 @@ export function playAlert(alertType: string, volume: number = 50): void {
 function createBeepSound(volume: number = 50): void {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Resume context if suspended
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     
@@ -45,6 +52,11 @@ function createBeepSound(volume: number = 50): void {
 function createShushSound(volume: number = 50): void {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Resume context if suspended
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
     const bufferSize = audioContext.sampleRate * 0.8; // 0.8 seconds
     const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
     const channelData = buffer.getChannelData(0);
@@ -81,6 +93,11 @@ function createDingSound(volume: number = 50): void {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     
+    // Resume context if suspended
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
     // Create three ding sounds
     for (let i = 0; i < 3; i++) {
       const oscillator = audioContext.createOscillator();
@@ -108,6 +125,11 @@ function createDingSound(volume: number = 50): void {
 function createChimeSound(volume: number = 50): void {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Resume context if suspended
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
     const frequencies = [523, 659, 784]; // C, E, G chord
     
     frequencies.forEach((freq, index) => {
@@ -136,6 +158,11 @@ function createChimeSound(volume: number = 50): void {
 function createBellSound(volume: number = 50): void {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Resume context if suspended
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     

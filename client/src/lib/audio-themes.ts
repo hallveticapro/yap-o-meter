@@ -75,11 +75,13 @@ export class BouncingBallsTheme implements Theme {
     this.height = height;
     this.balls = [];
 
-    // Create high-density balls spread out and falling
+    // Create high-density balls spread out across full width and falling
     for (let i = 0; i < 80; i++) {
       const baseRadius = Math.random() * 12 + 8;
+      // Ensure balls are spread across the full width
+      const x = (i % 10) * (width / 10) + Math.random() * (width / 10 - baseRadius * 2) + baseRadius;
       this.balls.push({
-        x: Math.random() * (width - baseRadius * 2) + baseRadius,
+        x: Math.min(width - baseRadius, Math.max(baseRadius, x)),
         y: Math.random() * (height * 0.6) + baseRadius, // Start spread out in upper 60% of screen
         vx: (Math.random() - 0.5) * 2,
         vy: Math.random() * 2, // Start falling
