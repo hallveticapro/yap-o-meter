@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { 
   BouncingBallsTheme,
+  HappyFacesTheme,
   type Theme 
 } from "@/lib/audio-themes";
 
@@ -30,8 +31,12 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
       themeInstanceRef.current.dispose();
     }
 
-    // Create new theme instance - only bouncing balls
-    themeInstanceRef.current = new BouncingBallsTheme(ctx, onThresholdCrossed);
+    // Create new theme instance based on theme type
+    if (theme === 'faces') {
+      themeInstanceRef.current = new HappyFacesTheme(ctx, onThresholdCrossed);
+    } else {
+      themeInstanceRef.current = new BouncingBallsTheme(ctx, onThresholdCrossed);
+    }
 
     if (themeInstanceRef.current) {
       themeInstanceRef.current.init(canvas.width, canvas.height);

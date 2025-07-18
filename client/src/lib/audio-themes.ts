@@ -57,6 +57,17 @@ interface Bubble {
   color: string;
 }
 
+interface Emojiface {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  baseSize: number;
+  crossedThreshold: boolean;
+  emoji: string;
+}
+
 export class BouncingBallsTheme implements Theme {
   private ctx: CanvasRenderingContext2D;
   private balls: Ball[] = [];
@@ -219,6 +230,171 @@ export class BouncingBallsTheme implements Theme {
 
   dispose(): void {
     this.balls = [];
+  }
+}
+
+export class HappyFacesTheme implements Theme {
+  private ctx: CanvasRenderingContext2D;
+  private faces: Emojiface[] = [];
+  private width = 0;
+  private height = 0;
+  private volumeLevel = 0;
+  private onThresholdCrossed?: () => void;
+  private happyEmojis = ['😊', '😄', '😃', '😁', '😆', '🤣', '😂', '🥰', '😍', '🤩', '😋', '😎', '🤗', '🥳', '😌'];
+
+  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
+    this.ctx = ctx;
+    this.onThresholdCrossed = onThresholdCrossed;
+  }
+
+  init(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
+    this.faces = [];
+
+    // Create high-density emoji faces spread out across full width and falling
+    for (let i = 0; i < 60; i++) {
+      const baseSize = Math.random() * 20 + 25;
+      // Spread faces randomly across the full width
+      const x = Math.random() * (width - baseSize) + baseSize / 2;
+      this.faces.push({
+        x: x,
+        y: Math.random() * (height * 0.6) + baseSize / 2, // Start spread out in upper 60% of screen
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2, // Start falling
+        size: baseSize,
+        baseSize: baseSize,
+        emoji: this.happyEmojis[Math.floor(Math.random() * this.happyEmojis.length)],
+        crossedThreshold: false,
+      });
+    }
+  }
+
+  update(volumeLevel: number, threshold: number = 70): void {
+    this.volumeLevel = volumeLevel;
+    const thresholdY = (this.height * (100 - threshold)) / 100;
+
+    for (const face of this.faces) {
+      // Store previous position for threshold crossing detection
+      const prevY = face.y;
+      
+      // Update horizontal position
+      face.x += face.vx;
+
+      // Update vertical position
+      face.y += face.vy;
+
+      // Check for threshold crossing
+      if (prevY >= thresholdY && face.y < thresholdY && !face.crossedThreshold) {
+        face.crossedThreshold = true;
+        if (this.onThresholdCrossed) {
+          this.onThresholdCrossed();
+        }
+      } else if (face.y >= thresholdY) {
+        face.crossedThreshold = false;
+      }
+
+      // Bounce off side walls
+      if (face.x - face.size/2 < 0 || face.x + face.size/2 > this.width) {
+        face.vx *= -0.8;
+        face.x = Math.max(face.size/2, Math.min(this.width - face.size/2, face.x));
+      }
+
+      // Handle floor collision - stick to bottom when no volume
+      const floorY = this.height - face.size/2;
+      if (face.y >= floorY) {
+        face.y = floorY;
+        
+        if (volumeLevel > 5) {
+          // Only bounce random faces (about 10 at a time)
+          if (Math.random() < 0.15) {
+            // Scale bounce intensity to reach top of screen when maxed
+            const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height); // Physics: reach top with gravity
+            face.vy = -(volumeLevel / 100) * maxBounceVelocity;
+          } else {
+            face.vy = 0;
+          }
+        } else {
+          // Stick to floor when quiet
+          face.vy = 0;
+        }
+        
+        // Add some horizontal movement when bouncing
+        if (Math.abs(face.vx) < 1) {
+          face.vx += (Math.random() - 0.5) * 2;
+        }
+      } else {
+        // Apply gravity when in air
+        face.vy += 0.6;
+      }
+
+      // Handle ceiling collision
+      if (face.y - face.size/2 < 0) {
+        face.vy = Math.abs(face.vy) * 0.8;
+        face.y = face.size/2;
+      }
+
+      // Apply air resistance
+      face.vx *= 0.99;
+      face.vy *= 0.995;
+
+      // Scale size based on volume
+      face.size = face.baseSize * (1 + volumeLevel / 200);
+
+      // Add random movement when volume is high
+      if (volumeLevel > 20) {
+        face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
+      }
+    }
+  }
+
+  draw(): void {
+    for (const face of this.faces) {
+      this.ctx.save();
+      this.ctx.font = `${face.size}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      
+      // Add glow effect based on volume
+      if (this.volumeLevel > 10) {
+        this.ctx.shadowColor = '#ffeb3b';
+        this.ctx.shadowBlur = this.volumeLevel / 3;
+      }
+      
+      this.ctx.fillText(face.emoji, face.x, face.y);
+      this.ctx.restore();
+    }
+  }
+
+  resize(width: number, height: number): void {
+    const oldWidth = this.width;
+    const oldHeight = this.height;
+    this.width = width;
+    this.height = height;
+    
+    // Only redistribute faces if this is the first resize or significant size change
+    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
+      this.redistributeFaces();
+    }
+  }
+
+  private redistributeFaces(): void {
+    // Redistribute existing faces across new width
+    for (let i = 0; i < this.faces.length; i++) {
+      const face = this.faces[i];
+      // Spread faces randomly across the full width
+      face.x = Math.random() * (this.width - face.baseSize) + face.baseSize / 2;
+      // Keep current Y position but ensure it's within bounds
+      face.y = Math.min(face.y, this.height - face.baseSize / 2);
+    }
+  }
+
+  updateCallback(callback?: () => void): void {
+    this.onThresholdCrossed = callback;
+  }
+
+  dispose(): void {
+    this.faces = [];
   }
 }
 

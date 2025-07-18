@@ -29,7 +29,7 @@ export default function SettingsSidebar({
   isCalibrating 
 }: SettingsSidebarProps) {
   const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
-    themes: false,
+    theme: false,
     threshold: false,
     alerts: false,
     calibration: false,
@@ -73,17 +73,47 @@ export default function SettingsSidebar({
           </Button>
         </div>
 
-        {/* Theme Info */}
+        {/* Theme Selection */}
         <div className="mb-6">
-          <div className="p-3 glass-button rounded-xl text-white">
-            <div className="flex items-center space-x-3">
-              <Circle className="w-5 h-5 text-cyan-400" />
-              <div>
-                <div className="font-medium">Bouncing Balls</div>
-                <div className="text-xs text-slate-300">Colorful balls that bounce with volume</div>
+          <Collapsible open={openSections.theme} onOpenChange={() => toggleSection('theme')}>
+            <CollapsibleTrigger className="w-full flex items-center justify-between p-3 glass-button rounded-xl text-white hover:bg-white/25 transition-all">
+              <span className="font-medium">Visual Theme</span>
+              <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${openSections.theme ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2">
+              <div className="p-2 space-y-3">
+                <div 
+                  className={`p-3 rounded-xl cursor-pointer transition-all ${
+                    settings.theme === 'balls' ? 'bg-cyan-500/30 border border-cyan-400' : 'glass-button hover:bg-white/25'
+                  }`}
+                  onClick={() => handleThemeChange('balls')}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Circle className="w-5 h-5 text-cyan-400" />
+                    <div>
+                      <div className="font-medium text-white">Bouncing Balls</div>
+                      <div className="text-xs text-slate-300">Colorful balls that bounce with volume</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div 
+                  className={`p-3 rounded-xl cursor-pointer transition-all ${
+                    settings.theme === 'faces' ? 'bg-cyan-500/30 border border-cyan-400' : 'glass-button hover:bg-white/25'
+                  }`}
+                  onClick={() => handleThemeChange('faces')}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="text-yellow-400 text-xl">😊</div>
+                    <div>
+                      <div className="font-medium text-white">Happy Faces</div>
+                      <div className="text-xs text-slate-300">Bouncing emoji faces that react to sound</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         {/* Volume Threshold Section */}
