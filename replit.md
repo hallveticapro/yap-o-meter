@@ -1,0 +1,107 @@
+# Voice Meter Application
+
+## Overview
+
+This is a React-based classroom voice meter application that provides real-time visual feedback for audio levels. The application monitors microphone input and displays dynamic visual themes that respond to volume levels, designed to help teachers and students manage classroom noise levels.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Frontend Architecture
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite for fast development and building
+- **Styling**: Tailwind CSS with shadcn/ui component library
+- **Routing**: Wouter for lightweight client-side routing
+- **State Management**: React hooks with local storage persistence
+- **UI Components**: Radix UI primitives with custom styling
+
+### Backend Architecture
+- **Server**: Express.js with TypeScript
+- **Database**: PostgreSQL with Drizzle ORM
+- **Database Provider**: Neon Database (serverless PostgreSQL)
+- **Session Storage**: PostgreSQL sessions with connect-pg-simple
+- **Development**: Hot reload with Vite integration
+
+### Key Components
+
+#### Audio Processing
+- **Microphone Access**: Web Audio API for real-time audio capture
+- **Volume Analysis**: Audio context with frequency analysis
+- **Calibration**: Dynamic threshold adjustment based on ambient noise
+- **Alert System**: Configurable audio alerts when volume thresholds are exceeded
+
+#### Visual Themes
+- **Canvas-based Rendering**: HTML5 Canvas for smooth animations
+- **Multiple Themes**: 
+  - Bouncing Balls: Animated balls that respond to volume
+  - Snowfall: Snow particles that fall based on audio levels
+  - Growing Tree: Tree branches that grow with sound
+  - Liquid Waves: Color-changing wave patterns
+  - Floating Bubbles: Bubble density changes with volume
+- **Real-time Animation**: 60fps animations with requestAnimationFrame
+
+#### Settings Management
+- **Local Storage**: Persistent user preferences
+- **Configurable Options**: Theme selection, volume thresholds, alert settings
+- **Calibration Tools**: Automatic and manual threshold adjustment
+
+### Data Flow
+
+1. **Audio Capture**: Web Audio API captures microphone input
+2. **Processing**: Audio analysis converts raw audio to volume levels
+3. **State Updates**: React hooks update volume state in real-time
+4. **Visual Rendering**: Canvas components render theme animations
+5. **Threshold Monitoring**: Volume levels compared against user-defined thresholds
+6. **Alert Triggers**: Audio/visual alerts fired when thresholds exceeded
+7. **Settings Persistence**: User preferences saved to local storage
+
+### External Dependencies
+
+#### Core Libraries
+- **React Ecosystem**: React, React DOM, React Query for data fetching
+- **UI Framework**: Radix UI primitives, Tailwind CSS, shadcn/ui
+- **Audio Processing**: Web Audio API (native browser API)
+- **Canvas Animation**: HTML5 Canvas API (native browser API)
+
+#### Database & Backend
+- **Drizzle ORM**: Type-safe database operations
+- **Neon Database**: Serverless PostgreSQL hosting
+- **Express.js**: Web server framework
+
+#### Development Tools
+- **TypeScript**: Type safety across frontend and backend
+- **Vite**: Development server and build tool
+- **ESBuild**: Fast JavaScript bundling
+- **Drizzle Kit**: Database migrations and schema management
+
+### Deployment Strategy
+
+#### Development Environment
+- **Dev Server**: Vite development server with hot module replacement
+- **Database**: Neon PostgreSQL with connection pooling
+- **Environment Variables**: DATABASE_URL for database connection
+
+#### Production Build
+- **Frontend**: Vite builds static assets to `dist/public`
+- **Backend**: ESBuild bundles server code to `dist/index.js`
+- **Database Migration**: Drizzle push for schema updates
+- **Static Serving**: Express serves built frontend assets
+
+#### Database Schema
+- **Users Table**: Basic user authentication structure
+- **PostgreSQL**: Using serial IDs, text fields for username/password
+- **Validation**: Zod schemas for type-safe data validation
+
+#### Key Design Decisions
+
+1. **Canvas over SVG**: Canvas chosen for smooth 60fps animations with complex particle systems
+2. **Local Storage**: Settings persisted locally to avoid database overhead for preferences
+3. **Web Audio API**: Native browser API selected over external audio libraries for better performance
+4. **Microphone Permissions**: Graceful permission handling with fallback UI states
+5. **Theme Architecture**: Plugin-based theme system for easy extensibility
+6. **Real-time Updates**: Direct state updates without WebSocket overhead for local audio processing
+7. **Responsive Design**: Mobile-first approach with adaptive layouts
+8. **Type Safety**: Full TypeScript coverage across frontend, backend, and shared schemas
