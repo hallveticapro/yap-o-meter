@@ -59,8 +59,9 @@ export function useMicrophone(sensitivity: number = 5) {
       
       let volume = (sum / bufferLength) / 255 * 100;
       
-      // Apply sensitivity multiplier
-      volume = volume * (sensitivity / 5);
+      // Apply sensitivity multiplier with exponential scaling for better control
+      const sensitivityMultiplier = Math.pow(sensitivity / 5, 1.5) * 3;
+      volume = volume * sensitivityMultiplier;
       
       // Clamp between 0 and 100
       volume = Math.max(0, Math.min(100, volume));

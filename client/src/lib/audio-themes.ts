@@ -126,10 +126,12 @@ export class BouncingBallsTheme implements Theme {
       if (ball.y >= floorY) {
         ball.y = floorY;
         
-        if (volumeLevel > 10) {
+        if (volumeLevel > 5) {
           // Only bounce random balls (about 10 at a time)
           if (Math.random() < 0.15) {
-            ball.vy = -(volumeLevel / 100) * 20; // More intense bounce
+            // Scale bounce intensity to reach top of screen when maxed
+            const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height); // Physics: reach top with gravity
+            ball.vy = -(volumeLevel / 100) * maxBounceVelocity;
           } else {
             ball.vy = 0;
           }
@@ -161,8 +163,8 @@ export class BouncingBallsTheme implements Theme {
       ball.radius = ball.baseRadius * (1 + volumeLevel / 200);
 
       // Add random movement when volume is high
-      if (volumeLevel > 30) {
-        ball.vx += (Math.random() - 0.5) * (volumeLevel / 100);
+      if (volumeLevel > 20) {
+        ball.vx += (Math.random() - 0.5) * (volumeLevel / 150);
       }
     }
   }
