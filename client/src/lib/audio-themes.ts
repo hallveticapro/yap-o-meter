@@ -72,11 +72,11 @@ export class BouncingBallsTheme implements Theme {
     this.height = height;
     this.balls = [];
 
-    // Create high-density balls
+    // Create high-density balls at the bottom
     for (let i = 0; i < 80; i++) {
       this.balls.push({
         x: Math.random() * width,
-        y: Math.random() * height,
+        y: height - (Math.random() * 50 + 50), // Start at bottom
         vx: (Math.random() - 0.5) * 4,
         vy: (Math.random() - 0.5) * 4,
         radius: Math.random() * 15 + 5,
@@ -280,16 +280,14 @@ export class GrowingTreeTheme implements Theme {
         maxGrowth: maxLength,
       });
 
-      // Recursively generate more branches
+      // Recursively generate more branches immediately
       if (level < maxLevel - 1) {
-        setTimeout(() => {
-          this.generateBranches(
-            x + Math.cos(angle) * maxLength,
-            y + Math.sin(angle) * maxLength,
-            level + 1,
-            maxLevel
-          );
-        }, level * 200);
+        this.generateBranches(
+          x + Math.cos(angle) * maxLength,
+          y + Math.sin(angle) * maxLength,
+          level + 1,
+          maxLevel
+        );
       }
     }
   }
@@ -385,12 +383,15 @@ export class LiquidWavesTheme implements Theme {
     this.time += 0.02;
 
     for (const particle of this.particles) {
-      // Update wave motion
-      particle.y = particle.baseY + Math.sin(this.time * particle.frequency + particle.phase) * particle.amplitude * (1 + volumeLevel / 100);
+      // Update wave motion with more dramatic volume response
+      particle.y = particle.baseY + Math.sin(this.time * particle.frequency + particle.phase) * particle.amplitude * (1 + volumeLevel / 50);
+      
+      // Update amplitude based on volume
+      particle.amplitude = (20 + Math.random() * 30) * (1 + volumeLevel / 100);
       
       // Shift colors based on volume
-      const hue = (200 + Math.random() * 160 + volumeLevel * 2) % 360;
-      particle.color = `hsl(${hue}, 70%, 60%)`;
+      const hue = (200 + volumeLevel * 3) % 360;
+      particle.color = `hsl(${hue}, 70%, ${50 + volumeLevel / 5}%)`;
     }
   }
 
@@ -485,8 +486,8 @@ export class FloatingBubblesTheme implements Theme {
       if (bubble.y < -bubble.radius) bubble.y = this.height + bubble.radius;
       if (bubble.y > this.height + bubble.radius) bubble.y = -bubble.radius;
 
-      // Scale radius based on volume
-      bubble.radius = bubble.baseRadius * (1 + volumeLevel / 200);
+      // Scale radius based on volume more dramatically
+      bubble.radius = bubble.baseRadius * (1 + volumeLevel / 100);
 
       // Add floating motion
       bubble.vy += Math.sin(Date.now() * 0.001 + bubble.x * 0.01) * 0.1;

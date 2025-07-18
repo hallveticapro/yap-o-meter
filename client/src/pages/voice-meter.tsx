@@ -32,8 +32,10 @@ export default function VoiceMeter() {
   const [settings, setSettings] = useLocalStorage<VoiceMeterSettings>("voice-meter-settings", defaultSettings);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [showStatusPanel, setShowStatusPanel] = useState(true);
   const alertTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastAlertTimeRef = useRef<number>(0);
+  const statusPanelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
     volumeLevel,
@@ -67,11 +69,26 @@ export default function VoiceMeter() {
     }
   }, [volumeLevel, settings.threshold, settings.enableAlerts, settings.alertSound, settings.alertVolume]);
 
-  // Cleanup alert timeout
+  // Auto-hide status panel after 5 seconds
+  useEffect(() => {
+    if (isPermissionGranted && isMicrophoneActive) {
+      if (statusPanelTimeoutRef.current) {
+        clearTimeout(statusPanelTimeoutRef.current);
+      }
+      statusPanelTimeoutRef.current = setTimeout(() => {
+        setShowStatusPanel(false);
+      }, 5000);
+    }
+  }, [isPermissionGranted, isMicrophoneActive]);
+
+  // Cleanup timeouts
   useEffect(() => {
     return () => {
       if (alertTimeoutRef.current) {
         clearTimeout(alertTimeoutRef.current);
+      }
+      if (statusPanelTimeoutRef.current) {
+        clearTimeout(statusPanelTimeoutRef.current);
       }
     };
   }, []);
@@ -105,11 +122,13 @@ export default function VoiceMeter() {
 
         {/* Top Control Panel */}
         <div className="absolute top-6 left-6 right-6 flex justify-between items-start z-10">
-          <StatusPanel
-            volumeLevel={volumeLevel}
-            theme={settings.theme}
-            isMicrophoneActive={isMicrophoneActive}
-          />
+          <div className={`transition-opacity duration-1000 ${showStatusPanel ? 'opacity-100' : 'opacity-0'}`}>
+            <StatusPanel
+              volumeLevel={volumeLevel}
+              theme={settings.theme}
+              isMicrophoneActive={isMicrophoneActive}
+            />
+          </div>
 
           {/* Settings Toggle */}
           <button

@@ -33,7 +33,7 @@ export default function SettingsSidebar({
   isCalibrating 
 }: SettingsSidebarProps) {
   const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
-    themes: true,
+    themes: false,
     threshold: false,
     alerts: false,
     calibration: false,
