@@ -119,3 +119,5 @@ Preferred communication style: Simple, everyday language.
 - **Smart Alert System**: Explosion-triggered threshold crossings don't trigger false alerts
 - **Application Branding**: Renamed to "Yap-o-Meter" with updated branding in settings sidebar and copyright info
 - **Docker Deployment**: Created simplified Docker setup for GitHub Container Registry deployment
+- **SEO & Metadata**: Added comprehensive meta tags, favicon system, and Open Graph/Twitter cards for better discoverability
+- **GitHub Integration**: Added GitHub repository link in settings sidebar with proper attribution to Andrew Hall
