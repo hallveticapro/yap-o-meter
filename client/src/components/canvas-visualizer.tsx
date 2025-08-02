@@ -190,9 +190,9 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
     const x = clientX - rect.left;
     const y = clientY - rect.top;
 
-    // Add temporary boost effect to nearby elements
-    if ('addClickEffect' in themeInstanceRef.current) {
-      (themeInstanceRef.current as any).addClickEffect(x, y);
+    // Explode particles away from click point
+    if ('explode' in themeInstanceRef.current) {
+      (themeInstanceRef.current as any).explode(x, y);
     }
   }, []);
 

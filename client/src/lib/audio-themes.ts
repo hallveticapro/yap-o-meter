@@ -5,6 +5,7 @@ export interface Theme {
   resize(width: number, height: number): void;
   updateCallback(callback?: () => void): void;
   dispose(): void;
+  explode(mouseX: number, mouseY: number): void;
 }
 
 interface Ball {
@@ -216,6 +217,21 @@ abstract class BaseEmojiTheme implements Theme {
     }
   }
 
+  explode(mouseX: number, mouseY: number): void {
+    for (const face of this.faces) {
+      const dx = face.x - mouseX;
+      const dy = face.y - mouseY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance < 200) { // Explosion radius
+        const force = Math.max(0, (200 - distance) / 200) * 20; // Force decreases with distance
+        const angle = Math.atan2(dy, dx);
+        face.vx += Math.cos(angle) * force;
+        face.vy += Math.sin(angle) * force;
+      }
+    }
+  }
+
   updateCallback(callback?: () => void): void {
     this.onThresholdCrossed = callback;
   }
@@ -244,7 +260,7 @@ export class BouncingBallsTheme implements Theme {
     this.height = height;
     this.balls = [];
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 120; i++) {
       const baseSize = Math.random() * 35 + 25; // Larger sizes to match emojis (25-60px)
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       const hue = Math.random() * 360;
@@ -330,6 +346,21 @@ export class BouncingBallsTheme implements Theme {
         const ball = this.balls[i];
         ball.x = Math.random() * (this.width - ball.baseSize) + ball.baseSize / 2;
         ball.y = Math.min(ball.y, this.height - ball.baseSize / 2);
+      }
+    }
+  }
+
+  explode(mouseX: number, mouseY: number): void {
+    for (const ball of this.balls) {
+      const dx = ball.x - mouseX;
+      const dy = ball.y - mouseY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance < 200) { // Explosion radius
+        const force = Math.max(0, (200 - distance) / 200) * 20; // Force decreases with distance
+        const angle = Math.atan2(dy, dx);
+        ball.vx += Math.cos(angle) * force;
+        ball.vy += Math.sin(angle) * force;
       }
     }
   }
