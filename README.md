@@ -1,10 +1,10 @@
-# Voice Meter Application 🎤
+# Yap-o-Meter 🎤
 
 A dynamic classroom voice monitoring application that provides real-time visual feedback for audio levels. This interactive tool helps educators and students manage classroom noise levels through engaging visual themes and responsive animations.
 
 ## Purpose
 
-The Voice Meter Application is designed specifically for educational environments where managing classroom noise levels is essential for learning. By providing immediate visual feedback through fun, animated themes, it encourages students to be mindful of their volume levels while making the process engaging and interactive.
+The Yap-o-Meter is designed specifically for educational environments where managing classroom noise levels is essential for learning. By providing immediate visual feedback through fun, animated themes, it encourages students to be mindful of their volume levels while making the process engaging and interactive.
 
 ## Features
 
@@ -86,14 +86,14 @@ For self-hosting or production deployment:
 
 ```bash
 # Pull and run the pre-built image
-docker run -p 5000:5000 ghcr.io/YOUR_USERNAME/voice-meter-app:main
+docker run -p 5000:5000 ghcr.io/YOUR_USERNAME/yap-o-meter:main
 
 # Or build locally
-docker build -t voice-meter-app .
-docker run -p 5000:5000 voice-meter-app
+docker build -t yap-o-meter .
+docker run -p 5000:5000 yap-o-meter
 
 # With custom port
-docker run -p 8080:8080 -e PORT=8080 ghcr.io/YOUR_USERNAME/voice-meter-app:main
+docker run -p 8080:8080 -e PORT=8080 ghcr.io/YOUR_USERNAME/yap-o-meter:main
 ```
 
 The application will be available at `http://localhost:5000` (or your configured port).

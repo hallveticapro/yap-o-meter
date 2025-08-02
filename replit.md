@@ -1,4 +1,4 @@
-# Voice Meter Application
+# Yap-o-Meter Application
 
 ## Overview
 
@@ -117,3 +117,5 @@ Preferred communication style: Simple, everyday language.
 - **Interactive Features**: Added explosive click effects that launch particles into the air
 - **Theme Improvements**: Updated all themes with proper emoji icons and consistent particle counts (120)
 - **Smart Alert System**: Explosion-triggered threshold crossings don't trigger false alerts
+- **Application Branding**: Renamed to "Yap-o-Meter" with updated branding in settings sidebar and copyright info
+- **Docker Deployment**: Created simplified Docker setup for GitHub Container Registry deployment

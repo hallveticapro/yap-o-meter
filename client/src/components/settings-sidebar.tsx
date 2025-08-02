@@ -72,7 +72,10 @@ export default function SettingsSidebar({
     <div className={`sidebar-slide fixed top-0 right-0 w-80 h-full z-30 ${isOpen ? 'open' : ''}`}>
       <div className="glass-morphism h-full p-6 overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-white">Settings</h2>
+          <div>
+            <h2 className="text-xl font-bold text-white">Yap-o-Meter</h2>
+            <p className="text-xs text-slate-400">Settings</p>
+          </div>
           <Button
             variant="ghost"
             size="icon"
@@ -239,6 +242,15 @@ export default function SettingsSidebar({
               </div>
             </CollapsibleContent>
           </Collapsible>
+        </div>
+
+        {/* Copyright Information */}
+        <div className="mt-auto pt-6 border-t border-slate-600/30">
+          <div className="text-center text-xs text-slate-400 space-y-1">
+            <p>© 2025 Yap-o-Meter</p>
+            <p>Made for educators with love ❤️</p>
+            <p className="text-slate-500">Built with Replit AI</p>
+          </div>
         </div>
       </div>
     </div>
