@@ -148,7 +148,8 @@ abstract class BaseEmojiTheme implements Theme {
       if (prevY >= thresholdY && face.y < thresholdY && !face.crossedThreshold) {
         face.crossedThreshold = true;
         if (this.onThresholdCrossed) this.onThresholdCrossed();
-      } else if (face.y >= thresholdY) {
+      } else if (face.y >= thresholdY && face.vy >= 0) {
+        // Only reset threshold flag when moving down naturally (not from explosion)
         face.crossedThreshold = false;
       }
 
@@ -227,7 +228,8 @@ abstract class BaseEmojiTheme implements Theme {
         const force = Math.max(0, (200 - distance) / 200) * 20; // Force decreases with distance
         const angle = Math.atan2(dy, dx);
         face.vx += Math.cos(angle) * force;
-        face.vy += Math.sin(angle) * force;
+        face.vy += Math.sin(angle) * force - 8; // Add upward force to launch into air
+        face.crossedThreshold = true; // Prevent alerts during explosion
       }
     }
   }
@@ -288,7 +290,8 @@ export class BouncingBallsTheme implements Theme {
       if (prevY >= thresholdY && ball.y < thresholdY && !ball.crossedThreshold) {
         ball.crossedThreshold = true;
         if (this.onThresholdCrossed) this.onThresholdCrossed();
-      } else if (ball.y >= thresholdY) {
+      } else if (ball.y >= thresholdY && ball.vy >= 0) {
+        // Only reset threshold flag when moving down naturally (not from explosion)
         ball.crossedThreshold = false;
       }
 
@@ -360,7 +363,8 @@ export class BouncingBallsTheme implements Theme {
         const force = Math.max(0, (200 - distance) / 200) * 20; // Force decreases with distance
         const angle = Math.atan2(dy, dx);
         ball.vx += Math.cos(angle) * force;
-        ball.vy += Math.sin(angle) * force;
+        ball.vy += Math.sin(angle) * force - 8; // Add upward force to launch into air
+        ball.crossedThreshold = true; // Prevent alerts during explosion
       }
     }
   }
