@@ -96,8 +96,8 @@ abstract class BaseEmojiTheme implements Theme {
 
     const emojis = this.getEmojis();
     for (let i = 0; i < 120; i++) {
-      // Use discrete size tiers for better performance
-      const sizeOptions = [16, 20, 24, 28, 32, 36, 40];
+      // Use discrete size tiers for better performance - expanded range
+      const sizeOptions = [12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60];
       const baseSize = sizeOptions[Math.floor(Math.random() * sizeOptions.length)];
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
