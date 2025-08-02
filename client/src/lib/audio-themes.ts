@@ -96,7 +96,7 @@ abstract class BaseEmojiTheme implements Theme {
 
     const emojis = this.getEmojis();
     for (let i = 0; i < 120; i++) {
-      const baseSize = Math.random() * 20 + 25;
+      const baseSize = 32; // Fixed size for performance
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
         x: x,
@@ -168,19 +168,13 @@ abstract class BaseEmojiTheme implements Theme {
     // Draw background first (if theme provides one)
     this.drawBackground();
     
-    // Use single font size with canvas scaling for performance
-    this.ctx.font = '30px Arial';
+    // Ultra-simple rendering - single font size, no transforms
+    this.ctx.font = '32px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
     
     for (const face of this.faces) {
-      this.ctx.save();
-      // Scale based on the face size for variety
-      const scale = face.size / 30; // Base font is 30px
-      this.ctx.translate(face.x, face.y);
-      this.ctx.scale(scale, scale);
-      this.ctx.fillText(face.emoji, 0, 0);
-      this.ctx.restore();
+      this.ctx.fillText(face.emoji, face.x, face.y);
     }
   }
 
