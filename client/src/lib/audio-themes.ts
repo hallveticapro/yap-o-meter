@@ -245,7 +245,7 @@ export class BouncingBallsTheme implements Theme {
     this.balls = [];
 
     for (let i = 0; i < 80; i++) {
-      const baseSize = Math.random() * 15 + 10;
+      const baseSize = Math.random() * 35 + 25; // Larger sizes to match emojis (25-60px)
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       const hue = Math.random() * 360;
       this.balls.push({
