@@ -168,27 +168,14 @@ abstract class BaseEmojiTheme implements Theme {
     // Draw background first (if theme provides one)
     this.drawBackground();
     
-    // Set font properties once for better performance
+    // Use simple text rendering for better performance
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
+    this.ctx.font = '20px Arial';
     
-    // Group faces by size to reduce font changes
-    const sizeGroups = new Map<number, Emojiface[]>();
     for (const face of this.faces) {
-      const size = Math.round(face.size);
-      if (!sizeGroups.has(size)) {
-        sizeGroups.set(size, []);
-      }
-      sizeGroups.get(size)!.push(face);
+      this.ctx.fillText(face.emoji, face.x, face.y);
     }
-    
-    // Draw each size group with minimal font changes
-    Array.from(sizeGroups.entries()).forEach(([size, faces]) => {
-      this.ctx.font = `${size}px Arial`;
-      for (const face of faces) {
-        this.ctx.fillText(face.emoji, face.x, face.y);
-      }
-    });
   }
 
   resize(width: number, height: number): void {
@@ -330,10 +317,10 @@ export class BouncingBallsTheme implements Theme {
   }
 }
 
-// Stars Theme - converted to emoji-based
+// Stars Theme - using simple text characters for performance
 export class StarsTheme extends BaseEmojiTheme {
   protected getEmojis(): string[] {
-    return ['⭐', '🌟', '✨', '💫', '🌠', '⚡', '🔥', '💎', '🎇', '🎆', '💥'];
+    return ['*', '+', '✦', '✧', '✪', '✫', '✬', '✭', '✮', '✯', '✰'];
   }
 }
 
