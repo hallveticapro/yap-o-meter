@@ -96,9 +96,7 @@ abstract class BaseEmojiTheme implements Theme {
 
     const emojis = this.getEmojis();
     for (let i = 0; i < 120; i++) {
-      // Use discrete size tiers for better performance - expanded range
-      const sizeOptions = [12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60];
-      const baseSize = sizeOptions[Math.floor(Math.random() * sizeOptions.length)];
+      const baseSize = Math.random() * 20 + 25;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
         x: x,
@@ -170,27 +168,19 @@ abstract class BaseEmojiTheme implements Theme {
     // Draw background first (if theme provides one)
     this.drawBackground();
     
-    // Group by size for efficient rendering
+    // Use single font size with canvas scaling for performance
+    this.ctx.font = '30px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
     
-    // Pre-group faces by size to minimize font changes
-    const sizeGroups: { [size: number]: Emojiface[] } = {};
     for (const face of this.faces) {
-      const size = face.size;
-      if (!sizeGroups[size]) {
-        sizeGroups[size] = [];
-      }
-      sizeGroups[size].push(face);
-    }
-    
-    // Render each size group together
-    for (const size in sizeGroups) {
-      this.ctx.font = `${size}px Arial`;
-      const faces = sizeGroups[size];
-      for (const face of faces) {
-        this.ctx.fillText(face.emoji, face.x, face.y);
-      }
+      this.ctx.save();
+      // Scale based on the face size for variety
+      const scale = face.size / 30; // Base font is 30px
+      this.ctx.translate(face.x, face.y);
+      this.ctx.scale(scale, scale);
+      this.ctx.fillText(face.emoji, 0, 0);
+      this.ctx.restore();
     }
   }
 
