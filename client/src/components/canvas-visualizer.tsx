@@ -20,9 +20,10 @@ interface CanvasVisualizerProps {
   threshold: number;
   showThreshold: boolean;
   onThresholdCrossed?: () => void;
+  isPaused?: boolean;
 }
 
-export default function CanvasVisualizer({ theme, volumeLevel, threshold, showThreshold, onThresholdCrossed }: CanvasVisualizerProps) {
+export default function CanvasVisualizer({ theme, volumeLevel, threshold, showThreshold, onThresholdCrossed, isPaused = false }: CanvasVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const themeInstanceRef = useRef<Theme | null>(null);
@@ -131,7 +132,10 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (themeInstanceRef.current) {
-        themeInstanceRef.current.update(volumeLevel, threshold);
+        // Only update physics when not paused
+        if (!isPaused) {
+          themeInstanceRef.current.update(volumeLevel, threshold);
+        }
         themeInstanceRef.current.draw();
       }
 
@@ -160,7 +164,7 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [volumeLevel, threshold, showThreshold]);
+  }, [volumeLevel, threshold, showThreshold, isPaused]);
 
   // Cleanup
   useEffect(() => {

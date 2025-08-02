@@ -136,6 +136,7 @@ export default function VoiceMeter() {
           threshold={settings.threshold}
           showThreshold={settings.showThreshold}
           onThresholdCrossed={handleThresholdCrossed}
+          isPaused={isPaused}
         />
 
         {/* Top Control Panel */}

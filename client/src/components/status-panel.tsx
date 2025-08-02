@@ -74,10 +74,7 @@ export default function StatusPanel({ volumeLevel, theme, isMicrophoneActive, is
         </Button>
       </div>
       
-      {/* Current Theme Display */}
-      <div className="text-xs text-slate-300">
-        <span className="text-cyan-400 font-medium">{theme}</span>
-      </div>
+
     </div>
   );
 }
