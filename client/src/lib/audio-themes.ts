@@ -380,8 +380,127 @@ export class BouncingBallsTheme implements Theme {
 
 // Stars Theme - using simple text characters for performance
 export class StarsTheme extends BaseEmojiTheme {
+  private backgroundStars: Array<{x: number, y: number, size: number, opacity: number}> = [];
+  private nebula: Array<{x: number, y: number, radius: number, opacity: number, color: string}> = [];
+  private planets: Array<{x: number, y: number, radius: number, color: string, ringColor?: string}> = [];
+
   protected getEmojis(): string[] {
-    return ['⭐', '✨', '🌟', '💫', '⚡', '✦', '✧', '🌠'];
+    // Removed black/dark stars, keeping bright and colorful ones
+    return ['⭐', '✨', '🌟', '💫', '⚡', '🌠'];
+  }
+
+  init(width: number, height: number): void {
+    super.init(width, height);
+    
+    // Initialize background stars
+    this.backgroundStars = [];
+    for (let i = 0; i < 200; i++) {
+      this.backgroundStars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: Math.random() * 2 + 0.5,
+        opacity: Math.random() * 0.8 + 0.2
+      });
+    }
+
+    // Initialize nebula clouds
+    this.nebula = [];
+    for (let i = 0; i < 8; i++) {
+      this.nebula.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 150 + 100,
+        opacity: Math.random() * 0.15 + 0.05,
+        color: ['#4A90E2', '#9013FE', '#E91E63', '#FF5722', '#00BCD4'][Math.floor(Math.random() * 5)]
+      });
+    }
+
+    // Initialize planets
+    this.planets = [];
+    const planetCount = Math.floor(Math.random() * 3) + 2; // 2-4 planets
+    for (let i = 0; i < planetCount; i++) {
+      const hasRings = Math.random() > 0.7;
+      this.planets.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 40 + 20,
+        color: ['#FF6B35', '#F7931E', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'][Math.floor(Math.random() * 6)],
+        ringColor: hasRings ? '#DDDDDD' : undefined
+      });
+    }
+  }
+
+  protected drawBackground(): void {
+    // Deep space gradient background
+    const gradient = this.ctx.createRadialGradient(
+      this.width / 2, this.height / 2, 0,
+      this.width / 2, this.height / 2, Math.max(this.width, this.height)
+    );
+    gradient.addColorStop(0, '#0a0a2e');
+    gradient.addColorStop(0.5, '#16213e');
+    gradient.addColorStop(1, '#0f3460');
+    
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+
+    // Draw nebula clouds
+    this.nebula.forEach(nebula => {
+      const nebulaGradient = this.ctx.createRadialGradient(
+        nebula.x, nebula.y, 0,
+        nebula.x, nebula.y, nebula.radius
+      );
+      nebulaGradient.addColorStop(0, nebula.color + '40');
+      nebulaGradient.addColorStop(0.5, nebula.color + '20');
+      nebulaGradient.addColorStop(1, 'transparent');
+      
+      this.ctx.fillStyle = nebulaGradient;
+      this.ctx.beginPath();
+      this.ctx.arc(nebula.x, nebula.y, nebula.radius, 0, Math.PI * 2);
+      this.ctx.fill();
+    });
+
+    // Draw background stars
+    this.backgroundStars.forEach(star => {
+      this.ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+      this.ctx.beginPath();
+      this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+      this.ctx.fill();
+    });
+
+    // Draw planets
+    this.planets.forEach(planet => {
+      // Planet shadow/glow effect
+      const planetGradient = this.ctx.createRadialGradient(
+        planet.x - planet.radius * 0.3, planet.y - planet.radius * 0.3, 0,
+        planet.x, planet.y, planet.radius
+      );
+      planetGradient.addColorStop(0, planet.color);
+      planetGradient.addColorStop(0.7, planet.color + 'CC');
+      planetGradient.addColorStop(1, planet.color + '66');
+      
+      this.ctx.fillStyle = planetGradient;
+      this.ctx.beginPath();
+      this.ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
+      this.ctx.fill();
+
+      // Draw rings if planet has them
+      if (planet.ringColor) {
+        this.ctx.strokeStyle = planet.ringColor + '80';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.ellipse(planet.x, planet.y, planet.radius * 1.5, planet.radius * 0.3, 0, 0, Math.PI * 2);
+        this.ctx.stroke();
+        
+        this.ctx.beginPath();
+        this.ctx.ellipse(planet.x, planet.y, planet.radius * 1.8, planet.radius * 0.4, 0, 0, Math.PI * 2);
+        this.ctx.stroke();
+      }
+    });
+  }
+
+  resize(width: number, height: number): void {
+    super.resize(width, height);
+    this.init(width, height); // Reinitialize background elements
   }
 }
 
