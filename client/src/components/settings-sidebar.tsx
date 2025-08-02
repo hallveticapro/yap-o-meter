@@ -92,35 +92,30 @@ export default function SettingsSidebar({
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2">
               <div className="p-2 space-y-3">
-                <div 
-                  className={`p-3 rounded-xl cursor-pointer transition-all ${
-                    settings.theme === 'balls' ? 'bg-cyan-500/30 border border-cyan-400' : 'glass-button hover:bg-white/25'
-                  }`}
-                  onClick={() => handleThemeChange('balls')}
-                >
-                  <div className="flex items-center space-x-3">
-                    <Circle className="w-5 h-5 text-cyan-400" />
-                    <div>
-                      <div className="font-medium text-white">Bouncing Balls</div>
-                      <div className="text-xs text-slate-300">Colorful balls that bounce with volume</div>
+                {themes.map((theme) => {
+                  const IconComponent = theme.icon;
+                  return (
+                    <div 
+                      key={theme.id}
+                      className={`p-3 rounded-xl cursor-pointer transition-all ${
+                        settings.theme === theme.id ? 'bg-cyan-500/30 border border-cyan-400' : 'glass-button hover:bg-white/25'
+                      }`}
+                      onClick={() => handleThemeChange(theme.id)}
+                    >
+                      <div className="flex items-center space-x-3">
+                        {theme.id === 'faces' ? (
+                          <div className="text-yellow-400 text-xl">😊</div>
+                        ) : (
+                          <IconComponent className={`w-5 h-5 ${theme.color}`} />
+                        )}
+                        <div>
+                          <div className="font-medium text-white">{theme.name}</div>
+                          <div className="text-xs text-slate-300">{theme.description}</div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                
-                <div 
-                  className={`p-3 rounded-xl cursor-pointer transition-all ${
-                    settings.theme === 'faces' ? 'bg-cyan-500/30 border border-cyan-400' : 'glass-button hover:bg-white/25'
-                  }`}
-                  onClick={() => handleThemeChange('faces')}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="text-yellow-400 text-xl">😊</div>
-                    <div>
-                      <div className="font-medium text-white">Emojis</div>
-                      <div className="text-xs text-slate-300">Fun emojis that react to sound</div>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </CollapsibleContent>
           </Collapsible>
