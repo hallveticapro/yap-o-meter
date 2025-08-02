@@ -95,8 +95,8 @@ abstract class BaseEmojiTheme implements Theme {
     this.faces = [];
 
     const emojis = this.getEmojis();
-    for (let i = 0; i < 80; i++) {
-      const baseSize = Math.random() * 20 + 25;
+    for (let i = 0; i < 120; i++) {
+      const baseSize = Math.random() * 30 + 15;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
         x: x,
@@ -168,12 +168,12 @@ abstract class BaseEmojiTheme implements Theme {
     // Draw background first (if theme provides one)
     this.drawBackground();
     
-    // Use simple text rendering for better performance
+    // Use dynamic font sizing for variety
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
-    this.ctx.font = '20px Arial';
     
     for (const face of this.faces) {
+      this.ctx.font = `${face.size}px Arial`;
       this.ctx.fillText(face.emoji, face.x, face.y);
     }
   }
