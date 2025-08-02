@@ -110,7 +110,7 @@ abstract class BaseEmojiTheme implements Theme {
         emoji: emojis[Math.floor(Math.random() * emojis.length)],
         crossedThreshold: false,
         rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.1,
+        rotationSpeed: (Math.random() - 0.5) * 0.005,
       });
     }
   }
@@ -161,14 +161,19 @@ abstract class BaseEmojiTheme implements Theme {
       face.vy *= 0.995;
       face.size = face.baseSize;
 
-      // Update rotation based on movement
+      // Update rotation based on movement - much slower and capped
       face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.01;
-      face.rotationSpeed *= 0.98; // Damping
+      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.0005;
+      face.rotationSpeed *= 0.95; // More damping
+      
+      // Cap rotation speed to prevent saw blade effect
+      const maxRotationSpeed = 0.02;
+      if (face.rotationSpeed > maxRotationSpeed) face.rotationSpeed = maxRotationSpeed;
+      if (face.rotationSpeed < -maxRotationSpeed) face.rotationSpeed = -maxRotationSpeed;
 
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.05;
+        face.rotationSpeed += (Math.random() - 0.5) * 0.002; // Much smaller rotation boost
       }
     }
   }
