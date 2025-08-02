@@ -75,6 +75,7 @@ abstract class BaseEmojiTheme implements Theme {
   protected height = 0;
   protected volumeLevel = 0;
   protected onThresholdCrossed?: () => void;
+  private emojiCache: Map<string, HTMLCanvasElement> = new Map();
 
   constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
     this.ctx = ctx;
@@ -89,6 +90,28 @@ abstract class BaseEmojiTheme implements Theme {
     // Default: no background
   }
 
+  // Pre-render emoji to offscreen canvas for caching
+  private getCachedEmoji(emoji: string, size: number): HTMLCanvasElement {
+    const key = `${emoji}_${Math.round(size)}`;
+    
+    if (!this.emojiCache.has(key)) {
+      const canvas = document.createElement('canvas');
+      const padding = 4;
+      canvas.width = size + padding * 2;
+      canvas.height = size + padding * 2;
+      const ctx = canvas.getContext('2d')!;
+      
+      ctx.font = `${size}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(emoji, canvas.width / 2, canvas.height / 2);
+      
+      this.emojiCache.set(key, canvas);
+    }
+    
+    return this.emojiCache.get(key)!;
+  }
+
   init(width: number, height: number): void {
     this.width = width;
     this.height = height;
@@ -96,7 +119,7 @@ abstract class BaseEmojiTheme implements Theme {
 
     const emojis = this.getEmojis();
     for (let i = 0; i < 120; i++) {
-      const baseSize = 28; // Smaller size for better performance
+      const baseSize = Math.random() * 30 + 30; // Dynamic size from 30-60px
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
         x: x,
@@ -168,13 +191,15 @@ abstract class BaseEmojiTheme implements Theme {
     // Draw background first (if theme provides one)
     this.drawBackground();
     
-    // Ultra-simple rendering - single font size, no transforms
-    this.ctx.font = '28px Arial';
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
-    
+    // Use cached emoji images for performance with dynamic sizing
     for (const face of this.faces) {
-      this.ctx.fillText(face.emoji, face.x, face.y);
+      const cachedEmoji = this.getCachedEmoji(face.emoji, face.size);
+      // Draw centered at particle position
+      this.ctx.drawImage(
+        cachedEmoji, 
+        face.x - face.size / 2 - 2, 
+        face.y - face.size / 2 - 2
+      );
     }
   }
 
@@ -197,6 +222,7 @@ abstract class BaseEmojiTheme implements Theme {
 
   dispose(): void {
     this.faces = [];
+    this.emojiCache.clear();
   }
 }
 
