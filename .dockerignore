@@ -64,6 +64,7 @@ replit.nix
 # Docker files
 Dockerfile
 .dockerignore
+docker-compose.yml
 
 # Attached assets (if they shouldn't be in production)
 attached_assets/

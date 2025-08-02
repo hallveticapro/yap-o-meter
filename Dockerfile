@@ -37,12 +37,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
 # Switch to non-root user
 USER nextjs
 
-# Expose port
-EXPOSE 5000
+# Expose port (configurable via PORT env var)
+EXPOSE $PORT
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:5000/ || exit 1
+  CMD curl -f http://localhost:${PORT:-5000}/ || exit 1
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]

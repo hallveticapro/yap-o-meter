@@ -73,12 +73,30 @@ The Voice Meter Application is designed specifically for educational environment
 
 ## Installation & Setup
 
+### Web Browser (Recommended)
 This application runs entirely in the browser with no installation required:
 
 1. Open the application in your web browser
 2. Grant microphone permissions when prompted
 3. Start using immediately with default settings
 4. Customize themes and settings as desired
+
+### Docker Deployment
+For self-hosting or production deployment:
+
+```bash
+# Pull and run the pre-built image
+docker run -p 5000:5000 ghcr.io/YOUR_USERNAME/voice-meter-app:main
+
+# Or build locally
+docker build -t voice-meter-app .
+docker run -p 5000:5000 voice-meter-app
+
+# With custom port
+docker run -p 8080:8080 -e PORT=8080 ghcr.io/YOUR_USERNAME/voice-meter-app:main
+```
+
+The application will be available at `http://localhost:5000` (or your configured port).
 
 ## Educational Benefits
 
