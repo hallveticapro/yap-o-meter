@@ -15,7 +15,7 @@ RUN npm ci
 COPY . .
 
 # Build the application
-RUN vite build && esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+RUN npx vite build && npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
 
 # Production stage
 FROM node:18-alpine AS production
