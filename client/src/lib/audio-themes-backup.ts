@@ -749,14 +749,8 @@ export class ScienceTheme implements Theme {
       face.vy *= 0.995;
       face.size = face.baseSize;
 
-      // Update rotation based on movement
-      face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.01;
-      face.rotationSpeed *= 0.98; // Damping
-
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.05;
       }
     }
   }
@@ -768,10 +762,7 @@ export class ScienceTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      // Apply rotation
-      this.ctx.translate(face.x, face.y);
-      this.ctx.rotate(face.rotation);
-      this.ctx.fillText(face.emoji, 0, 0);
+      this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
   }
@@ -830,8 +821,6 @@ export class MathTheme implements Theme {
         baseSize: baseSize,
         emoji: this.mathEmojis[Math.floor(Math.random() * this.mathEmojis.length)],
         crossedThreshold: false,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.1,
       });
     }
   }
@@ -882,14 +871,8 @@ export class MathTheme implements Theme {
       face.vy *= 0.995;
       face.size = face.baseSize;
 
-      // Update rotation based on movement
-      face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.01;
-      face.rotationSpeed *= 0.98; // Damping
-
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.05;
       }
     }
   }
@@ -901,10 +884,7 @@ export class MathTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      // Apply rotation
-      this.ctx.translate(face.x, face.y);
-      this.ctx.rotate(face.rotation);
-      this.ctx.fillText(face.emoji, 0, 0);
+      this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
   }
@@ -963,8 +943,6 @@ export class SpringTheme implements Theme {
         baseSize: baseSize,
         emoji: this.springEmojis[Math.floor(Math.random() * this.springEmojis.length)],
         crossedThreshold: false,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.1,
       });
     }
   }
@@ -1015,14 +993,8 @@ export class SpringTheme implements Theme {
       face.vy *= 0.995;
       face.size = face.baseSize;
 
-      // Update rotation based on movement
-      face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.01;
-      face.rotationSpeed *= 0.98; // Damping
-
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.05;
       }
     }
   }
@@ -1041,10 +1013,7 @@ export class SpringTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      // Apply rotation
-      this.ctx.translate(face.x, face.y);
-      this.ctx.rotate(face.rotation);
-      this.ctx.fillText(face.emoji, 0, 0);
+      this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
   }
@@ -1103,8 +1072,6 @@ export class SummerTheme implements Theme {
         baseSize: baseSize,
         emoji: this.summerEmojis[Math.floor(Math.random() * this.summerEmojis.length)],
         crossedThreshold: false,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.1,
       });
     }
   }
@@ -1155,14 +1122,8 @@ export class SummerTheme implements Theme {
       face.vy *= 0.995;
       face.size = face.baseSize;
 
-      // Update rotation based on movement
-      face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.01;
-      face.rotationSpeed *= 0.98; // Damping
-
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.05;
       }
     }
   }
@@ -1181,10 +1142,7 @@ export class SummerTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      // Apply rotation
-      this.ctx.translate(face.x, face.y);
-      this.ctx.rotate(face.rotation);
-      this.ctx.fillText(face.emoji, 0, 0);
+      this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
   }
@@ -1243,8 +1201,6 @@ export class AutumnTheme implements Theme {
         baseSize: baseSize,
         emoji: this.autumnEmojis[Math.floor(Math.random() * this.autumnEmojis.length)],
         crossedThreshold: false,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.1,
       });
     }
   }
@@ -1295,14 +1251,8 @@ export class AutumnTheme implements Theme {
       face.vy *= 0.995;
       face.size = face.baseSize;
 
-      // Update rotation based on movement
-      face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.01;
-      face.rotationSpeed *= 0.98; // Damping
-
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.05;
       }
     }
   }
@@ -1321,10 +1271,7 @@ export class AutumnTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      // Apply rotation
-      this.ctx.translate(face.x, face.y);
-      this.ctx.rotate(face.rotation);
-      this.ctx.fillText(face.emoji, 0, 0);
+      this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
   }
@@ -1383,8 +1330,6 @@ export class WinterTheme implements Theme {
         baseSize: baseSize,
         emoji: this.winterEmojis[Math.floor(Math.random() * this.winterEmojis.length)],
         crossedThreshold: false,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.1,
       });
     }
   }
@@ -1435,14 +1380,8 @@ export class WinterTheme implements Theme {
       face.vy *= 0.995;
       face.size = face.baseSize;
 
-      // Update rotation based on movement
-      face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.01;
-      face.rotationSpeed *= 0.98; // Damping
-
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.05;
       }
     }
   }
@@ -1461,10 +1400,7 @@ export class WinterTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      // Apply rotation
-      this.ctx.translate(face.x, face.y);
-      this.ctx.rotate(face.rotation);
-      this.ctx.fillText(face.emoji, 0, 0);
+      this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
   }
@@ -1524,8 +1460,6 @@ export class HappyFacesTheme implements Theme {
         baseSize: baseSize,
         emoji: this.emojis[Math.floor(Math.random() * this.emojis.length)],
         crossedThreshold: false,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.1,
       });
     }
   }
@@ -1601,15 +1535,9 @@ export class HappyFacesTheme implements Theme {
       // Keep consistent size for better performance
       face.size = face.baseSize;
 
-      // Update rotation based on movement
-      face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.01;
-      face.rotationSpeed *= 0.98; // Damping
-
       // Add random movement when volume is high
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.05;
       }
     }
   }
@@ -1621,10 +1549,7 @@ export class HappyFacesTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      // Apply rotation
-      this.ctx.translate(face.x, face.y);
-      this.ctx.rotate(face.rotation);
-      this.ctx.fillText(face.emoji, 0, 0);
+      this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
   }
