@@ -6,6 +6,15 @@ A dynamic classroom voice monitoring application that provides real-time visual 
 
 The Yap-o-Meter is designed specifically for educational environments where managing classroom noise levels is essential for learning. By providing immediate visual feedback through fun, animated themes, it encourages students to be mindful of their volume levels while making the process engaging and interactive.
 
+## ✨ Recent Updates (August 2025)
+
+- **Performance Breakthrough**: Canvas emoji caching system enables smooth dynamic sizing (30-60px) without lag
+- **Enhanced Stars Theme**: Deep space background with nebula, planets, and improved star visibility
+- **Explosive Interactions**: Click anywhere to launch particles with smart threshold alert prevention  
+- **Professional Branding**: Complete SEO setup with favicons, social cards, and metadata
+- **Docker Deployment**: Production-ready containerization with GitHub Actions CI/CD
+- **Open Source**: Full source code available with proper attribution and social links
+
 ## Features
 
 ### 🎨 Visual Themes
@@ -86,17 +95,29 @@ For self-hosting or production deployment:
 
 ```bash
 # Pull and run the pre-built image
-docker run -p 5000:5000 ghcr.io/YOUR_USERNAME/yap-o-meter:main
+docker run -p 5000:5000 ghcr.io/hallveticapro/yap-o-meter:main
 
 # Or build locally
+git clone https://github.com/hallveticapro/yap-o-meter.git
+cd yap-o-meter
 docker build -t yap-o-meter .
 docker run -p 5000:5000 yap-o-meter
 
 # With custom port
-docker run -p 8080:8080 -e PORT=8080 ghcr.io/YOUR_USERNAME/yap-o-meter:main
+docker run -p 8080:8080 -e PORT=8080 ghcr.io/hallveticapro/yap-o-meter:main
+
+# Using Docker Compose
+PORT=5000 docker-compose up -d
 ```
 
 The application will be available at `http://localhost:5000` (or your configured port).
+
+#### Deployment Features
+- **Multi-platform builds** (amd64, arm64) via GitHub Actions
+- **Automatic tagging** with `latest` and branch names
+- **Health checks** built into container
+- **Non-root security** with proper signal handling
+- **Production optimization** with separate build and runtime stages
 
 ## Educational Benefits
 
@@ -107,8 +128,53 @@ The application will be available at `http://localhost:5000` (or your configured
 - **STEM Integration**: Science and Math themes reinforce subject matter
 - **Seasonal Engagement**: Holiday themes maintain year-round interest
 
+## Technical Architecture
+
+### Frontend
+- **React 18** with TypeScript for type safety
+- **Vite** for fast development and optimized builds
+- **Tailwind CSS** with shadcn/ui component library
+- **Web Audio API** for real-time microphone processing
+- **HTML5 Canvas** for smooth 60fps animations
+
+### Backend  
+- **Express.js** server with TypeScript
+- **PostgreSQL** database with Drizzle ORM
+- **Session management** with secure storage
+- **RESTful API** design patterns
+
+### Performance Optimizations
+- **Canvas emoji caching** for smooth large-scale particle rendering
+- **RequestAnimationFrame** for consistent 60fps animations
+- **Efficient particle physics** with proper collision detection
+- **Memory management** with particle cleanup and recycling
+
+### Deployment & DevOps
+- **Docker containerization** with multi-stage builds
+- **GitHub Actions** for automated CI/CD
+- **Multi-platform support** (amd64, arm64)
+- **Production optimizations** with separate dev/prod servers
+- **Security hardening** with non-root containers and health checks
+
+### Recent Technical Challenges & Solutions
+
+#### Docker Production Build Issues (August 2025)
+**Challenge**: Vite development server caused runtime failures in Docker production builds due to missing dev dependencies.
+
+**Solution**: Created separate production server (`production.ts`) that serves static files without importing Vite, while maintaining development server (`index.ts`) with hot reload for local development.
+
+#### Canvas Performance Optimization
+**Challenge**: Rendering 120+ emoji particles at 60fps with dynamic sizing caused significant lag and memory issues.
+
+**Solution**: Implemented canvas-based emoji caching system that pre-renders emojis at different sizes, eliminating repeated drawing operations and enabling smooth animations.
+
+#### Stars Theme Visibility
+**Challenge**: Black star particles were nearly invisible against dark space backgrounds, reducing visual impact.
+
+**Solution**: Enhanced space theme with colorful nebula effects, planets with rings, and improved star contrast while maintaining authentic deep space aesthetic.
+
 ---
 
 **Made for educators with love** ❤️
 
-*This application was built completely using Replit AI*
+*Created by Andrew Hall using Replit AI*

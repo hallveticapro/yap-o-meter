@@ -121,3 +121,4 @@ Preferred communication style: Simple, everyday language.
 - **Docker Deployment**: Created simplified Docker setup for GitHub Container Registry deployment
 - **SEO & Metadata**: Added comprehensive meta tags, favicon system, and Open Graph/Twitter cards for better discoverability
 - **GitHub Integration**: Added GitHub repository link in settings sidebar with proper attribution to Andrew Hall
+- **Social Media Attribution**: Added Threads, Instagram, and TikTok links (@hallveticapro) in settings sidebar
