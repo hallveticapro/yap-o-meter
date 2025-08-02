@@ -17,17 +17,17 @@ interface SettingsSidebarProps {
 }
 
 const themes = [
-  { id: "balls", name: "Bouncing Balls", icon: Circle, color: "text-cyan-400", description: "Colorful balls that bounce with volume" },
-  { id: "faces", name: "Emojis", icon: Sparkles, color: "text-yellow-400", description: "Fun emojis bouncing around" },
-  { id: "stars", name: "Stars", icon: Sparkles, color: "text-purple-400", description: "Twinkling stars that dance to sound" },
-  { id: "hearts", name: "Hearts", icon: Sparkles, color: "text-pink-400", description: "Loving hearts bouncing with joy" },
-  { id: "geometric", name: "Geometric Shapes", icon: Circle, color: "text-green-400", description: "Various geometric shapes in motion" },
-  { id: "science", name: "Science Lab", icon: Sparkles, color: "text-blue-400", description: "Science emojis for STEM learning" },
-  { id: "math", name: "Math Class", icon: Sparkles, color: "text-orange-400", description: "Math symbols and numbers" },
-  { id: "spring", name: "Spring Garden", icon: Sparkles, color: "text-green-500", description: "Flowers and spring elements" },
-  { id: "summer", name: "Summer Beach", icon: Sparkles, color: "text-orange-500", description: "Sun, waves, and summer fun" },
-  { id: "autumn", name: "Autumn Leaves", icon: Sparkles, color: "text-amber-600", description: "Fall leaves and harvest themes" },
-  { id: "winter", name: "Winter Wonderland", icon: Sparkles, color: "text-blue-300", description: "Snowflakes and winter magic" },
+  { id: "balls", name: "Bouncing Balls", icon: Circle, emoji: "⚪", color: "text-cyan-400", description: "Colorful balls that bounce with volume" },
+  { id: "faces", name: "Emojis", icon: Sparkles, emoji: "😊", color: "text-yellow-400", description: "Fun emojis bouncing around" },
+  { id: "stars", name: "Stars", icon: Sparkles, emoji: "⭐", color: "text-purple-400", description: "Twinkling stars that dance to sound" },
+  { id: "hearts", name: "Hearts", icon: Sparkles, emoji: "❤️", color: "text-pink-400", description: "Loving hearts bouncing with joy" },
+  { id: "geometric", name: "Geometric Shapes", icon: Circle, emoji: "🔵", color: "text-green-400", description: "Various geometric shapes in motion" },
+  { id: "science", name: "Science Lab", icon: Sparkles, emoji: "🧪", color: "text-blue-400", description: "Science emojis for STEM learning" },
+  { id: "math", name: "Math Class", icon: Sparkles, emoji: "🔢", color: "text-orange-400", description: "Math symbols and numbers" },
+  { id: "spring", name: "Spring Garden", icon: Sparkles, emoji: "🌸", color: "text-green-500", description: "Flowers and spring elements" },
+  { id: "summer", name: "Summer Beach", icon: Sparkles, emoji: "☀️", color: "text-orange-500", description: "Sun, waves, and summer fun" },
+  { id: "autumn", name: "Autumn Leaves", icon: Sparkles, emoji: "🍂", color: "text-amber-600", description: "Fall leaves and harvest themes" },
+  { id: "winter", name: "Winter Wonderland", icon: Sparkles, emoji: "❄️", color: "text-blue-300", description: "Snowflakes and winter magic" },
 ];
 
 export default function SettingsSidebar({ 
@@ -103,11 +103,7 @@ export default function SettingsSidebar({
                       onClick={() => handleThemeChange(theme.id)}
                     >
                       <div className="flex items-center space-x-3">
-                        {theme.id === 'faces' ? (
-                          <div className="text-yellow-400 text-xl">😊</div>
-                        ) : (
-                          <IconComponent className={`w-5 h-5 ${theme.color}`} />
-                        )}
+                        <div className="text-xl">{theme.emoji}</div>
                         <div>
                           <div className="font-medium text-white">{theme.name}</div>
                           <div className="text-xs text-slate-300">{theme.description}</div>

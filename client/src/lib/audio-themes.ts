@@ -96,7 +96,7 @@ abstract class BaseEmojiTheme implements Theme {
 
     const emojis = this.getEmojis();
     for (let i = 0; i < 120; i++) {
-      const baseSize = 32; // Fixed size for performance
+      const baseSize = 48; // Fixed size for performance
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
         x: x,
@@ -169,7 +169,7 @@ abstract class BaseEmojiTheme implements Theme {
     this.drawBackground();
     
     // Ultra-simple rendering - single font size, no transforms
-    this.ctx.font = '32px Arial';
+    this.ctx.font = '48px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
     
@@ -320,7 +320,7 @@ export class BouncingBallsTheme implements Theme {
 // Stars Theme - using simple text characters for performance
 export class StarsTheme extends BaseEmojiTheme {
   protected getEmojis(): string[] {
-    return ['*', '+', '✦', '✧', '✪', '✫', '✬', '✭', '✮', '✯', '✰'];
+    return ['⭐', '✨', '🌟', '💫', '⚡', '✦', '✧', '🌠'];
   }
 }
 
@@ -360,8 +360,8 @@ export class SpringTheme extends BaseEmojiTheme {
 
   protected drawBackground(): void {
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(144, 238, 144, 0.1)');
-    gradient.addColorStop(1, 'rgba(255, 182, 193, 0.1)');
+    gradient.addColorStop(0, 'rgba(144, 238, 144, 0.3)');
+    gradient.addColorStop(1, 'rgba(255, 182, 193, 0.3)');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
@@ -375,8 +375,8 @@ export class SummerTheme extends BaseEmojiTheme {
 
   protected drawBackground(): void {
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(255, 220, 0, 0.1)');
-    gradient.addColorStop(1, 'rgba(255, 69, 0, 0.1)');
+    gradient.addColorStop(0, 'rgba(255, 220, 0, 0.3)');
+    gradient.addColorStop(1, 'rgba(255, 69, 0, 0.3)');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
@@ -390,8 +390,8 @@ export class AutumnTheme extends BaseEmojiTheme {
 
   protected drawBackground(): void {
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(255, 165, 0, 0.1)');
-    gradient.addColorStop(1, 'rgba(139, 69, 19, 0.1)');
+    gradient.addColorStop(0, 'rgba(255, 165, 0, 0.3)');
+    gradient.addColorStop(1, 'rgba(139, 69, 19, 0.3)');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
@@ -405,8 +405,8 @@ export class WinterTheme extends BaseEmojiTheme {
 
   protected drawBackground(): void {
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(176, 224, 230, 0.1)');
-    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.1)');
+    gradient.addColorStop(0, 'rgba(176, 224, 230, 0.3)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.3)');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
