@@ -122,3 +122,5 @@ Preferred communication style: Simple, everyday language.
 - **SEO & Metadata**: Added comprehensive meta tags, favicon system, and Open Graph/Twitter cards for better discoverability
 - **GitHub Integration**: Added GitHub repository link in settings sidebar with proper attribution to Andrew Hall
 - **Social Media Attribution**: Added Threads, Instagram, and TikTok links (@hallveticapro) in settings sidebar
+- **Reading Theme**: New educational theme with books, pencils, teachers, and library elements for literacy classes
+- **Theme Organization**: Implemented nested theme groups (General, School, Seasons) for better categorization

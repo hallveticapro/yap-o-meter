@@ -14,22 +14,30 @@ The Yap-o-Meter is designed specifically for educational environments where mana
 - **Professional Branding**: Complete SEO setup with favicons, social cards, and metadata
 - **Docker Deployment**: Production-ready containerization with GitHub Actions CI/CD
 - **Open Source**: Full source code available with proper attribution and social links
+- **Reading Theme**: New educational theme with books, pencils, and library emojis
+- **Organized Theme Groups**: Nested categories for School and Seasons themes
 
 ## Features
 
 ### 🎨 Visual Themes
+
+#### General Themes
 - **Bouncing Balls**: Colorful geometric balls that bounce with increased volume
 - **Emojis**: Fun emoji particles that dance and move with sound
 - **Stars**: Twinkling star emojis that respond to audio levels
 - **Hearts**: Loving heart emojis bouncing with joy
 - **Geometric Shapes**: Various colorful geometric patterns in motion
+
+#### School Themes
 - **Science Lab**: Science-themed emojis perfect for STEM classrooms
 - **Math Class**: Mathematical symbols and numbers for math lessons
-- **Seasonal Themes**:
-  - **Spring Garden**: Flowers and spring elements with green/pink gradients
-  - **Summer Beach**: Sun and beach vibes with gold/magenta gradients
-  - **Autumn Leaves**: Fall colors with crimson/brown gradients
-  - **Winter Wonderland**: Ice and snow with blue/purple gradients
+- **Reading Time**: Books, pencils, teachers, and library learning elements
+
+#### Seasonal Themes
+- **Spring Garden**: Flowers and spring elements with green/pink gradients
+- **Summer Beach**: Sun and beach vibes with gold/magenta gradients
+- **Autumn Leaves**: Fall colors with crimson/brown gradients
+- **Winter Wonderland**: Ice and snow with blue/purple gradients
 
 ### 🔊 Audio Features
 - **Real-time Audio Processing**: Uses Web Audio API for instant volume detection
@@ -174,6 +182,14 @@ The application will be available at `http://localhost:5000` (or your configured
 **Solution**: Enhanced space theme with colorful nebula effects, planets with rings, and improved star contrast while maintaining authentic deep space aesthetic.
 
 ---
+
+## Connect
+
+Follow Andrew Hall for updates and more educational tools:
+- **GitHub**: [hallveticapro/yap-o-meter](https://github.com/hallveticapro/yap-o-meter)
+- **Threads**: [@hallveticapro](https://www.threads.net/@hallveticapro)
+- **Instagram**: [@hallveticapro](https://www.instagram.com/hallveticapro)
+- **TikTok**: [@hallveticapro](https://www.tiktok.com/@hallveticapro)
 
 **Made for educators with love** ❤️
 

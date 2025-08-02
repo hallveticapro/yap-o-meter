@@ -7,6 +7,7 @@ import {
   GeometricTheme,
   ScienceTheme,
   MathTheme,
+  ReadingTheme,
   SpringTheme,
   SummerTheme,
   AutumnTheme,
@@ -60,6 +61,9 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
         break;
       case 'math':
         themeInstanceRef.current = new MathTheme(ctx, onThresholdCrossed);
+        break;
+      case 'reading':
+        themeInstanceRef.current = new ReadingTheme(ctx, onThresholdCrossed);
         break;
       case 'spring':
         themeInstanceRef.current = new SpringTheme(ctx, onThresholdCrossed);

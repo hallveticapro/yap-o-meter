@@ -16,18 +16,34 @@ interface SettingsSidebarProps {
   isCalibrating: boolean;
 }
 
-const themes = [
-  { id: "balls", name: "Bouncing Balls", icon: Circle, emoji: "⚪", color: "text-cyan-400", description: "Colorful balls that bounce with volume" },
-  { id: "faces", name: "Emojis", icon: Sparkles, emoji: "😊", color: "text-yellow-400", description: "Fun emojis bouncing around" },
-  { id: "stars", name: "Stars", icon: Sparkles, emoji: "⭐", color: "text-purple-400", description: "Twinkling stars that dance to sound" },
-  { id: "hearts", name: "Hearts", icon: Sparkles, emoji: "❤️", color: "text-pink-400", description: "Loving hearts bouncing with joy" },
-  { id: "geometric", name: "Geometric Shapes", icon: Circle, emoji: "🔵", color: "text-green-400", description: "Various geometric shapes in motion" },
-  { id: "science", name: "Science Lab", icon: Sparkles, emoji: "🧪", color: "text-blue-400", description: "Science emojis for STEM learning" },
-  { id: "math", name: "Math Class", icon: Sparkles, emoji: "🔢", color: "text-orange-400", description: "Math symbols and numbers" },
-  { id: "spring", name: "Spring Garden", icon: Sparkles, emoji: "🌸", color: "text-green-500", description: "Flowers and spring elements" },
-  { id: "summer", name: "Summer Beach", icon: Sparkles, emoji: "☀️", color: "text-orange-500", description: "Sun, waves, and summer fun" },
-  { id: "autumn", name: "Autumn Leaves", icon: Sparkles, emoji: "🍂", color: "text-amber-600", description: "Fall leaves and harvest themes" },
-  { id: "winter", name: "Winter Wonderland", icon: Sparkles, emoji: "❄️", color: "text-blue-300", description: "Snowflakes and winter magic" },
+const themeGroups = [
+  {
+    name: "General",
+    themes: [
+      { id: "balls", name: "Bouncing Balls", icon: Circle, emoji: "⚪", color: "text-cyan-400", description: "Colorful balls that bounce with volume" },
+      { id: "faces", name: "Emojis", icon: Sparkles, emoji: "😊", color: "text-yellow-400", description: "Fun emojis bouncing around" },
+      { id: "stars", name: "Stars", icon: Sparkles, emoji: "⭐", color: "text-purple-400", description: "Twinkling stars that dance to sound" },
+      { id: "hearts", name: "Hearts", icon: Sparkles, emoji: "❤️", color: "text-pink-400", description: "Loving hearts bouncing with joy" },
+      { id: "geometric", name: "Geometric Shapes", icon: Circle, emoji: "🔵", color: "text-green-400", description: "Various geometric shapes in motion" },
+    ]
+  },
+  {
+    name: "School",
+    themes: [
+      { id: "science", name: "Science Lab", icon: Sparkles, emoji: "🧪", color: "text-blue-400", description: "Science emojis for STEM learning" },
+      { id: "math", name: "Math Class", icon: Sparkles, emoji: "🔢", color: "text-orange-400", description: "Math symbols and numbers" },
+      { id: "reading", name: "Reading Time", icon: Sparkles, emoji: "📚", color: "text-indigo-400", description: "Books, pencils, and library learning" },
+    ]
+  },
+  {
+    name: "Seasons",
+    themes: [
+      { id: "spring", name: "Spring Garden", icon: Sparkles, emoji: "🌸", color: "text-green-500", description: "Flowers and spring elements" },
+      { id: "summer", name: "Summer Beach", icon: Sparkles, emoji: "☀️", color: "text-orange-500", description: "Sun, waves, and summer fun" },
+      { id: "autumn", name: "Autumn Leaves", icon: Sparkles, emoji: "🍂", color: "text-amber-600", description: "Fall leaves and harvest themes" },
+      { id: "winter", name: "Winter Wonderland", icon: Sparkles, emoji: "❄️", color: "text-blue-300", description: "Snowflakes and winter magic" },
+    ]
+  }
 ];
 
 export default function SettingsSidebar({ 
@@ -94,27 +110,31 @@ export default function SettingsSidebar({
               <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${openSections.theme ? 'rotate-180' : ''}`} />
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2">
-              <div className="p-2 space-y-3">
-                {themes.map((theme) => {
-                  const IconComponent = theme.icon;
-                  return (
-                    <div 
-                      key={theme.id}
-                      className={`p-3 rounded-xl cursor-pointer transition-all ${
-                        settings.theme === theme.id ? 'bg-cyan-500/30 border border-cyan-400' : 'glass-button hover:bg-white/25'
-                      }`}
-                      onClick={() => handleThemeChange(theme.id)}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="text-xl">{theme.emoji}</div>
-                        <div>
-                          <div className="font-medium text-white">{theme.name}</div>
-                          <div className="text-xs text-slate-300">{theme.description}</div>
+              <div className="p-2 space-y-4">
+                {themeGroups.map((group, groupIndex) => (
+                  <div key={group.name} className={groupIndex > 0 ? "border-t border-slate-600/30 pt-4" : ""}>
+                    <h4 className="text-sm font-semibold text-slate-300 mb-2 px-2">{group.name}</h4>
+                    <div className="space-y-2">
+                      {group.themes.map((theme) => (
+                        <div 
+                          key={theme.id}
+                          className={`p-3 rounded-xl cursor-pointer transition-all ${
+                            settings.theme === theme.id ? 'bg-cyan-500/30 border border-cyan-400' : 'glass-button hover:bg-white/25'
+                          }`}
+                          onClick={() => handleThemeChange(theme.id)}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className="text-lg">{theme.emoji}</div>
+                            <div>
+                              <div className="font-medium text-white text-sm">{theme.name}</div>
+                              <div className="text-xs text-slate-300">{theme.description}</div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </CollapsibleContent>
           </Collapsible>
@@ -274,9 +294,10 @@ export default function SettingsSidebar({
                 className="text-slate-400 hover:text-white transition-colors duration-200 glass-button rounded-lg p-2"
                 title="Follow @hallveticapro on Threads"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.5 12.5c0-3.086.85-5.94 2.495-8.991C5.845 1.205 8.598.024 12.179 0h.014c3.581.024 6.334 1.205 8.184 3.509C21.65 5.56 22.5 8.414 22.5 11.5c0 3.086-.85 5.94-2.495 8.991C18.155 22.795 15.402 23.976 11.821 24h-.007zm0-2.003c3.003-.02 5.32-1.013 6.856-2.954 1.466-1.855 2.208-4.326 2.208-7.043 0-2.717-.742-5.188-2.208-7.043C17.506 3.017 15.189 2.024 12.186 2.003c-3.003.02-5.32 1.013-6.856 2.954C3.864 6.812 3.122 9.283 3.122 12c0 2.717.742 5.188 2.208 7.043 1.536 1.941 3.853 2.934 6.856 2.954z"/>
-                  <path d="M17.23 7.4c-1.235-1.069-2.889-1.603-4.914-1.603-2.025 0-3.679.534-4.914 1.603C6.239 8.655 5.617 10.35 5.617 12.5s.622 3.845 1.785 5.1c1.235 1.069 2.889 1.603 4.914 1.603 2.025 0 3.679-.534 4.914-1.603 1.163-1.255 1.785-2.95 1.785-5.1s-.622-3.845-1.785-5.1zm-9.59 10.84c-1.017-.88-1.538-2.331-1.538-4.24 0-1.909.521-3.36 1.538-4.24.896-.775 2.138-1.175 3.676-1.175 1.538 0 2.78.4 3.676 1.175 1.017.88 1.538 2.331 1.538 4.24 0 1.909-.521 3.36-1.538 4.24-.896.775-2.138 1.175-3.676 1.175-1.538 0-2.78-.4-3.676-1.175z"/>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 192 192">
+                  <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.5619 44.745C97.4484 44.7443 97.3355 44.7443 97.222 44.7443C82.2364 44.7443 69.7731 51.1409 62.102 62.7807L75.881 72.2328C81.6116 63.5383 90.6052 61.6848 97.35 61.6848C97.3933 61.6848 97.4358 61.6848 97.4358 61.6848C105.689 61.746 118.331 63.7199 123.422 77.7956C118.853 76.498 113.546 75.40 107.394 75.40C96.1931 75.40 89.9544 79.0297 89.9544 79.0297C89.9544 79.0297 86.6343 80.9101 86.6343 86.3018C86.6343 91.6936 89.9544 93.574 89.9544 93.574C89.9544 93.574 96.1931 97.2037 107.394 97.2037C118.595 97.2037 124.834 93.574 124.834 93.574C124.834 93.574 128.154 91.6936 128.154 86.3018C128.154 85.0351 127.827 83.9841 127.827 83.9841L141.537 88.9883Z"/>
+                  <path d="M96.8826 147.644C113.132 147.644 126.089 134.687 126.089 118.438C126.089 102.188 113.132 89.2314 96.8826 89.2314C80.6332 89.2314 67.6766 102.188 67.6766 118.438C67.6766 134.687 80.6332 147.644 96.8826 147.644ZM96.8826 103.864C105.016 103.864 111.456 110.305 111.456 118.438C111.456 126.571 105.016 133.011 96.8826 133.011C88.7494 133.011 82.3096 126.571 82.3096 118.438C82.3096 110.305 88.7494 103.864 96.8826 103.864Z"/>
+                  <path fillRule="evenodd" clipRule="evenodd" d="M48.854 0C21.839 0 0 21.839 0 48.854V143.146C0 170.161 21.839 192 48.854 192H143.146C170.161 192 192 170.161 192 143.146V48.854C192 21.839 170.161 0 143.146 0H48.854ZM25.708 48.854C25.708 36.0532 36.0532 25.708 48.854 25.708H143.146C155.947 25.708 166.292 36.0532 166.292 48.854V143.146C166.292 155.947 155.947 166.292 143.146 166.292H48.854C36.0532 166.292 25.708 155.947 25.708 143.146V48.854Z"/>
                 </svg>
               </a>
 

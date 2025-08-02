@@ -532,6 +532,13 @@ export class MathTheme extends BaseEmojiTheme {
   }
 }
 
+// Reading/Library Theme
+export class ReadingTheme extends BaseEmojiTheme {
+  protected getEmojis(): string[] {
+    return ['📚', '📖', '📝', '✏️', '✒️', '🖊️', '📄', '📃', '📜', '🏛️', '🤓', '👩‍🏫', '👨‍🏫', '🎓', '📓', '📔', '📕', '📗', '📘', '📙', '📰', '🗞️', '💡', '🧠', '🔍'];
+  }
+}
+
 // Spring Theme
 export class SpringTheme extends BaseEmojiTheme {
   protected getEmojis(): string[] {
