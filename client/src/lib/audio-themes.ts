@@ -1553,12 +1553,6 @@ export class HappyFacesTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      // Add glow effect based on volume
-      if (this.volumeLevel > 10) {
-        this.ctx.shadowColor = '#ffeb3b';
-        this.ctx.shadowBlur = this.volumeLevel / 3;
-      }
-      
       this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
