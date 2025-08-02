@@ -65,8 +65,6 @@ interface Emojiface {
   baseSize: number;
   crossedThreshold: boolean;
   emoji: string;
-  rotation: number;
-  rotationSpeed: number;
 }
 
 // Base class for all emoji themes with shared physics
@@ -109,8 +107,7 @@ abstract class BaseEmojiTheme implements Theme {
         baseSize: baseSize,
         emoji: emojis[Math.floor(Math.random() * emojis.length)],
         crossedThreshold: false,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.005,
+
       });
     }
   }
@@ -161,19 +158,8 @@ abstract class BaseEmojiTheme implements Theme {
       face.vy *= 0.995;
       face.size = face.baseSize;
 
-      // Update rotation based on movement - much slower and capped
-      face.rotation += face.rotationSpeed;
-      face.rotationSpeed += (Math.abs(face.vx) + Math.abs(face.vy)) * 0.0005;
-      face.rotationSpeed *= 0.95; // More damping
-      
-      // Cap rotation speed to prevent saw blade effect
-      const maxRotationSpeed = 0.02;
-      if (face.rotationSpeed > maxRotationSpeed) face.rotationSpeed = maxRotationSpeed;
-      if (face.rotationSpeed < -maxRotationSpeed) face.rotationSpeed = -maxRotationSpeed;
-
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        face.rotationSpeed += (Math.random() - 0.5) * 0.002; // Much smaller rotation boost
       }
     }
   }
@@ -182,18 +168,14 @@ abstract class BaseEmojiTheme implements Theme {
     // Draw background first (if theme provides one)
     this.drawBackground();
     
-    // Draw all emojis with rotation
+    // Draw all emojis without rotation for better performance
+    this.ctx.font = `25px Arial`;
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    
     for (const face of this.faces) {
-      this.ctx.save();
       this.ctx.font = `${face.size}px Arial`;
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'middle';
-      
-      // Apply rotation
-      this.ctx.translate(face.x, face.y);
-      this.ctx.rotate(face.rotation);
-      this.ctx.fillText(face.emoji, 0, 0);
-      this.ctx.restore();
+      this.ctx.fillText(face.emoji, face.x, face.y);
     }
   }
 
@@ -336,483 +318,24 @@ export class BouncingBallsTheme implements Theme {
   }
 }
 
-// Stars Theme
-export class StarsTheme implements Theme {
-  private ctx: CanvasRenderingContext2D;
-  private stars: Star[] = [];
-  private width = 0;
-  private height = 0;
-  private onThresholdCrossed?: () => void;
-
-  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
-    this.ctx = ctx;
-    this.onThresholdCrossed = onThresholdCrossed;
-  }
-
-  init(width: number, height: number): void {
-    this.width = width;
-    this.height = height;
-    this.stars = [];
-
-    for (let i = 0; i < 80; i++) {
-      const baseSize = Math.random() * 20 + 15;
-      const x = Math.random() * (width - baseSize) + baseSize / 2;
-      this.stars.push({
-        x: x,
-        y: Math.random() * (height * 0.6) + baseSize / 2,
-        vx: (Math.random() - 0.5) * 2,
-        vy: Math.random() * 2,
-        size: baseSize,
-        baseSize: baseSize,
-        opacity: Math.random() * 0.5 + 0.5,
-        crossedThreshold: false,
-      });
-    }
-  }
-
-  update(volumeLevel: number, threshold: number = 70): void {
-    const thresholdY = (this.height * (100 - threshold)) / 100;
-
-    for (const star of this.stars) {
-      const prevY = star.y;
-      star.x += star.vx;
-      star.y += star.vy;
-
-      if (prevY >= thresholdY && star.y < thresholdY && !star.crossedThreshold) {
-        star.crossedThreshold = true;
-        if (this.onThresholdCrossed) this.onThresholdCrossed();
-      } else if (star.y >= thresholdY) {
-        star.crossedThreshold = false;
-      }
-
-      if (star.x - star.size/2 < 0 || star.x + star.size/2 > this.width) {
-        star.vx *= -0.8;
-        star.x = Math.max(star.size/2, Math.min(this.width - star.size/2, star.x));
-      }
-
-      const floorY = this.height - star.size/2;
-      if (star.y >= floorY) {
-        star.y = floorY;
-        if (volumeLevel > 5 && Math.random() < 0.15) {
-          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
-          star.vy = -(volumeLevel / 100) * maxBounceVelocity;
-        } else {
-          star.vy = 0;
-        }
-        if (Math.abs(star.vx) < 1) {
-          star.vx += (Math.random() - 0.5) * 2;
-        }
-      } else {
-        star.vy += 0.6;
-      }
-
-      if (star.y - star.size/2 < 0) {
-        star.vy = Math.abs(star.vy) * 0.8;
-        star.y = star.size/2;
-      }
-
-      star.vx *= 0.99;
-      star.vy *= 0.995;
-      star.size = star.baseSize + Math.sin(Date.now() * 0.01 + star.x * 0.01) * 3;
-      star.opacity = 0.5 + Math.sin(Date.now() * 0.01 + star.x * 0.01) * 0.3;
-
-      if (volumeLevel > 20) {
-        star.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-      }
-    }
-  }
-
-  private drawStar(x: number, y: number, size: number, opacity: number): void {
-    const spikes = 5;
-    const outerRadius = size / 2;
-    const innerRadius = outerRadius * 0.4;
-    const step = Math.PI / spikes;
-
-    this.ctx.save();
-    this.ctx.globalAlpha = opacity;
-    this.ctx.beginPath();
-    
-    for (let i = 0; i < spikes * 2; i++) {
-      const radius = i % 2 === 0 ? outerRadius : innerRadius;
-      const angle = i * step - Math.PI / 2;
-      const pointX = x + Math.cos(angle) * radius;
-      const pointY = y + Math.sin(angle) * radius;
-      
-      if (i === 0) {
-        this.ctx.moveTo(pointX, pointY);
-      } else {
-        this.ctx.lineTo(pointX, pointY);
-      }
-    }
-    
-    this.ctx.closePath();
-    this.ctx.fillStyle = '#FFD700';
-    this.ctx.fill();
-    this.ctx.restore();
-  }
-
-  draw(): void {
-    for (const star of this.stars) {
-      this.drawStar(star.x, star.y, star.size, star.opacity);
-    }
-  }
-
-  resize(width: number, height: number): void {
-    const oldWidth = this.width;
-    this.width = width;
-    this.height = height;
-    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
-      for (let i = 0; i < this.stars.length; i++) {
-        const star = this.stars[i];
-        star.x = Math.random() * (this.width - star.baseSize) + star.baseSize / 2;
-        star.y = Math.min(star.y, this.height - star.baseSize / 2);
-      }
-    }
-  }
-
-  updateCallback(callback?: () => void): void {
-    this.onThresholdCrossed = callback;
-  }
-
-  dispose(): void {
-    this.stars = [];
+// Stars Theme - converted to emoji-based
+export class StarsTheme extends BaseEmojiTheme {
+  protected getEmojis(): string[] {
+    return ['⭐', '🌟', '✨', '💫', '🌠', '⚡', '🔥', '💎', '🎇', '🎆', '💥'];
   }
 }
 
-// Hearts Theme
-export class HeartsTheme implements Theme {
-  private ctx: CanvasRenderingContext2D;
-  private hearts: Heart[] = [];
-  private width = 0;
-  private height = 0;
-  private onThresholdCrossed?: () => void;
-
-  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
-    this.ctx = ctx;
-    this.onThresholdCrossed = onThresholdCrossed;
-  }
-
-  init(width: number, height: number): void {
-    this.width = width;
-    this.height = height;
-    this.hearts = [];
-
-    const colors = ['#FF69B4', '#FF1493', '#DC143C', '#B22222', '#8B0000'];
-
-    for (let i = 0; i < 80; i++) {
-      const baseSize = Math.random() * 20 + 15;
-      const x = Math.random() * (width - baseSize) + baseSize / 2;
-      this.hearts.push({
-        x: x,
-        y: Math.random() * (height * 0.6) + baseSize / 2,
-        vx: (Math.random() - 0.5) * 2,
-        vy: Math.random() * 2,
-        size: baseSize,
-        baseSize: baseSize,
-        opacity: Math.random() * 0.3 + 0.7,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        crossedThreshold: false,
-      });
-    }
-  }
-
-  update(volumeLevel: number, threshold: number = 70): void {
-    const thresholdY = (this.height * (100 - threshold)) / 100;
-
-    for (const heart of this.hearts) {
-      const prevY = heart.y;
-      heart.x += heart.vx;
-      heart.y += heart.vy;
-
-      if (prevY >= thresholdY && heart.y < thresholdY && !heart.crossedThreshold) {
-        heart.crossedThreshold = true;
-        if (this.onThresholdCrossed) this.onThresholdCrossed();
-      } else if (heart.y >= thresholdY) {
-        heart.crossedThreshold = false;
-      }
-
-      if (heart.x - heart.size/2 < 0 || heart.x + heart.size/2 > this.width) {
-        heart.vx *= -0.8;
-        heart.x = Math.max(heart.size/2, Math.min(this.width - heart.size/2, heart.x));
-      }
-
-      const floorY = this.height - heart.size/2;
-      if (heart.y >= floorY) {
-        heart.y = floorY;
-        if (volumeLevel > 5 && Math.random() < 0.15) {
-          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
-          heart.vy = -(volumeLevel / 100) * maxBounceVelocity;
-        } else {
-          heart.vy = 0;
-        }
-        if (Math.abs(heart.vx) < 1) {
-          heart.vx += (Math.random() - 0.5) * 2;
-        }
-      } else {
-        heart.vy += 0.6;
-      }
-
-      if (heart.y - heart.size/2 < 0) {
-        heart.vy = Math.abs(heart.vy) * 0.8;
-        heart.y = heart.size/2;
-      }
-
-      heart.vx *= 0.99;
-      heart.vy *= 0.995;
-      heart.size = heart.baseSize + Math.sin(Date.now() * 0.01 + heart.x * 0.01) * 3;
-      heart.opacity = 0.7 + Math.sin(Date.now() * 0.01 + heart.x * 0.01) * 0.2;
-
-      if (volumeLevel > 20) {
-        heart.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-      }
-    }
-  }
-
-  private drawHeart(x: number, y: number, size: number, color: string, opacity: number): void {
-    this.ctx.save();
-    this.ctx.globalAlpha = opacity;
-    this.ctx.fillStyle = color;
-    
-    const width = size;
-    const height = size * 0.8;
-    
-    this.ctx.beginPath();
-    const topCurveHeight = height * 0.3;
-    this.ctx.moveTo(x, y + topCurveHeight);
-    
-    // Left curve
-    this.ctx.bezierCurveTo(
-      x, y, 
-      x - width / 2, y,
-      x - width / 2, y + topCurveHeight
-    );
-    
-    // Right curve  
-    this.ctx.bezierCurveTo(
-      x - width / 2, y + (height + topCurveHeight) / 2,
-      x, y + (height + topCurveHeight) / 2,
-      x, y + height
-    );
-    
-    this.ctx.bezierCurveTo(
-      x, y + (height + topCurveHeight) / 2,
-      x + width / 2, y + (height + topCurveHeight) / 2,
-      x + width / 2, y + topCurveHeight
-    );
-    
-    this.ctx.bezierCurveTo(
-      x + width / 2, y,
-      x, y,
-      x, y + topCurveHeight
-    );
-    
-    this.ctx.fill();
-    this.ctx.restore();
-  }
-
-  draw(): void {
-    for (const heart of this.hearts) {
-      this.drawHeart(heart.x, heart.y, heart.size, heart.color, heart.opacity);
-    }
-  }
-
-  resize(width: number, height: number): void {
-    const oldWidth = this.width;
-    this.width = width;
-    this.height = height;
-    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
-      for (let i = 0; i < this.hearts.length; i++) {
-        const heart = this.hearts[i];
-        heart.x = Math.random() * (this.width - heart.baseSize) + heart.baseSize / 2;
-        heart.y = Math.min(heart.y, this.height - heart.baseSize / 2);
-      }
-    }
-  }
-
-  updateCallback(callback?: () => void): void {
-    this.onThresholdCrossed = callback;
-  }
-
-  dispose(): void {
-    this.hearts = [];
+// Hearts Theme - converted to emoji-based
+export class HeartsTheme extends BaseEmojiTheme {
+  protected getEmojis(): string[] {
+    return ['❤️', '💕', '💖', '💗', '💘', '💝', '💞', '💟', '🧡', '💛', '💚', '💙', '💜', '🤍', '🖤', '🤎', '💔', '❣️', '💌'];
   }
 }
 
-// Geometric Shapes Theme
-export class GeometricTheme implements Theme {
-  private ctx: CanvasRenderingContext2D;
-  private shapes: Shape[] = [];
-  private width = 0;
-  private height = 0;
-  private onThresholdCrossed?: () => void;
-
-  constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
-    this.ctx = ctx;
-    this.onThresholdCrossed = onThresholdCrossed;
-  }
-
-  init(width: number, height: number): void {
-    this.width = width;
-    this.height = height;
-    this.shapes = [];
-
-    const shapeTypes: Shape['type'][] = ['triangle', 'square', 'pentagon', 'hexagon'];
-    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3', '#54A0FF'];
-
-    for (let i = 0; i < 80; i++) {
-      const baseSize = Math.random() * 20 + 20;
-      const x = Math.random() * (width - baseSize) + baseSize / 2;
-      this.shapes.push({
-        x: x,
-        y: Math.random() * (height * 0.6) + baseSize / 2,
-        vx: (Math.random() - 0.5) * 2,
-        vy: Math.random() * 2,
-        size: baseSize,
-        baseSize: baseSize,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.05,
-        type: shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
-        crossedThreshold: false,
-        opacity: Math.random() * 0.3 + 0.7,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      });
-    }
-  }
-
-  update(volumeLevel: number, threshold: number = 70): void {
-    const thresholdY = (this.height * (100 - threshold)) / 100;
-
-    for (const shape of this.shapes) {
-      const prevY = shape.y;
-      shape.x += shape.vx;
-      shape.y += shape.vy;
-
-      if (prevY >= thresholdY && shape.y < thresholdY && !shape.crossedThreshold) {
-        shape.crossedThreshold = true;
-        if (this.onThresholdCrossed) this.onThresholdCrossed();
-      } else if (shape.y >= thresholdY) {
-        shape.crossedThreshold = false;
-      }
-
-      if (shape.x - shape.size/2 < 0 || shape.x + shape.size/2 > this.width) {
-        shape.vx *= -0.8;
-        shape.x = Math.max(shape.size/2, Math.min(this.width - shape.size/2, shape.x));
-      }
-
-      const floorY = this.height - shape.size/2;
-      if (shape.y >= floorY) {
-        shape.y = floorY;
-        if (volumeLevel > 5 && Math.random() < 0.15) {
-          const maxBounceVelocity = Math.sqrt(2 * 0.6 * this.height);
-          shape.vy = -(volumeLevel / 100) * maxBounceVelocity;
-        } else {
-          shape.vy = 0;
-        }
-        if (Math.abs(shape.vx) < 1) {
-          shape.vx += (Math.random() - 0.5) * 2;
-        }
-      } else {
-        shape.vy += 0.6;
-      }
-
-      if (shape.y - shape.size/2 < 0) {
-        shape.vy = Math.abs(shape.vy) * 0.8;
-        shape.y = shape.size/2;
-      }
-
-      shape.vx *= 0.99;
-      shape.vy *= 0.995;
-      shape.size = shape.baseSize + Math.sin(Date.now() * 0.01 + shape.x * 0.01) * 3;
-      shape.rotation += shape.rotationSpeed;
-      shape.rotationSpeed += (Math.abs(shape.vx) + Math.abs(shape.vy)) * 0.001;
-
-      if (volumeLevel > 20) {
-        shape.vx += (Math.random() - 0.5) * (volumeLevel / 150);
-        shape.rotationSpeed += (Math.random() - 0.5) * 0.01;
-      }
-    }
-  }
-
-  private drawShape(shape: Shape): void {
-    this.ctx.save();
-    this.ctx.translate(shape.x, shape.y);
-    this.ctx.rotate(shape.rotation);
-    this.ctx.globalAlpha = shape.opacity;
-    this.ctx.fillStyle = shape.color;
-    this.ctx.strokeStyle = shape.color;
-    this.ctx.lineWidth = 2;
-
-    const radius = shape.size / 2;
-    
-    switch (shape.type) {
-      case 'triangle':
-        this.ctx.beginPath();
-        for (let i = 0; i < 3; i++) {
-          const angle = (i * 2 * Math.PI) / 3 - Math.PI / 2;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
-          if (i === 0) this.ctx.moveTo(x, y);
-          else this.ctx.lineTo(x, y);
-        }
-        this.ctx.closePath();
-        break;
-      case 'square':
-        this.ctx.fillRect(-radius, -radius, shape.size, shape.size);
-        break;
-      case 'pentagon':
-        this.ctx.beginPath();
-        for (let i = 0; i < 5; i++) {
-          const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
-          if (i === 0) this.ctx.moveTo(x, y);
-          else this.ctx.lineTo(x, y);
-        }
-        this.ctx.closePath();
-        break;
-      case 'hexagon':
-        this.ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (i * 2 * Math.PI) / 6;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
-          if (i === 0) this.ctx.moveTo(x, y);
-          else this.ctx.lineTo(x, y);
-        }
-        this.ctx.closePath();
-        break;
-    }
-    
-    this.ctx.fill();
-    this.ctx.stroke();
-    this.ctx.restore();
-  }
-
-  draw(): void {
-    for (const shape of this.shapes) {
-      this.drawShape(shape);
-    }
-  }
-
-  resize(width: number, height: number): void {
-    const oldWidth = this.width;
-    this.width = width;
-    this.height = height;
-    if (oldWidth === 0 || Math.abs(width - oldWidth) > 100) {
-      for (let i = 0; i < this.shapes.length; i++) {
-        const shape = this.shapes[i];
-        shape.x = Math.random() * (this.width - shape.baseSize) + shape.baseSize / 2;
-        shape.y = Math.min(shape.y, this.height - shape.baseSize / 2);
-      }
-    }
-  }
-
-  updateCallback(callback?: () => void): void {
-    this.onThresholdCrossed = callback;
-  }
-
-  dispose(): void {
-    this.shapes = [];
+// Geometric Shapes Theme - converted to emoji-based
+export class GeometricTheme extends BaseEmojiTheme {
+  protected getEmojis(): string[] {
+    return ['🔵', '🟢', '🟡', '🔴', '🟠', '🟣', '⚫', '⚪', '🟤', '🔶', '🔷', '🔸', '🔹', '🔺', '🔻', '💠', '🔳', '🔲', '◼️', '◻️', '▪️', '▫️'];
   }
 }
 
