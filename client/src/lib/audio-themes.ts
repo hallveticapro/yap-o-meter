@@ -266,7 +266,7 @@ export class StarsTheme implements Theme {
     this.height = height;
     this.stars = [];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 15 + 20;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.stars.push({
@@ -339,8 +339,6 @@ export class StarsTheme implements Theme {
     for (const star of this.stars) {
       this.ctx.save();
       this.ctx.fillStyle = star.color;
-      this.ctx.shadowColor = star.color;
-      this.ctx.shadowBlur = this.volumeLevel / 5;
       
       const size = star.size;
       const x = star.x;
@@ -406,7 +404,7 @@ export class HeartsTheme implements Theme {
     this.height = height;
     this.hearts = [];
 
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 15 + 25;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.hearts.push({
@@ -479,8 +477,6 @@ export class HeartsTheme implements Theme {
     for (const heart of this.hearts) {
       this.ctx.save();
       this.ctx.fillStyle = heart.color;
-      this.ctx.shadowColor = heart.color;
-      this.ctx.shadowBlur = this.volumeLevel / 5;
       
       const size = heart.size;
       const x = heart.x;
@@ -537,7 +533,7 @@ export class GeometricTheme implements Theme {
     this.shapes = [];
 
     const shapeTypes = ['triangle', 'square', 'pentagon', 'hexagon'];
-    for (let i = 0; i < 45; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 15 + 20;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.shapes.push({
@@ -610,8 +606,6 @@ export class GeometricTheme implements Theme {
     for (const shape of this.shapes) {
       this.ctx.save();
       this.ctx.fillStyle = shape.color;
-      this.ctx.shadowColor = shape.color;
-      this.ctx.shadowBlur = this.volumeLevel / 5;
       
       const size = shape.size;
       const x = shape.x;
@@ -689,7 +683,7 @@ export class ScienceTheme implements Theme {
     this.height = height;
     this.faces = [];
 
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 20 + 25;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
@@ -764,11 +758,6 @@ export class ScienceTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      if (this.volumeLevel > 10) {
-        this.ctx.shadowColor = '#00bcd4';
-        this.ctx.shadowBlur = this.volumeLevel / 3;
-      }
-      
       this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
@@ -816,7 +805,7 @@ export class MathTheme implements Theme {
     this.height = height;
     this.faces = [];
 
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 20 + 25;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
@@ -891,11 +880,6 @@ export class MathTheme implements Theme {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       
-      if (this.volumeLevel > 10) {
-        this.ctx.shadowColor = '#ff9800';
-        this.ctx.shadowBlur = this.volumeLevel / 3;
-      }
-      
       this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
     }
@@ -943,7 +927,7 @@ export class SpringTheme implements Theme {
     this.height = height;
     this.faces = [];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 20 + 25;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
@@ -1012,16 +996,18 @@ export class SpringTheme implements Theme {
   }
 
   draw(): void {
+    // Spring gradient background
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, 'rgba(144, 238, 144, 0.1)'); // Light green
+    gradient.addColorStop(1, 'rgba(255, 182, 193, 0.1)'); // Light pink
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    
     for (const face of this.faces) {
       this.ctx.save();
       this.ctx.font = `${face.size}px Arial`;
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      
-      if (this.volumeLevel > 10) {
-        this.ctx.shadowColor = '#4caf50';
-        this.ctx.shadowBlur = this.volumeLevel / 3;
-      }
       
       this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
@@ -1070,7 +1056,7 @@ export class SummerTheme implements Theme {
     this.height = height;
     this.faces = [];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 20 + 25;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
@@ -1139,16 +1125,18 @@ export class SummerTheme implements Theme {
   }
 
   draw(): void {
+    // Summer gradient background
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, 'rgba(255, 220, 0, 0.1)'); // Sunny yellow
+    gradient.addColorStop(1, 'rgba(255, 69, 0, 0.1)'); // Orange red
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    
     for (const face of this.faces) {
       this.ctx.save();
       this.ctx.font = `${face.size}px Arial`;
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      
-      if (this.volumeLevel > 10) {
-        this.ctx.shadowColor = '#ff5722';
-        this.ctx.shadowBlur = this.volumeLevel / 3;
-      }
       
       this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
@@ -1197,7 +1185,7 @@ export class AutumnTheme implements Theme {
     this.height = height;
     this.faces = [];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 20 + 25;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
@@ -1266,16 +1254,18 @@ export class AutumnTheme implements Theme {
   }
 
   draw(): void {
+    // Autumn gradient background
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, 'rgba(255, 165, 0, 0.1)'); // Orange
+    gradient.addColorStop(1, 'rgba(139, 69, 19, 0.1)'); // Brown
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    
     for (const face of this.faces) {
       this.ctx.save();
       this.ctx.font = `${face.size}px Arial`;
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      
-      if (this.volumeLevel > 10) {
-        this.ctx.shadowColor = '#ff9800';
-        this.ctx.shadowBlur = this.volumeLevel / 3;
-      }
       
       this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
@@ -1324,7 +1314,7 @@ export class WinterTheme implements Theme {
     this.height = height;
     this.faces = [];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 20 + 25;
       const x = Math.random() * (width - baseSize) + baseSize / 2;
       this.faces.push({
@@ -1393,16 +1383,18 @@ export class WinterTheme implements Theme {
   }
 
   draw(): void {
+    // Winter gradient background
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, 'rgba(176, 224, 230, 0.1)'); // Light blue
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.1)'); // White
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    
     for (const face of this.faces) {
       this.ctx.save();
       this.ctx.font = `${face.size}px Arial`;
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      
-      if (this.volumeLevel > 10) {
-        this.ctx.shadowColor = '#2196f3';
-        this.ctx.shadowBlur = this.volumeLevel / 3;
-      }
       
       this.ctx.fillText(face.emoji, face.x, face.y);
       this.ctx.restore();
