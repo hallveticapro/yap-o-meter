@@ -168,15 +168,27 @@ abstract class BaseEmojiTheme implements Theme {
     // Draw background first (if theme provides one)
     this.drawBackground();
     
-    // Draw all emojis without rotation for better performance
-    this.ctx.font = `25px Arial`;
+    // Set font properties once for better performance
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
     
+    // Group faces by size to reduce font changes
+    const sizeGroups = new Map<number, Emojiface[]>();
     for (const face of this.faces) {
-      this.ctx.font = `${face.size}px Arial`;
-      this.ctx.fillText(face.emoji, face.x, face.y);
+      const size = Math.round(face.size);
+      if (!sizeGroups.has(size)) {
+        sizeGroups.set(size, []);
+      }
+      sizeGroups.get(size)!.push(face);
     }
+    
+    // Draw each size group with minimal font changes
+    Array.from(sizeGroups.entries()).forEach(([size, faces]) => {
+      this.ctx.font = `${size}px Arial`;
+      for (const face of faces) {
+        this.ctx.fillText(face.emoji, face.x, face.y);
+      }
+    });
   }
 
   resize(width: number, height: number): void {
