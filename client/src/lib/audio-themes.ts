@@ -743,7 +743,7 @@ export class ScienceTheme implements Theme {
 
       face.vx *= 0.99;
       face.vy *= 0.995;
-      face.size = face.baseSize * (1 + volumeLevel / 200);
+      face.size = face.baseSize;
 
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
@@ -865,7 +865,7 @@ export class MathTheme implements Theme {
 
       face.vx *= 0.99;
       face.vy *= 0.995;
-      face.size = face.baseSize * (1 + volumeLevel / 200);
+      face.size = face.baseSize;
 
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
@@ -987,7 +987,7 @@ export class SpringTheme implements Theme {
 
       face.vx *= 0.99;
       face.vy *= 0.995;
-      face.size = face.baseSize * (1 + volumeLevel / 200);
+      face.size = face.baseSize;
 
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
@@ -1116,7 +1116,7 @@ export class SummerTheme implements Theme {
 
       face.vx *= 0.99;
       face.vy *= 0.995;
-      face.size = face.baseSize * (1 + volumeLevel / 200);
+      face.size = face.baseSize;
 
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
@@ -1245,7 +1245,7 @@ export class AutumnTheme implements Theme {
 
       face.vx *= 0.99;
       face.vy *= 0.995;
-      face.size = face.baseSize * (1 + volumeLevel / 200);
+      face.size = face.baseSize;
 
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
@@ -1374,7 +1374,7 @@ export class WinterTheme implements Theme {
 
       face.vx *= 0.99;
       face.vy *= 0.995;
-      face.size = face.baseSize * (1 + volumeLevel / 200);
+      face.size = face.baseSize;
 
       if (volumeLevel > 20) {
         face.vx += (Math.random() - 0.5) * (volumeLevel / 150);
@@ -1528,8 +1528,8 @@ export class HappyFacesTheme implements Theme {
       face.vx *= 0.99;
       face.vy *= 0.995;
 
-      // Scale size based on volume
-      face.size = face.baseSize * (1 + volumeLevel / 200);
+      // Keep consistent size for better performance
+      face.size = face.baseSize;
 
       // Add random movement when volume is high
       if (volumeLevel > 20) {
