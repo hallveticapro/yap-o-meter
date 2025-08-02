@@ -1438,7 +1438,7 @@ export class HappyFacesTheme implements Theme {
   private height = 0;
   private volumeLevel = 0;
   private onThresholdCrossed?: () => void;
-  private happyEmojis = ['😊', '😄', '😃', '😁', '😆', '🤣', '😂', '🥰', '😍', '🤩', '😋', '😎', '🤗', '🥳', '😌'];
+  private emojis = ['😊', '😄', '😃', '😁', '😆', '🤣', '😂', '🥰', '😍', '🤩', '😋', '😎', '🤗', '🥳', '😌', '🔥', '⭐', '💖', '🎉', '🌟', '✨', '🎊', '🦄', '🌈', '🎨', '🎭', '🎪', '🎯', '⚡', '💫', '🐱', '🐶', '🐸', '🐼', '🦊', '🐻', '🐷', '🐵', '🦁', '🐯'];
 
   constructor(ctx: CanvasRenderingContext2D, onThresholdCrossed?: () => void) {
     this.ctx = ctx;
@@ -1451,7 +1451,7 @@ export class HappyFacesTheme implements Theme {
     this.faces = [];
 
     // Create high-density emoji faces spread out across full width and falling
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 80; i++) {
       const baseSize = Math.random() * 20 + 25;
       // Spread faces randomly across the full width
       const x = Math.random() * (width - baseSize) + baseSize / 2;
@@ -1462,7 +1462,7 @@ export class HappyFacesTheme implements Theme {
         vy: Math.random() * 2, // Start falling
         size: baseSize,
         baseSize: baseSize,
-        emoji: this.happyEmojis[Math.floor(Math.random() * this.happyEmojis.length)],
+        emoji: this.emojis[Math.floor(Math.random() * this.emojis.length)],
         crossedThreshold: false,
       });
     }

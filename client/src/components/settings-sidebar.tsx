@@ -18,7 +18,7 @@ interface SettingsSidebarProps {
 
 const themes = [
   { id: "balls", name: "Bouncing Balls", icon: Circle, color: "text-cyan-400", description: "Colorful balls that bounce with volume" },
-  { id: "faces", name: "Happy Faces", icon: Sparkles, color: "text-yellow-400", description: "Cheerful emoji faces bouncing around" },
+  { id: "faces", name: "Emojis", icon: Sparkles, color: "text-yellow-400", description: "Fun emojis bouncing around" },
   { id: "stars", name: "Stars", icon: Sparkles, color: "text-purple-400", description: "Twinkling stars that dance to sound" },
   { id: "hearts", name: "Hearts", icon: Sparkles, color: "text-pink-400", description: "Loving hearts bouncing with joy" },
   { id: "geometric", name: "Geometric Shapes", icon: Circle, color: "text-green-400", description: "Various geometric shapes in motion" },
@@ -116,8 +116,8 @@ export default function SettingsSidebar({
                   <div className="flex items-center space-x-3">
                     <div className="text-yellow-400 text-xl">😊</div>
                     <div>
-                      <div className="font-medium text-white">Happy Faces</div>
-                      <div className="text-xs text-slate-300">Bouncing emoji faces that react to sound</div>
+                      <div className="font-medium text-white">Emojis</div>
+                      <div className="text-xs text-slate-300">Fun emojis that react to sound</div>
                     </div>
                   </div>
                 </div>
