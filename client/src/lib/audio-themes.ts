@@ -421,8 +421,8 @@ export class SpringTheme extends BaseEmojiTheme {
 
   protected drawBackground(): void {
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(144, 238, 144, 0.3)');
-    gradient.addColorStop(1, 'rgba(255, 182, 193, 0.3)');
+    gradient.addColorStop(0, 'rgba(144, 238, 144, 0.6)');
+    gradient.addColorStop(1, 'rgba(255, 182, 193, 0.6)');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
@@ -436,8 +436,8 @@ export class SummerTheme extends BaseEmojiTheme {
 
   protected drawBackground(): void {
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(255, 220, 0, 0.3)');
-    gradient.addColorStop(1, 'rgba(255, 69, 0, 0.3)');
+    gradient.addColorStop(0, 'rgba(255, 215, 0, 0.6)');
+    gradient.addColorStop(1, 'rgba(255, 20, 147, 0.6)');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
@@ -451,8 +451,8 @@ export class AutumnTheme extends BaseEmojiTheme {
 
   protected drawBackground(): void {
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(255, 165, 0, 0.3)');
-    gradient.addColorStop(1, 'rgba(139, 69, 19, 0.3)');
+    gradient.addColorStop(0, 'rgba(220, 20, 60, 0.6)');
+    gradient.addColorStop(1, 'rgba(160, 82, 45, 0.6)');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
@@ -466,8 +466,8 @@ export class WinterTheme extends BaseEmojiTheme {
 
   protected drawBackground(): void {
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(176, 224, 230, 0.3)');
-    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.3)');
+    gradient.addColorStop(0, 'rgba(147, 197, 253, 0.6)');
+    gradient.addColorStop(1, 'rgba(196, 181, 253, 0.6)');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
