@@ -267,10 +267,9 @@ export default function SettingsSidebar({
           </Collapsible>
         </div>
 
-        {/* Copyright Information */}
+        {/* Social Media & Support Section */}
         <div className="mt-auto pt-6 border-t border-slate-600/30">
           <div className="text-center text-xs text-slate-400 space-y-2">
-            <p>© {new Date().getFullYear()} Yap-o-Meter</p>
             <p>Made for educators with love ❤️</p>
             <p className="text-slate-500">Created by Andrew Hall using Replit</p>
             
@@ -336,6 +335,13 @@ export default function SettingsSidebar({
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Copyright Information */}
+        <div className="mt-4 pt-4 border-t border-slate-600/30">
+          <div className="text-center text-xs text-slate-400">
+            <p>© {new Date().getFullYear()} Yap-o-Meter</p>
           </div>
         </div>
       </div>
