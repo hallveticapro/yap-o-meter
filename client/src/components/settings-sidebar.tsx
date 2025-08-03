@@ -456,7 +456,7 @@ export default function SettingsSidebar({
             <div className="p-3 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg border border-blue-500/30">
               <div className="text-center">
                 <p className="text-xs text-blue-200 mb-3">
-                  Follow Me On Social Media
+                  Follow Me on Social Media
                 </p>
                 <div className="flex justify-center gap-3">
                   {/* GitHub */}
