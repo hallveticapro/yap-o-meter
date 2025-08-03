@@ -1,13 +1,35 @@
 import { useState } from "react";
-import { X, ChevronDown, Sparkles, Waves, Circle, Settings as SettingsIcon } from "lucide-react";
+import {
+  X,
+  ChevronDown,
+  Sparkles,
+  Waves,
+  Circle,
+  Settings as SettingsIcon,
+} from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faThreads, faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
+import {
+  faGithub,
+  faThreads,
+  faInstagram,
+  faTiktok,
+} from "@fortawesome/free-brands-svg-icons";
 import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import type { VoiceMeterSettings } from "@/pages/voice-meter";
 
 interface SettingsSidebarProps {
@@ -23,39 +45,123 @@ const themeGroups = [
   {
     name: "General",
     themes: [
-      { id: "balls", name: "Bouncing Balls", icon: Circle, emoji: "⚪", color: "text-cyan-400", description: "Colorful balls that bounce with volume" },
-      { id: "faces", name: "Emojis", icon: Sparkles, emoji: "😊", color: "text-yellow-400", description: "Fun emojis bouncing around" },
-      { id: "stars", name: "Stars", icon: Sparkles, emoji: "⭐", color: "text-purple-400", description: "Twinkling stars that dance to sound" },
-      { id: "hearts", name: "Hearts", icon: Sparkles, emoji: "❤️", color: "text-pink-400", description: "Loving hearts bouncing with joy" },
-      { id: "geometric", name: "Geometric Shapes", icon: Circle, emoji: "🔵", color: "text-green-400", description: "Various geometric shapes in motion" },
-    ]
+      {
+        id: "balls",
+        name: "Bouncing Balls",
+        icon: Circle,
+        emoji: "⚪",
+        color: "text-cyan-400",
+        description: "Colorful balls that bounce with volume",
+      },
+      {
+        id: "faces",
+        name: "Emojis",
+        icon: Sparkles,
+        emoji: "😊",
+        color: "text-yellow-400",
+        description: "Fun emojis bouncing around",
+      },
+      {
+        id: "stars",
+        name: "Stars",
+        icon: Sparkles,
+        emoji: "⭐",
+        color: "text-purple-400",
+        description: "Twinkling stars that dance to sound",
+      },
+      {
+        id: "hearts",
+        name: "Hearts",
+        icon: Sparkles,
+        emoji: "❤️",
+        color: "text-pink-400",
+        description: "Loving hearts bouncing with joy",
+      },
+      {
+        id: "geometric",
+        name: "Geometric Shapes",
+        icon: Circle,
+        emoji: "🔵",
+        color: "text-green-400",
+        description: "Various geometric shapes in motion",
+      },
+    ],
   },
   {
     name: "School",
     themes: [
-      { id: "science", name: "Science Lab", icon: Sparkles, emoji: "🧪", color: "text-blue-400", description: "Science emojis for STEM learning" },
-      { id: "math", name: "Math Class", icon: Sparkles, emoji: "🔢", color: "text-orange-400", description: "Math symbols and numbers" },
-      { id: "reading", name: "Reading Time", icon: Sparkles, emoji: "📚", color: "text-indigo-400", description: "Books, pencils, and library learning" },
-    ]
+      {
+        id: "science",
+        name: "Science Lab",
+        icon: Sparkles,
+        emoji: "🧪",
+        color: "text-blue-400",
+        description: "Science emojis for STEM learning",
+      },
+      {
+        id: "math",
+        name: "Math Class",
+        icon: Sparkles,
+        emoji: "🔢",
+        color: "text-orange-400",
+        description: "Math symbols and numbers",
+      },
+      {
+        id: "reading",
+        name: "Reading Time",
+        icon: Sparkles,
+        emoji: "📚",
+        color: "text-indigo-400",
+        description: "Books, pencils, and library learning",
+      },
+    ],
   },
   {
     name: "Seasons",
     themes: [
-      { id: "spring", name: "Spring Garden", icon: Sparkles, emoji: "🌸", color: "text-green-500", description: "Flowers and spring elements" },
-      { id: "summer", name: "Summer Beach", icon: Sparkles, emoji: "☀️", color: "text-orange-500", description: "Sun, waves, and summer fun" },
-      { id: "fall", name: "Fall Leaves", icon: Sparkles, emoji: "🍂", color: "text-amber-600", description: "Fall leaves and harvest themes" },
-      { id: "winter", name: "Winter Wonderland", icon: Sparkles, emoji: "❄️", color: "text-blue-300", description: "Snowflakes and winter magic" },
-    ]
-  }
+      {
+        id: "spring",
+        name: "Spring Garden",
+        icon: Sparkles,
+        emoji: "🌸",
+        color: "text-green-500",
+        description: "Flowers and spring elements",
+      },
+      {
+        id: "summer",
+        name: "Summer Beach",
+        icon: Sparkles,
+        emoji: "☀️",
+        color: "text-orange-500",
+        description: "Sun, waves, and summer fun",
+      },
+      {
+        id: "fall",
+        name: "Fall Leaves",
+        icon: Sparkles,
+        emoji: "🍂",
+        color: "text-amber-600",
+        description: "Fall leaves and harvest themes",
+      },
+      {
+        id: "winter",
+        name: "Winter Wonderland",
+        icon: Sparkles,
+        emoji: "❄️",
+        color: "text-blue-300",
+        description: "Snowflakes and winter magic",
+      },
+    ],
+  },
 ];
 
-export default function SettingsSidebar({ 
-  isOpen, 
-  onClose, 
-  settings, 
+export default function SettingsSidebar({
+  isOpen,
+  onClose,
+  settings,
   onSettingsChange,
   onCalibrate,
-  isCalibrating 
+  isCalibrating,
 }: SettingsSidebarProps) {
   const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
     theme: false,
@@ -65,7 +171,7 @@ export default function SettingsSidebar({
   });
 
   const toggleSection = (section: string) => {
-    setOpenSections(prev => ({
+    setOpenSections((prev) => ({
       ...prev,
       [section]: !prev[section],
     }));
@@ -88,7 +194,9 @@ export default function SettingsSidebar({
   };
 
   return (
-    <div className={`sidebar-slide fixed top-0 right-0 w-80 h-full z-30 ${isOpen ? 'open' : ''}`}>
+    <div
+      className={`sidebar-slide fixed top-0 right-0 w-80 h-full z-30 ${isOpen ? "open" : ""}`}
+    >
       <div className="glass-morphism h-full p-6 overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -107,30 +215,48 @@ export default function SettingsSidebar({
 
         {/* Theme Selection */}
         <div className="mb-6">
-          <Collapsible open={openSections.theme} onOpenChange={() => toggleSection('theme')}>
+          <Collapsible
+            open={openSections.theme}
+            onOpenChange={() => toggleSection("theme")}
+          >
             <CollapsibleTrigger className="w-full flex items-center justify-between p-3 glass-button rounded-xl text-white hover:bg-white/25 transition-all">
               <span className="font-medium">Visual Theme</span>
-              <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${openSections.theme ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-5 h-5 transition-transform duration-300 ${openSections.theme ? "rotate-180" : ""}`}
+              />
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2">
               <div className="p-2 space-y-4">
                 {themeGroups.map((group, groupIndex) => (
-                  <div key={group.name} className={groupIndex > 0 ? "border-t border-slate-600/30 pt-4" : ""}>
-                    <h4 className="text-sm font-semibold text-slate-300 mb-2 px-2">{group.name}</h4>
+                  <div
+                    key={group.name}
+                    className={
+                      groupIndex > 0 ? "border-t border-slate-600/30 pt-4" : ""
+                    }
+                  >
+                    <h4 className="text-sm font-semibold text-slate-300 mb-2 px-2">
+                      {group.name}
+                    </h4>
                     <div className="space-y-2">
                       {group.themes.map((theme) => (
-                        <div 
+                        <div
                           key={theme.id}
                           className={`p-3 rounded-xl cursor-pointer transition-all ${
-                            settings.theme === theme.id ? 'bg-cyan-500/30 border border-cyan-400' : 'glass-button hover:bg-white/25'
+                            settings.theme === theme.id
+                              ? "bg-cyan-500/30 border border-cyan-400"
+                              : "glass-button hover:bg-white/25"
                           }`}
                           onClick={() => handleThemeChange(theme.id)}
                         >
                           <div className="flex items-center space-x-3">
                             <div className="text-lg">{theme.emoji}</div>
                             <div>
-                              <div className="font-medium text-white text-sm">{theme.name}</div>
-                              <div className="text-xs text-slate-300">{theme.description}</div>
+                              <div className="font-medium text-white text-sm">
+                                {theme.name}
+                              </div>
+                              <div className="text-xs text-slate-300">
+                                {theme.description}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -145,15 +271,22 @@ export default function SettingsSidebar({
 
         {/* Volume Threshold Section */}
         <div className="mb-6">
-          <Collapsible open={openSections.threshold} onOpenChange={() => toggleSection('threshold')}>
+          <Collapsible
+            open={openSections.threshold}
+            onOpenChange={() => toggleSection("threshold")}
+          >
             <CollapsibleTrigger className="w-full flex items-center justify-between p-3 glass-button rounded-xl text-white hover:bg-white/25 transition-all">
               <span className="font-medium">Volume Threshold</span>
-              <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${openSections.threshold ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-5 h-5 transition-transform duration-300 ${openSections.threshold ? "rotate-180" : ""}`}
+              />
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2">
               <div className="p-2 space-y-4">
                 <div>
-                  <label className="block text-sm text-slate-300 mb-2">Threshold Level</label>
+                  <label className="block text-sm text-slate-300 mb-2">
+                    Threshold Level
+                  </label>
                   <Slider
                     value={[settings.threshold]}
                     onValueChange={handleThresholdChange}
@@ -168,12 +301,16 @@ export default function SettingsSidebar({
                     <span>Loud</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">Show Threshold Line</span>
+                  <span className="text-sm text-slate-300">
+                    Show Threshold Line
+                  </span>
                   <Switch
                     checked={settings.showThreshold}
-                    onCheckedChange={(checked) => onSettingsChange({ showThreshold: checked })}
+                    onCheckedChange={(checked) =>
+                      onSettingsChange({ showThreshold: checked })
+                    }
                   />
                 </div>
               </div>
@@ -183,10 +320,15 @@ export default function SettingsSidebar({
 
         {/* Audio Alerts Section */}
         <div className="mb-6">
-          <Collapsible open={openSections.alerts} onOpenChange={() => toggleSection('alerts')}>
+          <Collapsible
+            open={openSections.alerts}
+            onOpenChange={() => toggleSection("alerts")}
+          >
             <CollapsibleTrigger className="w-full flex items-center justify-between p-3 glass-button rounded-xl text-white hover:bg-white/25 transition-all">
               <span className="font-medium">Audio Alerts</span>
-              <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${openSections.alerts ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-5 h-5 transition-transform duration-300 ${openSections.alerts ? "rotate-180" : ""}`}
+              />
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2">
               <div className="p-2 space-y-3">
@@ -194,13 +336,22 @@ export default function SettingsSidebar({
                   <span className="text-sm text-slate-300">Enable Alerts</span>
                   <Switch
                     checked={settings.enableAlerts}
-                    onCheckedChange={(checked) => onSettingsChange({ enableAlerts: checked })}
+                    onCheckedChange={(checked) =>
+                      onSettingsChange({ enableAlerts: checked })
+                    }
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm text-slate-300 mb-2">Alert Sound</label>
-                  <Select value={settings.alertSound} onValueChange={(value) => onSettingsChange({ alertSound: value })}>
+                  <label className="block text-sm text-slate-300 mb-2">
+                    Alert Sound
+                  </label>
+                  <Select
+                    value={settings.alertSound}
+                    onValueChange={(value) =>
+                      onSettingsChange({ alertSound: value })
+                    }
+                  >
                     <SelectTrigger className="w-full bg-slate-700 border-slate-600 text-white">
                       <SelectValue />
                     </SelectTrigger>
@@ -212,9 +363,11 @@ export default function SettingsSidebar({
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm text-slate-300 mb-2">Alert Volume</label>
+                  <label className="block text-sm text-slate-300 mb-2">
+                    Alert Volume
+                  </label>
                   <Slider
                     value={[settings.alertVolume]}
                     onValueChange={handleAlertVolumeChange}
@@ -231,15 +384,22 @@ export default function SettingsSidebar({
 
         {/* Calibration Section */}
         <div className="mb-6">
-          <Collapsible open={openSections.calibration} onOpenChange={() => toggleSection('calibration')}>
+          <Collapsible
+            open={openSections.calibration}
+            onOpenChange={() => toggleSection("calibration")}
+          >
             <CollapsibleTrigger className="w-full flex items-center justify-between p-3 glass-button rounded-xl text-white hover:bg-white/25 transition-all">
               <span className="font-medium">Microphone Settings</span>
-              <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${openSections.calibration ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-5 h-5 transition-transform duration-300 ${openSections.calibration ? "rotate-180" : ""}`}
+              />
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2">
               <div className="p-2 space-y-3">
                 <div>
-                  <label className="block text-sm text-slate-300 mb-2">Sensitivity</label>
+                  <label className="block text-sm text-slate-300 mb-2">
+                    Sensitivity
+                  </label>
                   <Slider
                     value={[settings.sensitivity]}
                     onValueChange={handleSensitivityChange}
@@ -253,17 +413,18 @@ export default function SettingsSidebar({
                     <span>High</span>
                   </div>
                 </div>
-                
+
                 <Button
                   onClick={onCalibrate}
                   disabled={isCalibrating}
                   className="w-full glass-button rounded-lg py-2 px-4 text-white hover:bg-white/25 transition-all"
                 >
                   <SettingsIcon className="w-4 h-4 mr-2" />
-                  {isCalibrating ? 'Calibrating...' : 'Calibrate Microphone'}
+                  {isCalibrating ? "Calibrating..." : "Calibrate Microphone"}
                 </Button>
                 <p className="text-xs text-slate-400 mt-2 text-center">
-                  Automatically adjusts sensitivity based on your room's ambient noise level
+                  Automatically adjusts sensitivity based on your room's ambient
+                  noise level
                 </p>
               </div>
             </CollapsibleContent>
@@ -276,15 +437,17 @@ export default function SettingsSidebar({
             {/* Support CTA */}
             <div className="p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30">
               <div className="text-center">
-                <p className="text-xs text-amber-200 mb-2">Enjoying Yap-o-Meter?</p>
-                <a 
-                  href="https://buymeacoffee.com/hallveticapro" 
-                  target="_blank" 
+                <p className="text-xs text-amber-200 mb-2">
+                  Enjoying Yap-o-Meter?
+                </p>
+                <a
+                  href="https://buymeacoffee.com/hallveticapro"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium rounded-lg transition-colors duration-200"
                 >
                   <FontAwesomeIcon icon={faCoffee} className="w-4 h-4" />
-                  Buy me a coffee
+                  Buy Me a Coffee
                 </a>
               </div>
             </div>
@@ -292,12 +455,14 @@ export default function SettingsSidebar({
             {/* Social Media CTA */}
             <div className="p-3 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg border border-blue-500/30">
               <div className="text-center">
-                <p className="text-xs text-blue-200 mb-3">Follow me on social media</p>
+                <p className="text-xs text-blue-200 mb-3">
+                  Follow Me On Social Media
+                </p>
                 <div className="flex justify-center gap-3">
                   {/* GitHub */}
-                  <a 
-                    href="https://github.com/hallveticapro/yap-o-meter" 
-                    target="_blank" 
+                  <a
+                    href="https://github.com/hallveticapro/yap-o-meter"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-white transition-colors duration-200 bg-blue-600/20 hover:bg-blue-500/30 rounded-lg p-2"
                     title="View source code on GitHub"
@@ -306,9 +471,9 @@ export default function SettingsSidebar({
                   </a>
 
                   {/* Threads */}
-                  <a 
-                    href="https://www.threads.net/@hallveticapro" 
-                    target="_blank" 
+                  <a
+                    href="https://www.threads.net/@hallveticapro"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-white transition-colors duration-200 bg-blue-600/20 hover:bg-blue-500/30 rounded-lg p-2"
                     title="Follow @hallveticapro on Threads"
@@ -317,9 +482,9 @@ export default function SettingsSidebar({
                   </a>
 
                   {/* Instagram */}
-                  <a 
-                    href="https://www.instagram.com/hallveticapro" 
-                    target="_blank" 
+                  <a
+                    href="https://www.instagram.com/hallveticapro"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-white transition-colors duration-200 bg-blue-600/20 hover:bg-blue-500/30 rounded-lg p-2"
                     title="Follow @hallveticapro on Instagram"
@@ -328,9 +493,9 @@ export default function SettingsSidebar({
                   </a>
 
                   {/* TikTok */}
-                  <a 
-                    href="https://www.tiktok.com/@hallveticapro" 
-                    target="_blank" 
+                  <a
+                    href="https://www.tiktok.com/@hallveticapro"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-white transition-colors duration-200 bg-blue-600/20 hover:bg-blue-500/30 rounded-lg p-2"
                     title="Follow @hallveticapro on TikTok"
