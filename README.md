@@ -114,7 +114,7 @@ cd yap-o-meter
 docker build -t yap-o-meter .
 docker run -p 5000:5000 yap-o-meter
 
-# With custom port
+# With custom port (map external port 8080 to internal port set by PORT env var)
 docker run -p 8080:8080 -e PORT=8080 ghcr.io/hallveticapro/yap-o-meter:main
 
 # Using Docker Compose
