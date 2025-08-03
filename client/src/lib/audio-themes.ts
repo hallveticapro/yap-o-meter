@@ -509,12 +509,34 @@ export class HeartsTheme extends BaseEmojiTheme {
   protected getEmojis(): string[] {
     return ['❤️', '💕', '💖', '💗', '💘', '💝', '💞', '💟', '🧡', '💛', '💚', '💙', '💜', '🤍', '🖤', '🤎', '💔', '❣️', '💌'];
   }
+
+  protected drawBackground(): void {
+    // Valentine's Day pink and red gradient
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, 'rgba(255, 182, 193, 0.8)'); // Light pink
+    gradient.addColorStop(0.3, 'rgba(255, 105, 180, 0.8)'); // Hot pink
+    gradient.addColorStop(0.7, 'rgba(220, 20, 60, 0.8)'); // Crimson
+    gradient.addColorStop(1, 'rgba(139, 0, 0, 0.7)'); // Dark red
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+  }
 }
 
 // Geometric Shapes Theme - converted to emoji-based
 export class GeometricTheme extends BaseEmojiTheme {
   protected getEmojis(): string[] {
     return ['🔵', '🟢', '🟡', '🔴', '🟠', '🟣', '⚫', '⚪', '🟤', '🔶', '🔷', '🔸', '🔹', '🔺', '🔻', '💠', '🔳', '🔲', '◼️', '◻️', '▪️', '▫️'];
+  }
+
+  protected drawBackground(): void {
+    // Modern tech gradient with purple and blue tones
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, 'rgba(138, 43, 226, 0.8)'); // Blue violet
+    gradient.addColorStop(0.3, 'rgba(75, 0, 130, 0.8)'); // Indigo
+    gradient.addColorStop(0.7, 'rgba(25, 25, 112, 0.8)'); // Midnight blue
+    gradient.addColorStop(1, 'rgba(0, 0, 139, 0.7)'); // Dark blue
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.width, this.height);
   }
 }
 
@@ -634,5 +656,18 @@ export class WinterTheme extends BaseEmojiTheme {
 export class HappyFacesTheme extends BaseEmojiTheme {
   protected getEmojis(): string[] {
     return ['😊', '😄', '😃', '😁', '😆', '🤣', '😂', '🥰', '😍', '🤩', '😋', '😎', '🤗', '🥳', '😌', '🔥', '⭐', '💖', '🎉', '🌟', '✨', '🎊', '🦄', '🌈', '🎨', '🎭', '🎪', '🎯', '⚡', '💫', '🐱', '🐶', '🐸', '🐼', '🦊', '🐻', '🐷', '🐵', '🦁', '🐯'];
+  }
+
+  protected drawBackground(): void {
+    // Bright and fun rainbow gradient for emojis
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, 'rgba(255, 105, 180, 0.7)'); // Hot pink
+    gradient.addColorStop(0.2, 'rgba(255, 215, 0, 0.7)'); // Gold
+    gradient.addColorStop(0.4, 'rgba(50, 205, 50, 0.7)'); // Lime green
+    gradient.addColorStop(0.6, 'rgba(30, 144, 255, 0.7)'); // Dodger blue
+    gradient.addColorStop(0.8, 'rgba(186, 85, 211, 0.7)'); // Medium orchid
+    gradient.addColorStop(1, 'rgba(255, 69, 0, 0.7)'); // Orange red
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.width, this.height);
   }
 }
