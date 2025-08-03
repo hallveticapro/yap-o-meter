@@ -570,57 +570,12 @@ export class SpringTheme extends BaseEmojiTheme {
   }
 
   protected drawBackground(): void {
-    // Sky gradient
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(135, 206, 250, 0.8)'); // Light blue sky
-    gradient.addColorStop(1, 'rgba(144, 238, 144, 0.8)'); // Light green ground
+    gradient.addColorStop(0, 'rgba(255, 182, 193, 0.8)'); // Light pink
+    gradient.addColorStop(0.5, 'rgba(144, 238, 144, 0.8)'); // Light green
+    gradient.addColorStop(1, 'rgba(34, 139, 34, 0.7)'); // Forest green
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
-
-    // Draw flower field
-    const flowerCount = 25;
-    for (let i = 0; i < flowerCount; i++) {
-      const x = (this.width / flowerCount) * i + Math.random() * 40;
-      const y = this.height * 0.7 + Math.random() * (this.height * 0.25);
-      
-      // Flower stem
-      this.ctx.strokeStyle = 'rgba(34, 139, 34, 0.6)';
-      this.ctx.lineWidth = 2;
-      this.ctx.beginPath();
-      this.ctx.moveTo(x, y);
-      this.ctx.lineTo(x, y + 30);
-      this.ctx.stroke();
-      
-      // Flower petals
-      const petalColors = ['#FF69B4', '#FFB6C1', '#FF1493', '#FFC0CB', '#DA70D6'];
-      this.ctx.fillStyle = petalColors[Math.floor(Math.random() * petalColors.length)] + '80';
-      for (let petal = 0; petal < 6; petal++) {
-        const angle = (petal * Math.PI * 2) / 6;
-        const petalX = x + Math.cos(angle) * 8;
-        const petalY = y + Math.sin(angle) * 8;
-        this.ctx.beginPath();
-        this.ctx.arc(petalX, petalY, 4, 0, Math.PI * 2);
-        this.ctx.fill();
-      }
-      
-      // Flower center
-      this.ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, 3, 0, Math.PI * 2);
-      this.ctx.fill();
-    }
-
-    // Add some grass blades
-    this.ctx.strokeStyle = 'rgba(34, 139, 34, 0.4)';
-    this.ctx.lineWidth = 1;
-    for (let i = 0; i < 100; i++) {
-      const x = Math.random() * this.width;
-      const y = this.height * 0.8 + Math.random() * (this.height * 0.2);
-      this.ctx.beginPath();
-      this.ctx.moveTo(x, y);
-      this.ctx.lineTo(x + Math.random() * 4 - 2, y - Math.random() * 15);
-      this.ctx.stroke();
-    }
   }
 }
 
@@ -631,62 +586,13 @@ export class SummerTheme extends BaseEmojiTheme {
   }
 
   protected drawBackground(): void {
-    // Beach sky gradient
-    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height * 0.6);
-    gradient.addColorStop(0, 'rgba(135, 206, 250, 0.9)'); // Bright blue sky
-    gradient.addColorStop(1, 'rgba(255, 215, 0, 0.8)'); // Golden horizon
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
+    gradient.addColorStop(0, 'rgba(255, 215, 0, 0.9)'); // Gold
+    gradient.addColorStop(0.3, 'rgba(255, 140, 0, 0.8)'); // Dark orange
+    gradient.addColorStop(0.7, 'rgba(255, 20, 147, 0.8)'); // Deep pink
+    gradient.addColorStop(1, 'rgba(138, 43, 226, 0.7)'); // Blue violet
     this.ctx.fillStyle = gradient;
-    this.ctx.fillRect(0, 0, this.width, this.height * 0.6);
-
-    // Ocean waves
-    const waveGradient = this.ctx.createLinearGradient(0, this.height * 0.4, 0, this.height * 0.7);
-    waveGradient.addColorStop(0, 'rgba(0, 191, 255, 0.8)');
-    waveGradient.addColorStop(1, 'rgba(30, 144, 255, 0.9)');
-    this.ctx.fillStyle = waveGradient;
-    this.ctx.fillRect(0, this.height * 0.4, this.width, this.height * 0.3);
-
-    // Beach sand
-    const sandGradient = this.ctx.createLinearGradient(0, this.height * 0.7, 0, this.height);
-    sandGradient.addColorStop(0, 'rgba(238, 203, 173, 0.9)');
-    sandGradient.addColorStop(1, 'rgba(205, 133, 63, 0.8)');
-    this.ctx.fillStyle = sandGradient;
-    this.ctx.fillRect(0, this.height * 0.7, this.width, this.height * 0.3);
-
-    // Wave foam lines
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-    this.ctx.lineWidth = 2;
-    for (let i = 0; i < 3; i++) {
-      const waveY = this.height * 0.5 + i * 15 + Math.sin(Date.now() * 0.001 + i) * 5;
-      this.ctx.beginPath();
-      this.ctx.moveTo(0, waveY);
-      for (let x = 0; x <= this.width; x += 20) {
-        const y = waveY + Math.sin((x + Date.now() * 0.002) * 0.02) * 8;
-        this.ctx.lineTo(x, y);
-      }
-      this.ctx.stroke();
-    }
-
-    // Palm tree silhouettes
-    const palmCount = 3;
-    for (let i = 0; i < palmCount; i++) {
-      const x = (this.width / (palmCount + 1)) * (i + 1);
-      const y = this.height * 0.7;
-      
-      // Palm trunk
-      this.ctx.fillStyle = 'rgba(101, 67, 33, 0.8)';
-      this.ctx.fillRect(x - 8, y - 80, 16, 80);
-      
-      // Palm fronds
-      this.ctx.strokeStyle = 'rgba(34, 139, 34, 0.8)';
-      this.ctx.lineWidth = 4;
-      for (let frond = 0; frond < 6; frond++) {
-        const angle = (frond * Math.PI * 2) / 6;
-        this.ctx.beginPath();
-        this.ctx.moveTo(x, y - 80);
-        this.ctx.lineTo(x + Math.cos(angle) * 40, y - 80 + Math.sin(angle) * 25);
-        this.ctx.stroke();
-      }
-    }
+    this.ctx.fillRect(0, 0, this.width, this.height);
   }
 }
 
@@ -697,86 +603,13 @@ export class FallTheme extends BaseEmojiTheme {
   }
 
   protected drawBackground(): void {
-    // Fall sky gradient
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(255, 140, 0, 0.7)'); // Orange sunset sky
-    gradient.addColorStop(1, 'rgba(139, 69, 19, 0.8)'); // Brown earth
+    gradient.addColorStop(0, 'rgba(220, 20, 60, 0.8)'); // Crimson
+    gradient.addColorStop(0.3, 'rgba(255, 140, 0, 0.8)'); // Dark orange
+    gradient.addColorStop(0.7, 'rgba(255, 215, 0, 0.7)'); // Gold
+    gradient.addColorStop(1, 'rgba(160, 82, 45, 0.8)'); // Saddle brown
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
-
-    // Pumpkin patch ground
-    this.ctx.fillStyle = 'rgba(101, 67, 33, 0.6)';
-    this.ctx.fillRect(0, this.height * 0.8, this.width, this.height * 0.2);
-
-    // Pumpkins scattered around
-    const pumpkinCount = 12;
-    for (let i = 0; i < pumpkinCount; i++) {
-      const pumpkinX = Math.random() * this.width;
-      const pumpkinY = this.height * 0.75 + Math.random() * (this.height * 0.2);
-      const size = 15 + Math.random() * 25;
-      
-      // Pumpkin body
-      this.ctx.fillStyle = 'rgba(255, 165, 0, 0.8)';
-      this.ctx.beginPath();
-      this.ctx.arc(pumpkinX, pumpkinY, size, 0, Math.PI * 2);
-      this.ctx.fill();
-      
-      // Pumpkin ridges
-      this.ctx.strokeStyle = 'rgba(255, 140, 0, 0.9)';
-      this.ctx.lineWidth = 2;
-      let ridgeX = pumpkinX - size * 0.6;
-      for (let ridge = 0; ridge < 4; ridge++) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(ridgeX, pumpkinY - size);
-        this.ctx.lineTo(ridgeX, pumpkinY + size);
-        this.ctx.stroke();
-        ridgeX += size * 0.3;
-      }
-      
-      // Pumpkin stem
-      this.ctx.fillStyle = 'rgba(34, 139, 34, 0.8)';
-      this.ctx.fillRect(pumpkinX - 3, pumpkinY - size - 8, 6, 8);
-    }
-
-    // Fall trees in background
-    const treeCount = 8;
-    for (let i = 0; i < treeCount; i++) {
-      const x = (this.width / treeCount) * i + Math.random() * 50;
-      const y = this.height * 0.6 + Math.random() * (this.height * 0.15);
-      
-      // Tree trunk
-      this.ctx.fillStyle = 'rgba(101, 67, 33, 0.7)';
-      this.ctx.fillRect(x - 8, y, 16, this.height * 0.2);
-      
-      // Tree foliage (fall colors)
-      const foliageColors = ['rgba(220, 20, 60, 0.8)', 'rgba(255, 165, 0, 0.8)', 'rgba(255, 215, 0, 0.8)', 'rgba(160, 82, 45, 0.8)'];
-      this.ctx.fillStyle = foliageColors[Math.floor(Math.random() * foliageColors.length)];
-      this.ctx.beginPath();
-      this.ctx.arc(x, y - 20, 35, 0, Math.PI * 2);
-      this.ctx.fill();
-    }
-
-    // Falling leaves
-    this.ctx.fillStyle = 'rgba(255, 165, 0, 0.6)';
-    for (let i = 0; i < 20; i++) {
-      const x = Math.random() * this.width;
-      const y = Math.random() * this.height * 0.7;
-      const rotation = Math.random() * Math.PI * 2;
-      
-      this.ctx.save();
-      this.ctx.translate(x, y);
-      this.ctx.rotate(rotation);
-      this.ctx.beginPath();
-      this.ctx.moveTo(-5, -8);
-      this.ctx.lineTo(5, -8);
-      this.ctx.lineTo(8, 0);
-      this.ctx.lineTo(5, 8);
-      this.ctx.lineTo(-5, 8);
-      this.ctx.lineTo(-8, 0);
-      this.ctx.closePath();
-      this.ctx.fill();
-      this.ctx.restore();
-    }
   }
 }
 
@@ -787,79 +620,13 @@ export class WinterTheme extends BaseEmojiTheme {
   }
 
   protected drawBackground(): void {
-    // Winter sky gradient
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
-    gradient.addColorStop(0, 'rgba(176, 196, 222, 0.9)'); // Light steel blue
-    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.8)'); // Snow white
+    gradient.addColorStop(0, 'rgba(147, 197, 253, 0.9)'); // Light blue
+    gradient.addColorStop(0.3, 'rgba(196, 181, 253, 0.8)'); // Light purple
+    gradient.addColorStop(0.7, 'rgba(219, 234, 254, 0.8)'); // Very light blue
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.9)'); // White
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, this.width, this.height);
-
-    // Snow-covered ground
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-    this.ctx.fillRect(0, this.height * 0.7, this.width, this.height * 0.3);
-
-    // Snowy forest trees
-    const treeCount = 15;
-    for (let i = 0; i < treeCount; i++) {
-      const x = (this.width / treeCount) * i + Math.random() * 30;
-      const y = this.height * 0.4 + Math.random() * (this.height * 0.3);
-      const treeHeight = 40 + Math.random() * 60;
-      
-      // Pine tree shape
-      this.ctx.fillStyle = 'rgba(34, 139, 34, 0.8)';
-      this.ctx.beginPath();
-      this.ctx.moveTo(x, y);
-      this.ctx.lineTo(x - 15, y + treeHeight);
-      this.ctx.lineTo(x + 15, y + treeHeight);
-      this.ctx.closePath();
-      this.ctx.fill();
-      
-      // Tree trunk
-      this.ctx.fillStyle = 'rgba(101, 67, 33, 0.8)';
-      this.ctx.fillRect(x - 4, y + treeHeight, 8, 20);
-      
-      // Snow on tree
-      this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-      this.ctx.beginPath();
-      this.ctx.moveTo(x, y);
-      this.ctx.lineTo(x - 12, y + treeHeight * 0.7);
-      this.ctx.lineTo(x + 12, y + treeHeight * 0.7);
-      this.ctx.closePath();
-      this.ctx.fill();
-    }
-
-    // Falling snowflakes
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    for (let i = 0; i < 50; i++) {
-      const x = Math.random() * this.width;
-      const y = Math.random() * this.height;
-      const size = 1 + Math.random() * 3;
-      
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, size, 0, Math.PI * 2);
-      this.ctx.fill();
-      
-      // Snowflake arms
-      this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-      this.ctx.lineWidth = 1;
-      for (let arm = 0; arm < 6; arm++) {
-        const angle = (arm * Math.PI * 2) / 6;
-        this.ctx.beginPath();
-        this.ctx.moveTo(x, y);
-        this.ctx.lineTo(x + Math.cos(angle) * size * 2, y + Math.sin(angle) * size * 2);
-        this.ctx.stroke();
-      }
-    }
-
-    // Snow drifts
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    for (let i = 0; i < 8; i++) {
-      const x = Math.random() * this.width;
-      const y = this.height * 0.8 + Math.random() * (this.height * 0.15);
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, 20 + Math.random() * 30, 0, Math.PI, false);
-      this.ctx.fill();
-    }
   }
 }
 

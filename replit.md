@@ -124,7 +124,7 @@ Preferred communication style: Simple, everyday language.
 - **Social Media Attribution**: Added Threads, Instagram, and TikTok links (@hallveticapro) in settings sidebar
 - **Reading Theme**: New educational theme with books, pencils, teachers, and library elements for literacy classes
 - **Theme Organization**: Implemented nested theme groups (General, School, Seasons) for better categorization
-- **Enhanced Seasonal Backgrounds**: Added detailed season-specific backgrounds (flower field for spring, beach for summer, pumpkin patch for fall, snowy forest for winter)
+- **Enhanced Seasonal Gradients**: Brightened seasonal gradients with vibrant multi-color transitions for each season
 - **School Theme Gradients**: Added color-coded gradients for school themes (red for reading, blue for math, green for science)
 - **American Terminology**: Changed "autumn" to "fall" throughout codebase for American users
 - **Math Theme Cleanup**: Removed unclear 🆔 emoji from math theme emojis
