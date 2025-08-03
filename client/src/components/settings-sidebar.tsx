@@ -269,7 +269,7 @@ export default function SettingsSidebar({
         {/* Copyright Information */}
         <div className="mt-auto pt-6 border-t border-slate-600/30">
           <div className="text-center text-xs text-slate-400 space-y-2">
-            <p>© 2025 Yap-o-Meter</p>
+            <p>© {new Date().getFullYear()} Yap-o-Meter</p>
             <p>Made for educators with love ❤️</p>
             <p className="text-slate-500">Created by Andrew Hall using Replit</p>
             
