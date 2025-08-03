@@ -272,9 +272,9 @@ export default function SettingsSidebar({
 
         {/* Social Media & Support Section */}
         <div className="mt-auto pt-6 border-t border-slate-600/30">
-          <div className="text-center text-xs text-slate-400 space-y-2">
+          <div className="text-center text-xs text-slate-400">
             {/* Support CTA */}
-            <div className="mt-4 p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30">
+            <div className="p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30">
               <div className="text-center">
                 <p className="text-xs text-amber-200 mb-2">Enjoying Yap-o-Meter?</p>
                 <a 
