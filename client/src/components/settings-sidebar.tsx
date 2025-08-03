@@ -273,8 +273,24 @@ export default function SettingsSidebar({
             <p>Made for educators with love ❤️</p>
             <p className="text-slate-500">Created by Andrew Hall using Replit</p>
             
+            {/* Support CTA */}
+            <div className="mt-4 p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30">
+              <div className="text-center">
+                <p className="text-xs text-amber-200 mb-2">Enjoying Yap-o-Meter?</p>
+                <a 
+                  href="https://buymeacoffee.com/hallveticapro" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium rounded-lg transition-colors duration-200"
+                >
+                  <FontAwesomeIcon icon={faCoffee} className="w-4 h-4" />
+                  Buy me a coffee
+                </a>
+              </div>
+            </div>
+
             {/* Social Media Links */}
-            <div className="flex justify-center gap-3 pt-2">
+            <div className="flex justify-center gap-3 pt-4">
               {/* GitHub */}
               <a 
                 href="https://github.com/hallveticapro/yap-o-meter" 
@@ -318,22 +334,6 @@ export default function SettingsSidebar({
               >
                 <FontAwesomeIcon icon={faTiktok} className="w-5 h-5" />
               </a>
-            </div>
-
-            {/* Support CTA */}
-            <div className="mt-4 p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30">
-              <div className="text-center">
-                <p className="text-xs text-amber-200 mb-2">Enjoying Yap-o-Meter?</p>
-                <a 
-                  href="https://buymeacoffee.com/hallveticapro" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium rounded-lg transition-colors duration-200"
-                >
-                  <FontAwesomeIcon icon={faCoffee} className="w-4 h-4" />
-                  Buy me a coffee
-                </a>
-              </div>
             </div>
           </div>
         </div>
