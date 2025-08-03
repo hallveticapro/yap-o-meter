@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { VoiceMeterSettings } from "@/pages/voice-meter";
 
 interface SettingsSidebarProps {
@@ -254,14 +255,23 @@ export default function SettingsSidebar({
                   </div>
                 </div>
                 
-                <Button
-                  onClick={onCalibrate}
-                  disabled={isCalibrating}
-                  className="w-full glass-button rounded-lg py-2 px-4 text-white hover:bg-white/25 transition-all"
-                >
-                  <SettingsIcon className="w-4 h-4 mr-2" />
-                  {isCalibrating ? 'Calibrating...' : 'Calibrate Microphone'}
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={onCalibrate}
+                        disabled={isCalibrating}
+                        className="w-full glass-button rounded-lg py-2 px-4 text-white hover:bg-white/25 transition-all"
+                      >
+                        <SettingsIcon className="w-4 h-4 mr-2" />
+                        {isCalibrating ? 'Calibrating...' : 'Calibrate Microphone'}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-sm">Automatically adjusts the microphone sensitivity based on your room's ambient noise level</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </CollapsibleContent>
           </Collapsible>
