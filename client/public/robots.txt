@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://yap-o-meter.replit.app/sitemap.xml
+Sitemap: https://yap.ahall.dev/sitemap.xml
 
 # Allow all educational and classroom management tools crawlers
 User-agent: Googlebot
