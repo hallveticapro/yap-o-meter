@@ -10,7 +10,7 @@ import {
   ReadingTheme,
   SpringTheme,
   SummerTheme,
-  AutumnTheme,
+  FallTheme,
   WinterTheme,
   type Theme 
 } from "@/lib/audio-themes";
@@ -71,8 +71,8 @@ export default function CanvasVisualizer({ theme, volumeLevel, threshold, showTh
       case 'summer':
         themeInstanceRef.current = new SummerTheme(ctx, onThresholdCrossed);
         break;
-      case 'autumn':
-        themeInstanceRef.current = new AutumnTheme(ctx, onThresholdCrossed);
+      case 'fall':
+        themeInstanceRef.current = new FallTheme(ctx, onThresholdCrossed);
         break;
       case 'winter':
         themeInstanceRef.current = new WinterTheme(ctx, onThresholdCrossed);

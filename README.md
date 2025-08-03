@@ -36,7 +36,7 @@ The Yap-o-Meter is designed specifically for educational environments where mana
 #### Seasonal Themes
 - **Spring Garden**: Flowers and spring elements with green/pink gradients
 - **Summer Beach**: Sun and beach vibes with gold/magenta gradients
-- **Autumn Leaves**: Fall colors with crimson/brown gradients
+- **Fall Leaves**: Fall colors with crimson/brown gradients
 - **Winter Wonderland**: Ice and snow with blue/purple gradients
 
 ### 🔊 Audio Features
