@@ -271,8 +271,8 @@ export default function SettingsSidebar({
         </div>
 
         {/* Social Media & Support Section */}
-        <div className="mt-auto pt-6 border-t border-slate-600/30">
-          <div className="text-center text-xs text-slate-400">
+        <div className="mt-auto pt-4 border-t border-slate-600/30">
+          <div className="text-center text-xs text-slate-400 space-y-4">
             {/* Support CTA */}
             <div className="p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30">
               <div className="text-center">
@@ -290,7 +290,7 @@ export default function SettingsSidebar({
             </div>
 
             {/* Social Media CTA */}
-            <div className="mt-4 p-3 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg border border-blue-500/30">
+            <div className="p-3 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg border border-blue-500/30">
               <div className="text-center">
                 <p className="text-xs text-blue-200 mb-3">Follow me on social media</p>
                 <div className="flex justify-center gap-3">
