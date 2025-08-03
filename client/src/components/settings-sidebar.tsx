@@ -273,8 +273,6 @@ export default function SettingsSidebar({
         {/* Social Media & Support Section */}
         <div className="mt-auto pt-6 border-t border-slate-600/30">
           <div className="text-center text-xs text-slate-400 space-y-2">
-            <p>Made for educators with love by Andrew Hall using Replit ❤️</p>
-            
             {/* Support CTA */}
             <div className="mt-4 p-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30">
               <div className="text-center">
@@ -347,7 +345,8 @@ export default function SettingsSidebar({
 
         {/* Copyright Information */}
         <div className="mt-4 pt-4 border-t border-slate-600/30">
-          <div className="text-center text-xs text-slate-400">
+          <div className="text-center text-xs text-slate-400 space-y-2">
+            <p>Made for educators with love by Andrew Hall using Replit ❤️</p>
             <p>© {new Date().getFullYear()} Yap-o-Meter</p>
           </div>
         </div>
