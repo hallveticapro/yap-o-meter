@@ -2,6 +2,7 @@ import { useState } from "react";
 import { X, ChevronDown, Sparkles, Waves, Circle, Settings as SettingsIcon } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faThreads, faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
+import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -273,7 +274,7 @@ export default function SettingsSidebar({
             <p>Made for educators with love ❤️</p>
             <p className="text-slate-500">Created by Andrew Hall using Replit</p>
             
-            {/* Social Media Links */}
+            {/* Social Media & Support Links */}
             <div className="flex justify-center gap-3 pt-2">
               {/* GitHub */}
               <a 
@@ -317,6 +318,17 @@ export default function SettingsSidebar({
                 title="Follow @hallveticapro on TikTok"
               >
                 <FontAwesomeIcon icon={faTiktok} className="w-5 h-5" />
+              </a>
+
+              {/* Buy Me A Coffee */}
+              <a 
+                href="https://buymeacoffee.com/hallveticapro" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-amber-400 transition-colors duration-200 glass-button rounded-lg p-2"
+                title="Support development - Buy me a coffee"
+              >
+                <FontAwesomeIcon icon={faCoffee} className="w-5 h-5" />
               </a>
             </div>
           </div>
