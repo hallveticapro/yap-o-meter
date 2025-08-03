@@ -291,51 +291,56 @@ export default function SettingsSidebar({
               </div>
             </div>
 
-            {/* Social Media Links */}
-            <div className="flex justify-center gap-3 pt-4">
-              {/* GitHub */}
-              <a 
-                href="https://github.com/hallveticapro/yap-o-meter" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-slate-400 hover:text-white transition-colors duration-200 glass-button rounded-lg p-2"
-                title="View source code on GitHub"
-              >
-                <FontAwesomeIcon icon={faGithub} className="w-5 h-5" />
-              </a>
+            {/* Social Media CTA */}
+            <div className="mt-4 p-3 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg border border-blue-500/30">
+              <div className="text-center">
+                <p className="text-xs text-blue-200 mb-3">Follow me on social media</p>
+                <div className="flex justify-center gap-3">
+                  {/* GitHub */}
+                  <a 
+                    href="https://github.com/hallveticapro/yap-o-meter" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-300 hover:text-white transition-colors duration-200 bg-blue-600/20 hover:bg-blue-500/30 rounded-lg p-2"
+                    title="View source code on GitHub"
+                  >
+                    <FontAwesomeIcon icon={faGithub} className="w-5 h-5" />
+                  </a>
 
-              {/* Threads */}
-              <a 
-                href="https://www.threads.net/@hallveticapro" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-slate-400 hover:text-white transition-colors duration-200 glass-button rounded-lg p-2"
-                title="Follow @hallveticapro on Threads"
-              >
-                <FontAwesomeIcon icon={faThreads} className="w-5 h-5" />
-              </a>
+                  {/* Threads */}
+                  <a 
+                    href="https://www.threads.net/@hallveticapro" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-300 hover:text-white transition-colors duration-200 bg-blue-600/20 hover:bg-blue-500/30 rounded-lg p-2"
+                    title="Follow @hallveticapro on Threads"
+                  >
+                    <FontAwesomeIcon icon={faThreads} className="w-5 h-5" />
+                  </a>
 
-              {/* Instagram */}
-              <a 
-                href="https://www.instagram.com/hallveticapro" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-slate-400 hover:text-white transition-colors duration-200 glass-button rounded-lg p-2"
-                title="Follow @hallveticapro on Instagram"
-              >
-                <FontAwesomeIcon icon={faInstagram} className="w-5 h-5" />
-              </a>
+                  {/* Instagram */}
+                  <a 
+                    href="https://www.instagram.com/hallveticapro" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-300 hover:text-white transition-colors duration-200 bg-blue-600/20 hover:bg-blue-500/30 rounded-lg p-2"
+                    title="Follow @hallveticapro on Instagram"
+                  >
+                    <FontAwesomeIcon icon={faInstagram} className="w-5 h-5" />
+                  </a>
 
-              {/* TikTok */}
-              <a 
-                href="https://www.tiktok.com/@hallveticapro" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-slate-400 hover:text-white transition-colors duration-200 glass-button rounded-lg p-2"
-                title="Follow @hallveticapro on TikTok"
-              >
-                <FontAwesomeIcon icon={faTiktok} className="w-5 h-5" />
-              </a>
+                  {/* TikTok */}
+                  <a 
+                    href="https://www.tiktok.com/@hallveticapro" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-300 hover:text-white transition-colors duration-200 bg-blue-600/20 hover:bg-blue-500/30 rounded-lg p-2"
+                    title="Follow @hallveticapro on TikTok"
+                  >
+                    <FontAwesomeIcon icon={faTiktok} className="w-5 h-5" />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
