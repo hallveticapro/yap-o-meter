@@ -9,24 +9,27 @@ The Yap-o-Meter is designed specifically for educational environments where mana
 ## ✨ Recent Updates (August 2025)
 
 - **Performance Breakthrough**: Canvas emoji caching system enables smooth dynamic sizing (30-60px) without lag
-- **Enhanced Stars Theme**: Deep space background with nebula, planets, and improved star visibility
+- **Enhanced Visual Themes**: Each theme now has unique, vibrant gradient backgrounds
 - **Explosive Interactions**: Click anywhere to launch particles with smart threshold alert prevention  
 - **Professional Branding**: Complete SEO setup with favicons, social cards, and metadata
 - **Docker Deployment**: Production-ready containerization with GitHub Actions CI/CD
 - **Open Source**: Full source code available with proper attribution and social links
 - **Reading Theme**: New educational theme with books, pencils, and library emojis
 - **Organized Theme Groups**: Nested categories for School and Seasons themes
+- **FontAwesome Icons**: Clean, professional social media and GitHub icons
 
 ## Features
 
 ### 🎨 Visual Themes
 
+Each theme features unique, vibrant gradient backgrounds that create immersive visual experiences without distracting animations.
+
 #### General Themes
-- **Bouncing Balls**: Colorful geometric balls that bounce with increased volume
-- **Emojis**: Fun emoji particles that dance and move with sound
-- **Stars**: Twinkling star emojis that respond to audio levels
-- **Hearts**: Loving heart emojis bouncing with joy
-- **Geometric Shapes**: Various colorful geometric patterns in motion
+- **Bouncing Balls**: Colorful geometric balls that bounce with increased volume (subtle gradient background)
+- **Emojis**: Fun emoji particles that dance and move with sound (bright rainbow gradient background)
+- **Stars**: Twinkling star emojis that respond to audio levels (deep space background with nebula and planets)
+- **Hearts**: Loving heart emojis bouncing with joy (Valentine's Day pink-to-red gradient background)
+- **Geometric Shapes**: Various colorful geometric patterns in motion (modern tech purple-to-blue gradient background)
 
 #### School Themes
 - **Science Lab**: Science-themed emojis perfect for STEM classrooms
@@ -34,10 +37,10 @@ The Yap-o-Meter is designed specifically for educational environments where mana
 - **Reading Time**: Books, pencils, teachers, and library learning elements
 
 #### Seasonal Themes
-- **Spring Garden**: Flowers and spring elements with green/pink gradients
-- **Summer Beach**: Sun and beach vibes with gold/magenta gradients
-- **Fall Leaves**: Fall colors with crimson/brown gradients
-- **Winter Wonderland**: Ice and snow with blue/purple gradients
+- **Spring Garden**: Flowers and spring elements with pink-to-green-to-forest green gradient
+- **Summer Beach**: Sun and beach vibes with gold-to-orange-to-pink-to-violet sunset gradient
+- **Fall Leaves**: Fall colors with crimson-to-orange-to-gold-to-brown gradient
+- **Winter Wonderland**: Ice and snow with light blue-to-purple-to-white gradient
 
 ### 🔊 Audio Features
 - **Real-time Audio Processing**: Uses Web Audio API for instant volume detection

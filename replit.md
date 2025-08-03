@@ -128,3 +128,5 @@ Preferred communication style: Simple, everyday language.
 - **School Theme Gradients**: Added color-coded gradients for school themes (red for reading, blue for math, green for science)
 - **American Terminology**: Changed "autumn" to "fall" throughout codebase for American users
 - **Math Theme Cleanup**: Removed unclear 🆔 emoji from math theme emojis
+- **FontAwesome Icons**: Replaced all social media and GitHub icons with proper FontAwesome brand icons
+- **Unique Theme Gradients**: Added distinct gradient backgrounds for all general themes (rainbow for emojis, Valentine's colors for hearts, tech purple/blue for geometric shapes)
