@@ -40,7 +40,7 @@ function createBeepSound(volume: number = 50): void {
 
     gainNode.gain.setValueAtTime(0, audioContext.currentTime);
     gainNode.gain.linearRampToValueAtTime(
-      (volume / 100) * 0.6,
+      (volume / 100) * 1.2,
       audioContext.currentTime + 0.1
     );
     gainNode.gain.exponentialRampToValueAtTime(
@@ -91,7 +91,7 @@ function createShushSound(volume: number = 50): void {
 
     gainNode.gain.setValueAtTime(0, audioContext.currentTime);
     gainNode.gain.linearRampToValueAtTime(
-      (volume / 100) * 0.4,
+      (volume / 100) * 0.8,
       audioContext.currentTime + 0.1
     );
     gainNode.gain.exponentialRampToValueAtTime(
@@ -130,7 +130,7 @@ function createDingSound(volume: number = 50): void {
       const startTime = audioContext.currentTime + i * 0.3;
       gainNode.gain.setValueAtTime(0, startTime);
       gainNode.gain.linearRampToValueAtTime(
-        (volume / 100) * 0.6,
+        (volume / 100) * 1.2,
         startTime + 0.05
       );
       gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.2);
@@ -167,7 +167,7 @@ function createChimeSound(volume: number = 50): void {
       const startTime = audioContext.currentTime + index * 0.1;
       gainNode.gain.setValueAtTime(0, startTime);
       gainNode.gain.linearRampToValueAtTime(
-        (volume / 100) * 0.4,
+        (volume / 100) * 0.8,
         startTime + 0.1
       );
       gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 1.0);
@@ -200,7 +200,7 @@ function createBellSound(volume: number = 50): void {
 
     gainNode.gain.setValueAtTime(0, audioContext.currentTime);
     gainNode.gain.linearRampToValueAtTime(
-      (volume / 100) * 0.8,
+      (volume / 100) * 1.16,
       audioContext.currentTime + 0.1
     );
     gainNode.gain.exponentialRampToValueAtTime(
