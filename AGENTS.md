@@ -25,7 +25,7 @@ Yap-o-Meter is a classroom voice meter for elementary teachers and students. It 
 - `client/src/hooks/use-microphone.ts`: explicit microphone lifecycle, Web Audio analyser, cleanup, calibration sampling.
 - `client/src/lib/voice-meter-settings.ts`: defaults, presets, sanitization, calibration/profile helpers.
 - `client/src/lib/audio-level.ts`: volume calculation helper.
-- `client/src/lib/audio-alerts.ts`: generated local alert sounds; closes temporary AudioContexts.
+- `client/src/lib/audio-alerts.ts`: generated local alert sounds; primes/reuses an output AudioContext from the teacher start action.
 - `client/src/components/canvas-visualizer.tsx`: stable canvas loop, visual themes, reduced-motion rendering.
 - `client/src/components/settings-sidebar.tsx`: teacher settings, presets, profiles, import/export.
 - `client/src/components/status-panel.tsx`: live status, stop/pause controls, history, calibration review.
@@ -39,20 +39,20 @@ Yap-o-Meter is a classroom voice meter for elementary teachers and students. It 
 | --- | --- | --- |
 | Install dependencies | `npm ci` | Used by Docker/CI; local install currently present. |
 | Dev server | `npm run dev` | Script exists; serves on `PORT` or 5000. |
-| Lint | `npm run lint` | Passed on 2026-06-03. |
-| TypeScript check | `npm run check` | Passed on 2026-06-03. |
-| Tests | `npm run test` | Passed on 2026-06-03; 10 tests. |
-| Build | `npm run build` | Passed on 2026-06-03. |
-| Production start | `npm run start` | Passed via local smoke test on 2026-06-03 after build. |
-| Docker build | `docker build -t yap-o-meter-audit-verify .` | Passed on 2026-06-03. |
-| Compose validation | `docker compose config` | Passed on 2026-06-03. |
-| Compose build | `docker compose build` | Passed on 2026-06-03. |
-| Docker image smoke | run image and curl `/api/health` | Passed on 2026-06-03. |
+| Lint | `npm run lint` | Passed on 2026-06-04. |
+| TypeScript check | `npm run check` | Passed on 2026-06-04. |
+| Tests | `npm run test` | Passed on 2026-06-04; 16 tests. |
+| Build | `npm run build` | Passed on 2026-06-04. |
+| Production start | `npm run start` | Passed via local smoke test on 2026-06-04 after build. |
+| Docker build | `docker build -t yap-o-meter-post-audit-verify .` | Passed on 2026-06-04. |
+| Compose validation | `docker compose config` | Passed on 2026-06-04. |
+| Compose build | `docker compose build` | Passed on 2026-06-04. |
+| Docker image smoke | run image and curl `/api/health` | Passed on 2026-06-04. |
 
 ## Environment Variables
 
 - `PORT`: optional server port, defaults to `5000`.
-- `NODE_ENV`: development or production; npm scripts set it.
+- `NODE_ENV`: development or production; npm scripts and compose set it. Set `NODE_ENV=production` for raw Docker/Unraid runs.
 
 No database URL, session secret, account system, or server-side data store is required by the current app.
 

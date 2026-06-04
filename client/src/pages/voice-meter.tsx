@@ -7,7 +7,7 @@ import StatusPanel from "@/components/status-panel";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useMicrophone } from "@/hooks/use-microphone";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-import { playAlert } from "@/lib/audio-alerts";
+import { closeAlertAudio, playAlert, primeAlertAudio } from "@/lib/audio-alerts";
 import {
   DEFAULT_SETTINGS,
   applyPreset,
@@ -62,6 +62,20 @@ export default function VoiceMeter() {
   } = useMicrophone(settings.sensitivity, settings.threshold);
 
   const effectiveReducedMotion = settings.reducedMotion || prefersReducedMotion;
+
+  const handleRequestPermission = async () => {
+    primeAlertAudio();
+    const didStart = await requestPermission();
+    if (!didStart) {
+      await closeAlertAudio();
+    }
+    return didStart;
+  };
+
+  const handleStopMicrophone = async () => {
+    await stopMicrophone();
+    await closeAlertAudio();
+  };
 
   const updateSettings = (newSettings: Partial<VoiceMeterSettings>) => {
     setStoredSettings((prev) => sanitizeSettings({ ...prev, ...newSettings }));
@@ -144,6 +158,7 @@ export default function VoiceMeter() {
       if (statusPanelTimeoutRef.current) {
         clearTimeout(statusPanelTimeoutRef.current);
       }
+      void closeAlertAudio();
     };
   }, []);
 
@@ -292,7 +307,7 @@ export default function VoiceMeter() {
   if (!isMicrophoneActive) {
     return (
       <PermissionOverlay
-        onRequestPermission={requestPermission}
+        onRequestPermission={handleRequestPermission}
         status={status}
         error={permissionError}
       />
@@ -330,7 +345,7 @@ export default function VoiceMeter() {
               isMicrophoneActive={isMicrophoneActive}
               isPaused={isPaused}
               onTogglePause={togglePause}
-              onStopMicrophone={() => void stopMicrophone()}
+              onStopMicrophone={() => void handleStopMicrophone()}
               onCalibrate={handleCalibrate}
               isCalibrating={isCalibrating}
               calibrationSuggestion={calibrationSuggestion}

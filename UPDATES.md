@@ -237,3 +237,67 @@ Fixed the canvas visualizer reset loop that caused particles to look chaotic imm
 
 - The visualizer now stores the threshold callback in a ref so live volume rerenders do not recreate the active theme instance and randomize all particles.
 - Older persisted `lowStimulation: true` settings migrate into `reducedMotion: true`.
+
+## 2026-06-04 - Post-implementation audit and alert sound fix
+
+### Summary
+
+Completed a post-implementation audit against `AGENTS.md`, `TASKS.md`, `AUDIT-2026-06-03.md`, `UPDATES.md`, `README.md`, package/build files, Docker/compose files, and the GHCR workflow. Fixed the requested threshold-alert sound regression and restored the real copyright symbol in the settings footer.
+
+### Files Created
+
+- `POST_IMPLEMENTATION_AUDIT-2026-06-04.md`
+- `client/src/lib/audio-alerts.test.ts`
+
+### Files Updated
+
+- `AGENTS.md`
+- `README.md`
+- `UPDATES.md`
+- `client/src/components/settings-sidebar.tsx`
+- `client/src/lib/audio-alerts.ts`
+- `client/src/pages/voice-meter.tsx`
+
+### Key Results
+
+- Prior audit findings appear resolved in repository-local code and docs.
+- Functionality suggestions are implemented, with offline/PWA and classroom-device behavior still needing real-device validation.
+- Alert sounds now prime/reuse an output `AudioContext` from the teacher start action and close it on stop/unmount.
+- Theme picker emoji labels and the combined reduced-motion setting were already preserved by the previous follow-up commit.
+- README and AGENTS now document `NODE_ENV=production` for raw Docker/GHCR/Unraid runs after Docker smoke testing showed an envless raw image logs development.
+- Replit cleanup remains complete for active app/deployment files; only historical/task/audit/update references remain.
+
+### Commands Run
+
+| Command | Result | Notes |
+| --- | --- | --- |
+| `date +%F` | Passed | Returned `2026-06-04`; used for the post-audit filename. |
+| `npm run test -- client/src/lib/audio-alerts.test.ts` | Passed | 1 file, 3 tests. |
+| `npm run lint` | Passed | ESLint completed cleanly. |
+| `npm run check` | Passed | TypeScript completed cleanly. |
+| `npm run test` | Passed | 5 test files, 16 tests. |
+| `npm run build` | Passed | Production bundle completed cleanly. |
+| `npm audit --omit=dev` | Passed | 0 production dependency vulnerabilities. |
+| `npm audit` | Failed as expected | Full audit still reports Vite/esbuild dev-toolchain advisories requiring a breaking major upgrade path. |
+| `rg -n "replit|\\.replit|replit\\.nix" . -g '!node_modules' -g '!.git' -g '!dist'` | Passed | Historical/task/audit/update references only. |
+| `docker compose config` | Passed | Compose config includes production env, port mapping, restart policy, and `/api/health`. |
+| `docker build -t yap-o-meter-post-audit-verify .` | Passed | Image build completed; production dependency install reported 0 vulnerabilities. |
+| `docker compose build` | Passed | Compose build completed. |
+| `PORT=5054 npm run start` plus `curl /api/health` | Passed | Returned `{"status":"ok"}`. |
+| `docker run --rm -p 5055:5000 yap-o-meter-post-audit-verify` plus `curl /api/health` | Passed with note | Health passed; envless raw image logs development. |
+| `docker run --rm -e NODE_ENV=production -p 5056:5000 yap-o-meter-post-audit-verify` plus `curl /api/health` | Passed | Health passed and server logged production. |
+| `gh workflow list` | Passed | GHCR workflow is active. |
+| `gh run list --limit 5 --branch main` | Passed | Five most recent main-branch workflow runs were successful before this audit commit. |
+
+### Follow-Up Needed
+
+- Manually verify microphone prompts, alert audio output, fullscreen/display mode, readability, and performance on iOS Safari, Android Chrome, Chromebooks, projectors, smartboards, and school-managed devices.
+- Verify the physical Unraid server, reverse proxy, HTTPS route, and GHCR pull permissions from the owner's deployment environment.
+- Plan a Vite/esbuild/Vitest major-version upgrade to resolve the remaining full `npm audit` dev-toolchain advisories.
+- Consider setting `ENV NODE_ENV=production` in the Dockerfile so raw image runs default to production logs/config.
+- Track the GitHub Actions Node runtime deprecation noted in previous workflow verification.
+
+### Git Status
+
+- Audit/fix commit hash: recorded in the follow-up push-verification entry after the commit is created.
+- Push status: recorded in the follow-up push-verification entry after push completes.

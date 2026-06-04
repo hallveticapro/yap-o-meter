@@ -1,30 +1,15 @@
-export function playAlert(alertType: string, volume: number = 50): void {
-  // Use Web Audio API for all alerts to ensure they work
-  switch (alertType) {
-    case "shush":
-      createShushSound(volume);
-      break;
-    case "ding":
-      createDingSound(volume);
-      break;
-    case "chime":
-      createChimeSound(volume);
-      break;
-    case "bell":
-      createBellSound(volume);
-      break;
-    default:
-      createBeepSound(volume);
-      break;
-  }
-}
-
 type WindowWithWebkitAudioContext = Window &
   typeof globalThis & {
     webkitAudioContext?: typeof AudioContext;
   };
 
-function createAudioContext() {
+let alertAudioContext: AudioContext | null = null;
+
+function getAlertAudioContext() {
+  if (alertAudioContext && alertAudioContext.state !== "closed") {
+    return alertAudioContext;
+  }
+
   const AudioContextConstructor =
     window.AudioContext ||
     (window as WindowWithWebkitAudioContext).webkitAudioContext;
@@ -33,26 +18,75 @@ function createAudioContext() {
     throw new Error("Web Audio API is not supported");
   }
 
-  return new AudioContextConstructor();
+  alertAudioContext = new AudioContextConstructor();
+  return alertAudioContext;
 }
 
-function closeAudioContextAfter(audioContext: AudioContext, seconds: number) {
-  window.setTimeout(() => {
-    if (audioContext.state !== "closed") {
-      void audioContext.close();
-    }
-  }, seconds * 1000);
-}
-
-function createBeepSound(volume: number = 50): void {
+export function primeAlertAudio(): boolean {
   try {
-    const audioContext = createAudioContext();
-
-    // Resume context if suspended
+    const audioContext = getAlertAudioContext();
     if (audioContext.state === "suspended") {
-      audioContext.resume();
+      void audioContext.resume();
+    }
+    return true;
+  } catch (error) {
+    console.warn("Failed to prime alert audio:", error);
+    return false;
+  }
+}
+
+export async function closeAlertAudio(): Promise<void> {
+  if (!alertAudioContext) return;
+
+  const audioContext = alertAudioContext;
+  alertAudioContext = null;
+
+  if (audioContext.state !== "closed") {
+    await audioContext.close();
+  }
+}
+
+export function playAlert(alertType: string, volume: number = 50): void {
+  try {
+    const audioContext = getAlertAudioContext();
+    const scheduleAlert = () => {
+      switch (alertType) {
+        case "shush":
+          createShushSound(audioContext, volume);
+          break;
+        case "ding":
+          createDingSound(audioContext, volume);
+          break;
+        case "chime":
+          createChimeSound(audioContext, volume);
+          break;
+        case "bell":
+          createBellSound(audioContext, volume);
+          break;
+        default:
+          createBeepSound(audioContext, volume);
+          break;
+      }
+    };
+
+    if (audioContext.state === "suspended") {
+      void audioContext.resume().then(scheduleAlert).catch((error: unknown) => {
+        console.warn("Failed to resume alert audio:", error);
+      });
+      return;
     }
 
+    scheduleAlert();
+  } catch (error) {
+    console.warn("Failed to play alert sound:", error);
+  }
+}
+
+function createBeepSound(
+  audioContext: AudioContext,
+  volume: number = 50,
+): void {
+  try {
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -74,20 +108,16 @@ function createBeepSound(volume: number = 50): void {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
-    closeAudioContextAfter(audioContext, 0.75);
   } catch (error) {
     console.warn("Failed to create beep sound:", error);
   }
 }
 
-function createShushSound(volume: number = 50): void {
+function createShushSound(
+  audioContext: AudioContext,
+  volume: number = 50,
+): void {
   try {
-    const audioContext = createAudioContext();
-
-    // Resume context if suspended
-    if (audioContext.state === "suspended") {
-      audioContext.resume();
-    }
     const bufferSize = audioContext.sampleRate * 0.8; // 0.8 seconds
     const buffer = audioContext.createBuffer(
       1,
@@ -125,21 +155,16 @@ function createShushSound(volume: number = 50): void {
 
     source.start(audioContext.currentTime);
     source.stop(audioContext.currentTime + 0.8);
-    closeAudioContextAfter(audioContext, 1);
   } catch (error) {
     console.warn("Failed to create shush sound:", error);
   }
 }
 
-function createDingSound(volume: number = 50): void {
+function createDingSound(
+  audioContext: AudioContext,
+  volume: number = 50,
+): void {
   try {
-    const audioContext = createAudioContext();
-
-    // Resume context if suspended
-    if (audioContext.state === "suspended") {
-      audioContext.resume();
-    }
-
     // Create three ding sounds
     for (let i = 0; i < 3; i++) {
       const oscillator = audioContext.createOscillator();
@@ -162,20 +187,16 @@ function createDingSound(volume: number = 50): void {
       oscillator.start(startTime);
       oscillator.stop(startTime + 0.2);
     }
-    closeAudioContextAfter(audioContext, 1.1);
   } catch (error) {
     console.warn("Failed to create ding sound:", error);
   }
 }
 
-function createChimeSound(volume: number = 50): void {
+function createChimeSound(
+  audioContext: AudioContext,
+  volume: number = 50,
+): void {
   try {
-    const audioContext = createAudioContext();
-
-    // Resume context if suspended
-    if (audioContext.state === "suspended") {
-      audioContext.resume();
-    }
     const frequencies = [523, 659, 784]; // C, E, G chord
 
     frequencies.forEach((freq, index) => {
@@ -199,20 +220,16 @@ function createChimeSound(volume: number = 50): void {
       oscillator.start(startTime);
       oscillator.stop(startTime + 1.0);
     });
-    closeAudioContextAfter(audioContext, 1.5);
   } catch (error) {
     console.warn("Failed to create chime sound:", error);
   }
 }
 
-function createBellSound(volume: number = 50): void {
+function createBellSound(
+  audioContext: AudioContext,
+  volume: number = 50,
+): void {
   try {
-    const audioContext = createAudioContext();
-
-    // Resume context if suspended
-    if (audioContext.state === "suspended") {
-      audioContext.resume();
-    }
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -234,7 +251,6 @@ function createBellSound(volume: number = 50): void {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 2.0);
-    closeAudioContextAfter(audioContext, 2.25);
   } catch (error) {
     console.warn("Failed to create bell sound:", error);
   }

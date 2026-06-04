@@ -69,7 +69,7 @@ npm run start
 Only variable names are documented here; do not commit environment values.
 
 - `PORT`: optional server port. Defaults to `5000`.
-- `NODE_ENV`: set by the npm scripts; use `production` for the bundled server.
+- `NODE_ENV`: set by npm scripts and compose; use `production` for raw Docker/GHCR/Unraid runs.
 
 The current app does not require a database, session secret, account system, or persistent server-side storage.
 
@@ -78,13 +78,13 @@ The current app does not require a database, session secret, account system, or 
 Build locally:
 
 ```bash
-docker build -t yap-o-meter-audit-verify .
+docker build -t yap-o-meter-local .
 ```
 
 Run a local image:
 
 ```bash
-docker run --rm -p 5000:5000 -e PORT=5000 yap-o-meter-audit-verify
+docker run --rm -p 5000:5000 -e NODE_ENV=production -e PORT=5000 yap-o-meter-local
 ```
 
 Run from GHCR:
@@ -94,6 +94,7 @@ docker run -d \
   --name yap-o-meter \
   --restart unless-stopped \
   -p 5000:5000 \
+  -e NODE_ENV=production \
   -e PORT=5000 \
   ghcr.io/hallveticapro/yap-o-meter:main
 ```
@@ -136,7 +137,7 @@ For an Unraid Docker template, use:
 - Network type: bridge, unless your reverse proxy setup needs a different network
 - Container port: `5000`
 - Host port: any free port, commonly `5000`
-- Environment variable: `PORT=5000`
+- Environment variables: `NODE_ENV=production`, `PORT=5000`
 - Restart policy: `unless-stopped`
 - Volumes: none required
 - Health path for proxy checks: `/api/health`

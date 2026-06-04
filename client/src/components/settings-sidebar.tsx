@@ -685,7 +685,7 @@ export default function SettingsSidebar({
         <div className="mt-4 border-t border-slate-600/30 pt-4">
           <div className="space-y-2 text-center text-xs text-slate-400">
             <p>Made for educators by Andrew Hall</p>
-            <p>(c) {new Date().getFullYear()} Yap-o-Meter</p>
+            <p>© {new Date().getFullYear()} Yap-o-Meter</p>
           </div>
         </div>
       </div>
