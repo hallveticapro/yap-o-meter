@@ -19,10 +19,34 @@ export function playAlert(alertType: string, volume: number = 50): void {
   }
 }
 
+type WindowWithWebkitAudioContext = Window &
+  typeof globalThis & {
+    webkitAudioContext?: typeof AudioContext;
+  };
+
+function createAudioContext() {
+  const AudioContextConstructor =
+    window.AudioContext ||
+    (window as WindowWithWebkitAudioContext).webkitAudioContext;
+
+  if (!AudioContextConstructor) {
+    throw new Error("Web Audio API is not supported");
+  }
+
+  return new AudioContextConstructor();
+}
+
+function closeAudioContextAfter(audioContext: AudioContext, seconds: number) {
+  window.setTimeout(() => {
+    if (audioContext.state !== "closed") {
+      void audioContext.close();
+    }
+  }, seconds * 1000);
+}
+
 function createBeepSound(volume: number = 50): void {
   try {
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+    const audioContext = createAudioContext();
 
     // Resume context if suspended
     if (audioContext.state === "suspended") {
@@ -50,6 +74,7 @@ function createBeepSound(volume: number = 50): void {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
+    closeAudioContextAfter(audioContext, 0.75);
   } catch (error) {
     console.warn("Failed to create beep sound:", error);
   }
@@ -57,8 +82,7 @@ function createBeepSound(volume: number = 50): void {
 
 function createShushSound(volume: number = 50): void {
   try {
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+    const audioContext = createAudioContext();
 
     // Resume context if suspended
     if (audioContext.state === "suspended") {
@@ -101,6 +125,7 @@ function createShushSound(volume: number = 50): void {
 
     source.start(audioContext.currentTime);
     source.stop(audioContext.currentTime + 0.8);
+    closeAudioContextAfter(audioContext, 1);
   } catch (error) {
     console.warn("Failed to create shush sound:", error);
   }
@@ -108,8 +133,7 @@ function createShushSound(volume: number = 50): void {
 
 function createDingSound(volume: number = 50): void {
   try {
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+    const audioContext = createAudioContext();
 
     // Resume context if suspended
     if (audioContext.state === "suspended") {
@@ -138,6 +162,7 @@ function createDingSound(volume: number = 50): void {
       oscillator.start(startTime);
       oscillator.stop(startTime + 0.2);
     }
+    closeAudioContextAfter(audioContext, 1.1);
   } catch (error) {
     console.warn("Failed to create ding sound:", error);
   }
@@ -145,8 +170,7 @@ function createDingSound(volume: number = 50): void {
 
 function createChimeSound(volume: number = 50): void {
   try {
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+    const audioContext = createAudioContext();
 
     // Resume context if suspended
     if (audioContext.state === "suspended") {
@@ -175,6 +199,7 @@ function createChimeSound(volume: number = 50): void {
       oscillator.start(startTime);
       oscillator.stop(startTime + 1.0);
     });
+    closeAudioContextAfter(audioContext, 1.5);
   } catch (error) {
     console.warn("Failed to create chime sound:", error);
   }
@@ -182,8 +207,7 @@ function createChimeSound(volume: number = 50): void {
 
 function createBellSound(volume: number = 50): void {
   try {
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+    const audioContext = createAudioContext();
 
     // Resume context if suspended
     if (audioContext.state === "suspended") {
@@ -210,6 +234,7 @@ function createBellSound(volume: number = 50): void {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 2.0);
+    closeAudioContextAfter(audioContext, 2.25);
   } catch (error) {
     console.warn("Failed to create bell sound:", error);
   }

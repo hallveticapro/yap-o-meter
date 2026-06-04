@@ -15,7 +15,7 @@ RUN npm ci
 COPY . .
 
 # Build the application
-RUN npx vite build && npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+RUN npm run build
 
 # Production stage
 FROM node:18-alpine AS production
@@ -44,7 +44,7 @@ EXPOSE $PORT
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:${PORT:-5000}/ || exit 1
+  CMD curl -f http://localhost:${PORT:-5000}/api/health || exit 1
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]

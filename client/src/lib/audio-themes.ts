@@ -19,44 +19,6 @@ interface Ball {
   crossedThreshold: boolean;
 }
 
-interface Star {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  baseSize: number;
-  opacity: number;
-  crossedThreshold: boolean;
-}
-
-interface Heart {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  baseSize: number;
-  opacity: number;
-  color: string;
-  crossedThreshold: boolean;
-}
-
-interface Shape {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  baseSize: number;
-  rotation: number;
-  rotationSpeed: number;
-  type: 'triangle' | 'square' | 'pentagon' | 'hexagon';
-  crossedThreshold: boolean;
-  opacity: number;
-  color: string;
-}
-
 interface Emojiface {
   x: number;
   y: number;
