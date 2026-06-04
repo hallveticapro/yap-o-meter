@@ -43,6 +43,7 @@ Validation is strong for repository-local checks: lint, TypeScript, tests, build
 | `docker run --rm -e NODE_ENV=production -p 5056:5000 yap-o-meter-post-audit-verify` plus `curl /api/health` | Passed | Health passed and server logged production environment. |
 | `gh workflow list` | Passed | `Build and Push Docker Image` workflow is active. |
 | `gh run list --limit 5 --branch main` | Passed | Five most recent main-branch runs were successful before this audit commit. |
+| `gh run watch 26948319127 --exit-status` | Passed | Post-push workflow for commit `7ca9c8c` succeeded in 3m39s and pushed the GHCR image. |
 
 ## Prior Audit Findings Status
 
@@ -114,8 +115,8 @@ No High repository-local issues were confirmed in this pass.
 
 #### REM-004 GitHub Actions Node runtime deprecation needs tracking
 
-- Status: Known maintenance item from `UPDATES.md`; not newly reproduced from logs in this pass.
-- Evidence: Prior post-push verification recorded a Node.js 20 actions deprecation annotation.
+- Status: Confirmed remaining issue.
+- Evidence: Post-push run `26948319127` emitted a Node.js 20 actions deprecation annotation for `actions/checkout@v4`, `actions/setup-node@v4`, and Docker actions.
 - Impact: Workflow may require action-version maintenance before GitHub removes Node.js 20 action runtime support.
 - Recommendation: Review `actions/checkout`, `actions/setup-node`, and Docker action versions in a CI maintenance pass.
 
@@ -172,6 +173,7 @@ No active app source, README, Dockerfile, compose file, GitHub Actions file, or 
 - `.github/workflows/build-and-deploy.yml` publishes multi-platform images to `ghcr.io/hallveticapro/yap-o-meter`.
 - `gh workflow list` shows the GHCR workflow active.
 - `gh run list --limit 5 --branch main` showed the five latest main-branch workflow runs succeeded before this audit commit.
+- Post-push workflow run `26948319127` for commit `7ca9c8c` succeeded in 3m39s and pushed the GHCR image.
 - Local Docker image build passed.
 - Compose config and compose build passed.
 - Local production server and Docker container health smoke tests passed.

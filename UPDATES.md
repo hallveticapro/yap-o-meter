@@ -288,6 +288,7 @@ Completed a post-implementation audit against `AGENTS.md`, `TASKS.md`, `AUDIT-20
 | `docker run --rm -e NODE_ENV=production -p 5056:5000 yap-o-meter-post-audit-verify` plus `curl /api/health` | Passed | Health passed and server logged production. |
 | `gh workflow list` | Passed | GHCR workflow is active. |
 | `gh run list --limit 5 --branch main` | Passed | Five most recent main-branch workflow runs were successful before this audit commit. |
+| `gh run watch 26948319127 --exit-status` | Passed | Post-push workflow for commit `7ca9c8c` succeeded in 3m39s and pushed the GHCR image. |
 
 ### Follow-Up Needed
 
@@ -297,7 +298,9 @@ Completed a post-implementation audit against `AGENTS.md`, `TASKS.md`, `AUDIT-20
 - Consider setting `ENV NODE_ENV=production` in the Dockerfile so raw image runs default to production logs/config.
 - Track the GitHub Actions Node runtime deprecation noted in previous workflow verification.
 
-### Git Status
+### Git And Push Status
 
-- Audit/fix commit hash: recorded in the follow-up push-verification entry after the commit is created.
-- Push status: recorded in the follow-up push-verification entry after push completes.
+- Audit/fix commit: `7ca9c8c` (`Fix alert audio and add post-implementation audit`).
+- Push status: succeeded to `main`.
+- Post-push GHCR workflow: run `26948319127` succeeded in 3m39s for commit `7ca9c8c`.
+- Workflow note: the run emitted the GitHub Actions Node.js 20 deprecation annotation for checkout/setup-node/Docker actions; this remains a CI maintenance follow-up.
