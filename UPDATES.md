@@ -152,7 +152,8 @@ Later/Future:
 - Verified compose with `docker compose config` and `docker compose build`.
 - Verified local container health by running the image and curling `http://localhost:5188/api/health`, which returned `{"status":"ok"}`.
 - Could not verify the owner's physical Unraid server, reverse proxy, smartboard, projector, or classroom devices from this local workspace.
-- Final push and post-push GHCR workflow status are attempted after this entry is committed; final response records the result.
+- Pushed commit `95d2acc` to `main`; GitHub Actions run `26928968906` completed successfully in 7m6s, including tests, build, and multi-platform GHCR image build/push.
+- The successful workflow emitted a Node.js 20 actions deprecation annotation for the GitHub Actions used by the workflow.
 
 ### Git Checkpoints
 
@@ -160,8 +161,9 @@ Later/Future:
 - Remote: `origin` at `git@github.com:hallveticapro/yap-o-meter.git`.
 - `fb44ec3` - `Remove unused Replit and scaffold files`.
 - `445d8c5` - `Implement classroom voice meter audit roadmap`.
-- Final documentation/deployment checkpoint: committed after this entry is written.
-- Push status: pending at the time this entry is committed; final response records the actual push result.
+- `95d2acc` - `Update audit documentation and deployment guidance`.
+- Push status: succeeded over HTTPS after the SSH remote push hung and was stopped.
+- Post-push GHCR workflow: run `26928968906` succeeded in 7m6s for commit `95d2acc`.
 
 ### Commands Run
 
@@ -192,6 +194,10 @@ Later/Future:
 | `gh auth status` | Passed | Authenticated as `hallveticapro`; token value was not exposed. |
 | `gh workflow list` | Passed | GHCR workflow is active. |
 | `gh run list --limit 5` | Passed | Most recent historical workflow runs were successful. |
+| `git push` | Stopped/retried | SSH push to `origin` hung without output; the stuck Git/SSH processes were stopped. |
+| `gh auth setup-git` | Passed | Configured GitHub CLI credentials for HTTPS git operations. |
+| `git push https://github.com/hallveticapro/yap-o-meter.git main:main` | Passed | Pushed `main` from `41421b4` to `95d2acc`. |
+| `gh run watch 26928968906 --exit-status` | Passed | Post-push GHCR workflow completed successfully in 7m6s. |
 
 ### Remaining Follow-Up
 
@@ -199,4 +205,4 @@ Later/Future:
 - `UNRAID-001`: Physical Unraid server and reverse proxy validation deferred. Reason: local repo cannot confirm the owner's server, DNS, TLS, proxy network, or GHCR pull permissions. Needed: owner access to Unraid and reverse proxy logs/settings. Recommended next action: deploy `ghcr.io/hallveticapro/yap-o-meter:main`, confirm `/api/health`, and confirm microphone prompt on the final HTTPS URL.
 - `SEC-001`: Full `npm audit` still reports Vite/esbuild dev-toolchain advisories. Reason: remaining fix requires a breaking major upgrade path (`npm audit fix --force`) and should be planned with Vite/Vitest/plugin compatibility testing. Needed: dependency upgrade decision and validation cycle. Recommended next action: create a focused dependency-upgrade task for Vite, Vitest, and related tooling.
 - `SEC-002`: CSP/security headers remain future work. Reason: adding headers is safe but needs deployment/proxy coordination and policy testing with static assets, service worker, and social metadata. Needed: deployment header policy decision. Recommended next action: add and test conservative security headers in a separate deployment hardening pass.
-- `GHCR-001`: New post-push GHCR workflow completion cannot be known until after this entry is committed and pushed. Reason: workflow starts only after the final push. Needed: post-push `gh run list`/`gh run view`. Recommended next action: verify after push and watch the GitHub Actions run complete.
+- `CI-001`: GitHub Actions emitted a Node.js 20 actions deprecation annotation. Reason: GitHub is moving JavaScript actions from Node.js 20 to Node.js 24. Needed: workflow action compatibility check. Recommended next action: review updated versions/settings for checkout, setup-node, and Docker actions before GitHub's September 16, 2026 removal date.
