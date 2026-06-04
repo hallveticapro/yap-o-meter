@@ -9,8 +9,35 @@ const __dirname = path.dirname(__filename);
 (async () => {
   const app = express();
   const PORT = parseInt(process.env.PORT || '5000', 10);
+  const contentSecurityPolicy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob:",
+    "font-src 'self' data:",
+    "connect-src 'self'",
+    "worker-src 'self'",
+    "manifest-src 'self'",
+    "media-src 'self' blob:",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'none'",
+    "frame-ancestors 'none'",
+  ].join('; ');
 
   // Middleware
+  app.use((_req, res, next) => {
+    res.setHeader('Content-Security-Policy', contentSecurityPolicy);
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader(
+      'Permissions-Policy',
+      'camera=(), geolocation=(), payment=(), usb=(), microphone=(self)'
+    );
+    next();
+  });
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 

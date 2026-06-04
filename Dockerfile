@@ -1,7 +1,7 @@
 # Multi-stage build for Voice Meter Application
 
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -18,9 +18,12 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine AS production
+FROM node:22-alpine AS production
 
 WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=5000
 
 # Install dumb-init and curl for proper signal handling and health checks
 RUN apk add --no-cache dumb-init curl
@@ -34,7 +37,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
 
 # Install only production dependencies in the final stage
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Switch to non-root user
 USER nextjs

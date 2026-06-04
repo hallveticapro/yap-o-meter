@@ -57,7 +57,12 @@ describe("useMicrophone", () => {
     });
 
     audioContext = new MockAudioContext();
-    vi.stubGlobal("AudioContext", vi.fn(() => audioContext));
+    vi.stubGlobal(
+      "AudioContext",
+      vi.fn(function AudioContextMock() {
+        return audioContext;
+      }) as unknown as typeof AudioContext,
+    );
   });
 
   afterEach(() => {
