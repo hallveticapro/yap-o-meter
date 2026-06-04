@@ -61,8 +61,7 @@ export default function VoiceMeter() {
     permissionError,
   } = useMicrophone(settings.sensitivity, settings.threshold);
 
-  const effectiveReducedMotion =
-    settings.reducedMotion || settings.lowStimulation || prefersReducedMotion;
+  const effectiveReducedMotion = settings.reducedMotion || prefersReducedMotion;
 
   const updateSettings = (newSettings: Partial<VoiceMeterSettings>) => {
     setStoredSettings((prev) => sanitizeSettings({ ...prev, ...newSettings }));
@@ -315,7 +314,6 @@ export default function VoiceMeter() {
           onThresholdCrossed={handleThresholdCrossed}
           isPaused={isPaused}
           reducedMotion={effectiveReducedMotion}
-          lowStimulation={settings.lowStimulation}
           disableInteractions={isDisplayMode}
         />
 

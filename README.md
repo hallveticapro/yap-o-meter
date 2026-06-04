@@ -11,7 +11,7 @@ Production URL: [https://yap.ahall.dev](https://yap.ahall.dev)
 - Animated classroom visual themes with threshold feedback and optional audio alerts.
 - Classroom presets for silent work, partner talk, group work, transitions, and indoor recess.
 - Calibration suggestions that teachers can review before applying.
-- Reduced-motion and low-stimulation display options.
+- A combined reduced-motion / low-stimulation display option.
 - Display mode for fullscreen/projector use with teacher controls hidden.
 - Short in-memory volume trend display.
 - Local room profiles plus JSON settings import/export.
@@ -154,7 +154,7 @@ Classroom checks to perform before relying on it live:
 - Confirm microphone permission and input selection on the actual teacher device.
 - Confirm HTTPS access on the final deployed URL.
 - Test display mode on the projector or smartboard.
-- Test reduced-motion or low-stimulation mode for classrooms that need calmer visuals.
+- Test reduced-motion / low-stimulation mode for classrooms that need calmer visuals.
 - Leave a long session running on target hardware to watch battery/performance behavior.
 
 ## Known Limitations

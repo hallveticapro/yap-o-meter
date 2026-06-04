@@ -22,6 +22,16 @@ describe("voice meter settings", () => {
     expect(settings.sensitivity).toBe(10);
   });
 
+  it("migrates older low-stimulation settings into reduced motion", () => {
+    const settings = sanitizeSettings({
+      reducedMotion: false,
+      lowStimulation: true,
+    });
+
+    expect(settings.reducedMotion).toBe(true);
+    expect(settings).not.toHaveProperty("lowStimulation");
+  });
+
   it("applies classroom presets without changing unrelated display settings", () => {
     const preset = CLASSROOM_PRESETS.find((item) => item.id === "silent");
     expect(preset).toBeDefined();

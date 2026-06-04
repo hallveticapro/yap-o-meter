@@ -17,10 +17,13 @@ export interface VoiceMeterSettings {
   alertVolume: number;
   sensitivity: number;
   reducedMotion: boolean;
-  lowStimulation: boolean;
   showHistory: boolean;
   preset: ClassroomPresetId;
 }
+
+type PersistedVoiceMeterSettings = Partial<VoiceMeterSettings> & {
+  lowStimulation?: boolean;
+};
 
 export interface ClassroomPreset {
   id: ClassroomPresetId;
@@ -53,7 +56,6 @@ export const DEFAULT_SETTINGS: VoiceMeterSettings = {
   alertVolume: 50,
   sensitivity: 5,
   reducedMotion: false,
-  lowStimulation: false,
   showHistory: true,
   preset: "custom",
 };
@@ -105,13 +107,20 @@ export function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-export function sanitizeSettings(value: Partial<VoiceMeterSettings>): VoiceMeterSettings {
+export function sanitizeSettings(value: PersistedVoiceMeterSettings): VoiceMeterSettings {
+  const { lowStimulation: legacyLowStimulation, ...currentValue } = value;
+
   return {
     ...DEFAULT_SETTINGS,
-    ...value,
+    ...currentValue,
     threshold: clamp(Number(value.threshold ?? DEFAULT_SETTINGS.threshold), 0, 100),
     alertVolume: clamp(Number(value.alertVolume ?? DEFAULT_SETTINGS.alertVolume), 0, 100),
     sensitivity: clamp(Number(value.sensitivity ?? DEFAULT_SETTINGS.sensitivity), 1, 10),
+    reducedMotion: Boolean(
+      value.reducedMotion ||
+        legacyLowStimulation ||
+        DEFAULT_SETTINGS.reducedMotion,
+    ),
     preset: value.preset ?? "custom",
   };
 }

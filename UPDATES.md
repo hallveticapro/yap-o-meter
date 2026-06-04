@@ -56,7 +56,7 @@ Completed a documentation-only repository audit for Yap-o-Meter according to `CO
 - Permission-denied and unsupported-browser guidance.
 - Local-audio privacy notice.
 - Real calibration wizard.
-- Reduced-motion and low-stimulation mode.
+- Reduced-motion / low-stimulation mode.
 - Display-only fullscreen/projector mode.
 - Classroom preset modes.
 - Short recent volume history.
@@ -75,7 +75,7 @@ Completed a documentation-only repository audit for Yap-o-Meter according to `CO
 
 ### Summary
 
-Implemented the safe audit roadmap for the classroom voice meter. The app now has an explicit per-session microphone start/stop flow, clearer permission states, real calibration suggestions, reduced-motion and low-stimulation options, display mode, classroom presets, in-memory volume history, local room profiles, settings import/export, PWA static caching, focused tests, linting, and updated Docker health/build behavior.
+Implemented the safe audit roadmap for the classroom voice meter. The app now has an explicit per-session microphone start/stop flow, clearer permission states, real calibration suggestions, a reduced-motion / low-stimulation option, display mode, classroom presets, in-memory volume history, local room profiles, settings import/export, PWA static caching, focused tests, linting, and updated Docker health/build behavior.
 
 ### Files Changed
 
@@ -93,7 +93,7 @@ Implemented the safe audit roadmap for the classroom voice meter. The app now ha
 - `MED-002`: Replaced non-functional calibration logging with a teacher-reviewed calibration suggestion.
 - `MED-003`: Added cleanup for temporary alert AudioContexts.
 - `MED-004`: Stabilized the canvas animation loop by reading changing values through refs.
-- `MED-005`: Added reduced-motion, low-stimulation, and display/projector mode support.
+- `MED-005`: Added reduced-motion / low-stimulation and display/projector mode support.
 - `MED-006`: Added ESLint, Vitest, Testing Library setup, and focused tests.
 - `MED-007`: Removed unused session/database/auth scaffold and added `/api/health`.
 - `LOW-001`: Fixed favicon reference and added `sitemap.xml`.
@@ -111,7 +111,7 @@ Immediate:
 
 Next:
 
-- `FUNC-005`: Reduced-motion and low-stimulation mode.
+- `FUNC-005`: Reduced-motion / low-stimulation mode.
 - `FUNC-006`: Display-only fullscreen/projector mode.
 - `FUNC-007`: Classroom preset modes.
 - `FUNC-008`: Recent in-memory volume history.
@@ -206,3 +206,34 @@ Later/Future:
 - `SEC-001`: Full `npm audit` still reports Vite/esbuild dev-toolchain advisories. Reason: remaining fix requires a breaking major upgrade path (`npm audit fix --force`) and should be planned with Vite/Vitest/plugin compatibility testing. Needed: dependency upgrade decision and validation cycle. Recommended next action: create a focused dependency-upgrade task for Vite, Vitest, and related tooling.
 - `SEC-002`: CSP/security headers remain future work. Reason: adding headers is safe but needs deployment/proxy coordination and policy testing with static assets, service worker, and social metadata. Needed: deployment header policy decision. Recommended next action: add and test conservative security headers in a separate deployment hardening pass.
 - `CI-001`: GitHub Actions emitted a Node.js 20 actions deprecation annotation. Reason: GitHub is moving JavaScript actions from Node.js 20 to Node.js 24. Needed: workflow action compatibility check. Recommended next action: review updated versions/settings for checkout, setup-node, and Docker actions before GitHub's September 16, 2026 removal date.
+
+## 2026-06-04 - Visualizer and settings follow-up
+
+### Summary
+
+Fixed the canvas visualizer reset loop that caused particles to look chaotic immediately after loading. Restored emoji labels in the theme picker and combined the duplicate reduced-motion / low-stimulation controls into one setting.
+
+### Files Changed
+
+- `client/src/components/canvas-visualizer.tsx`
+- `client/src/components/canvas-visualizer.test.tsx`
+- `client/src/components/settings-sidebar.tsx`
+- `client/src/lib/voice-meter-settings.ts`
+- `client/src/lib/voice-meter-settings.test.ts`
+- `client/src/pages/voice-meter.tsx`
+- `README.md`
+- `UPDATES.md`
+
+### Commands Run
+
+| Command | Result | Notes |
+| --- | --- | --- |
+| `npm run check` | Passed | TypeScript completed cleanly. |
+| `npm run test` | Passed | 4 test files, 13 tests. |
+| `npm run lint` | Passed | ESLint completed cleanly. |
+| `npm run build` | Passed | Production build completed cleanly. |
+
+### Notes
+
+- The visualizer now stores the threshold callback in a ref so live volume rerenders do not recreate the active theme instance and randomize all particles.
+- Older persisted `lowStimulation: true` settings migrate into `reducedMotion: true`.

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   BouncingBallsTheme,
   FallTheme,
@@ -23,7 +23,6 @@ interface CanvasVisualizerProps {
   onThresholdCrossed?: () => void;
   isPaused?: boolean;
   reducedMotion?: boolean;
-  lowStimulation?: boolean;
   disableInteractions?: boolean;
 }
 
@@ -125,20 +124,23 @@ export default function CanvasVisualizer({
   onThresholdCrossed,
   isPaused = false,
   reducedMotion = false,
-  lowStimulation = false,
   disableInteractions = false,
 }: CanvasVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const themeInstanceRef = useRef<Theme | null>(null);
+  const onThresholdCrossedRef = useRef(onThresholdCrossed);
   const latestValuesRef = useRef({
     volumeLevel,
     threshold,
     showThreshold,
     isPaused,
     reducedMotion,
-    lowStimulation,
   });
+
+  useEffect(() => {
+    onThresholdCrossedRef.current = onThresholdCrossed;
+  }, [onThresholdCrossed]);
 
   useEffect(() => {
     latestValuesRef.current = {
@@ -147,9 +149,8 @@ export default function CanvasVisualizer({
       showThreshold,
       isPaused,
       reducedMotion,
-      lowStimulation,
     };
-  }, [volumeLevel, threshold, showThreshold, isPaused, reducedMotion, lowStimulation]);
+  }, [volumeLevel, threshold, showThreshold, isPaused, reducedMotion]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -158,14 +159,14 @@ export default function CanvasVisualizer({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    themeInstanceRef.current?.dispose();
-    themeInstanceRef.current = createTheme(theme, ctx, onThresholdCrossed);
-    themeInstanceRef.current.init(window.innerWidth, window.innerHeight);
-  }, [theme, onThresholdCrossed]);
+    const handleThresholdCrossed = () => {
+      onThresholdCrossedRef.current?.();
+    };
 
-  useEffect(() => {
-    themeInstanceRef.current?.updateCallback(onThresholdCrossed);
-  }, [onThresholdCrossed]);
+    themeInstanceRef.current?.dispose();
+    themeInstanceRef.current = createTheme(theme, ctx, handleThresholdCrossed);
+    themeInstanceRef.current.init(window.innerWidth, window.innerHeight);
+  }, [theme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -180,7 +181,7 @@ export default function CanvasVisualizer({
 
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        ctx.scale(dpr, dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
 
       themeInstanceRef.current?.resize(window.innerWidth, window.innerHeight);
@@ -205,7 +206,7 @@ export default function CanvasVisualizer({
       const latest = latestValuesRef.current;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (latest.reducedMotion || latest.lowStimulation) {
+      if (latest.reducedMotion) {
         drawReducedMotionMeter(
           ctx,
           window.innerWidth,

@@ -68,7 +68,7 @@ const themeGroups = [
         id: "balls",
         name: "Bouncing Balls",
         icon: Circle,
-        emoji: "O",
+        emoji: "⚪",
         color: "text-cyan-400",
         description: "Colorful balls that bounce with volume",
       },
@@ -76,7 +76,7 @@ const themeGroups = [
         id: "faces",
         name: "Emojis",
         icon: Sparkles,
-        emoji: ":-)",
+        emoji: "😊",
         color: "text-yellow-400",
         description: "Fun emoji particles bouncing around",
       },
@@ -84,7 +84,7 @@ const themeGroups = [
         id: "stars",
         name: "Stars",
         icon: Sparkles,
-        emoji: "*",
+        emoji: "⭐",
         color: "text-purple-400",
         description: "Twinkling stars that dance to sound",
       },
@@ -92,7 +92,7 @@ const themeGroups = [
         id: "hearts",
         name: "Hearts",
         icon: Sparkles,
-        emoji: "<3",
+        emoji: "❤️",
         color: "text-pink-400",
         description: "Heart particles bouncing with joy",
       },
@@ -100,7 +100,7 @@ const themeGroups = [
         id: "geometric",
         name: "Geometric Shapes",
         icon: Circle,
-        emoji: "<>",
+        emoji: "🔵",
         color: "text-green-400",
         description: "Geometric shapes in motion",
       },
@@ -113,7 +113,7 @@ const themeGroups = [
         id: "science",
         name: "Science Lab",
         icon: Sparkles,
-        emoji: "SCI",
+        emoji: "🧪",
         color: "text-blue-400",
         description: "Science emojis for STEM learning",
       },
@@ -121,7 +121,7 @@ const themeGroups = [
         id: "math",
         name: "Math Class",
         icon: Sparkles,
-        emoji: "123",
+        emoji: "🔢",
         color: "text-orange-400",
         description: "Math symbols and numbers",
       },
@@ -129,7 +129,7 @@ const themeGroups = [
         id: "reading",
         name: "Reading Time",
         icon: Sparkles,
-        emoji: "ABC",
+        emoji: "📚",
         color: "text-indigo-400",
         description: "Books, pencils, and reading elements",
       },
@@ -142,7 +142,7 @@ const themeGroups = [
         id: "spring",
         name: "Spring Garden",
         icon: Sparkles,
-        emoji: "SPR",
+        emoji: "🌸",
         color: "text-green-500",
         description: "Flowers and spring elements",
       },
@@ -150,7 +150,7 @@ const themeGroups = [
         id: "summer",
         name: "Summer Beach",
         icon: Sparkles,
-        emoji: "SUN",
+        emoji: "☀️",
         color: "text-orange-500",
         description: "Sun, waves, and summer fun",
       },
@@ -158,7 +158,7 @@ const themeGroups = [
         id: "fall",
         name: "Fall Leaves",
         icon: Sparkles,
-        emoji: "FALL",
+        emoji: "🍂",
         color: "text-amber-600",
         description: "Fall leaves and harvest themes",
       },
@@ -166,7 +166,7 @@ const themeGroups = [
         id: "winter",
         name: "Winter Wonderland",
         icon: Sparkles,
-        emoji: "ICE",
+        emoji: "❄️",
         color: "text-blue-300",
         description: "Snowflakes and winter visuals",
       },
@@ -339,7 +339,7 @@ export default function SettingsSidebar({
                     }
                   >
                     <div className="flex items-center gap-3">
-                      <div className="min-w-8 text-xs font-bold text-slate-100">
+                      <div className="w-8 text-center text-lg">
                         {theme.emoji}
                       </div>
                       <div>
@@ -462,23 +462,14 @@ export default function SettingsSidebar({
           onToggle={toggleSection}
         >
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-300">Reduced Motion</span>
+            <span className="text-sm text-slate-300">
+              Reduced Motion / Low-Stimulation
+            </span>
             <Switch
-              aria-label="Use reduced motion"
+              aria-label="Use reduced motion low-stimulation view"
               checked={settings.reducedMotion}
               onCheckedChange={(checked) =>
                 onSettingsChange({ reducedMotion: checked })
-              }
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-300">Low-Stimulation View</span>
-            <Switch
-              aria-label="Use low-stimulation view"
-              checked={settings.lowStimulation}
-              onCheckedChange={(checked) =>
-                onSettingsChange({ lowStimulation: checked })
               }
             />
           </div>
