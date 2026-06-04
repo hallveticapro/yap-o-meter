@@ -430,9 +430,10 @@ Root markdown files retained:
 ### Git Checkpoint Commits
 
 - `2d2b2ac` - `Resolve dependency audit and harden deployment defaults`
-- Documentation/reference organization checkpoint: pending final commit.
-- Push result: pending final push.
-- Post-push workflow result: pending final workflow verification.
+- `85bebe7` - `Organize references and update implementation notes`
+- Push result: succeeded to `main`.
+- Post-push GHCR workflow: run `26976393674` succeeded in 4m24s for commit `85bebe7`.
+- Workflow note: the Node 24 opt-in worked. GitHub still emits an informational annotation that Node 20-targeting actions are being forced to run on Node 24.
 
 ### Remaining Follow-Up
 
