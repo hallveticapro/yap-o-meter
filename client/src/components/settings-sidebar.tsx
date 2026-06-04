@@ -511,7 +511,7 @@ export default function SettingsSidebar({
         {/* Copyright Information */}
         <div className="mt-4 pt-4 border-t border-slate-600/30">
           <div className="text-center text-xs text-slate-400 space-y-2">
-            <p>Made for educators with love by Andrew Hall using Replit ❤️</p>
+            <p>Made for educators by Andrew Hall</p>
             <p>© {new Date().getFullYear()} Yap-o-Meter</p>
           </div>
         </div>
