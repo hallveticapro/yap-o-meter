@@ -2,46 +2,49 @@
 
 ## Project
 
-- Project name: Classroom Voice Meter / Yap-O-Meter
+- Project name: Classroom Voice Meter / Yap-o-Meter
 - Production URL: https://yap.ahall.dev
 - App type: classroom web app
 - Intended users: elementary classroom teacher and students
 - Deployment environment: This app is deployed on the owner’s Unraid server.
-- Deployment note: Docker, GHCR, compose, reverse proxy, networking, and environment-variable guidance should account for self-hosted deployment on Unraid.
+- Deployment note: Docker, GHCR, compose, reverse proxy, networking, microphone permissions, HTTPS, and environment-variable guidance should account for self-hosted deployment on Unraid.
 
 ## Source of Truth
 
 Before making changes, read:
 
 1. `AGENTS.md`
-2. the most recent `AUDIT-*.md`
-3. `UPDATES.md`, if it exists
-4. `README.md`, if it exists
+2. the most recent `references/POST_IMPLEMENTATION_AUDIT-*.md`
+3. the most recent `references/AUDIT-*.md`
+4. `UPDATES.md`, if it exists
+5. `README.md`, if it exists
+6. `package.json`
+7. Docker, compose, and GitHub Actions workflow files
 
-Use `TASKS.md` and the latest audit as the implementation roadmap.
+Use `TASKS.md` and the latest post-implementation audit as the implementation roadmap.
 
 ## Main Objective
 
-Implement all safe recommendations from the completed audit.
+Implement all remaining safe recommendations from the Yap-o-Meter post-implementation audit.
+
+The repository is already in good local shape, so this pass should focus on remaining issues, deployment polish, documentation accuracy, CI/tooling maintenance, and final organization.
 
 Work from highest priority to lowest priority:
 
-1. Critical findings
-2. High findings
-3. Medium findings
-4. Low findings
-5. Immediate functionality opportunities
-6. Next functionality opportunities
-7. Later/Future functionality suggestions
-
-Lower priority does not mean optional. Implement the full roadmap as much as safely possible.
+1. Remaining Medium findings
+2. Remaining Low findings
+3. Deferred or manual verification items that can be automated or documented
+4. Docker/GHCR/Unraid improvements
+5. README, AGENTS.md, and UPDATES.md updates
+6. Markdown reference organization
+7. Final validation and push
 
 Do not implement an item if it:
 
 - requires secrets, credentials, paid services, or external accounts you do not have
-- requires a product/design decision that needs human approval
+- requires physical access to the owner’s Unraid server or classroom devices
 - creates a privacy risk
-- exposes student data, classroom data, microphone data, raw audio, or sensitive configuration
+- exposes microphone data, raw audio, classroom data, student data, or sensitive configuration
 - requires a broad rewrite outside the audit’s intent
 - conflicts with a higher-priority recommendation
 - cannot be safely completed in the current repo state
@@ -54,321 +57,375 @@ Preserve microphone/audio privacy.
 
 Do not:
 
-- request microphone access before explicit user action
+- request microphone access before explicit teacher action
 - record, store, cache, upload, or log raw audio
-- transmit raw audio unless the audit explicitly supports that design
+- transmit raw audio
 - add analytics or tracking
 - expose secrets, tokens, private keys, credentials, or `.env` values
+- break the existing local-only audio analysis model
 
 Must preserve or improve:
 
-- clear microphone permission state
-- clear inactive/paused/stopped state
-- local audio processing, if that is the current design
+- explicit start/stop microphone flow
+- clear microphone permission states
+- clear inactive/paused/stopped states
+- local audio processing
 - media stream cleanup
 - AudioContext cleanup
 - analyser node cleanup
+- alert output AudioContext cleanup
 - timer/interval cleanup
 - `requestAnimationFrame` cleanup
 - reduced-motion support
-- classroom/projector readability
-- browser compatibility
+- display/projector mode
+- classroom preset behavior
+- settings/profile import/export safety
+- browser compatibility notes
 
 Pay special attention to:
 
 - iOS Safari
-- Android browsers
+- Android Chrome
 - Chromebooks
 - school-managed devices
 - smartboards/projectors
 - long-running display sessions
 - battery/performance impact
-- students seeing controls while projected
+- browser autoplay/audio policies
+- HTTPS microphone requirements
 
-## Replit Cleanup
+## Required Remaining Work From The Post-Implementation Audit
 
-Search the entire repository for Replit references and unused Replit legacy files.
+### 1. Resolve full `npm audit` dev-toolchain advisories
 
-Look for:
+The post-implementation audit says production dependency audit passes, but full `npm audit` still fails due to Vite/esbuild dev-toolchain advisories.
 
-- `.replit`
-- `replit.nix`
-- Replit deployment references
-- Replit setup instructions
-- Replit URLs
-- Replit-specific scripts
-- Replit-specific environment assumptions
-- Replit comments
-- old Replit-generated files
-- unused server or startup files left from Replit
-- package scripts that only existed for Replit
-- README content that still mentions Replit
+Implement a safe dependency maintenance pass if possible.
 
-Remove Replit references from active code and documentation unless there is a confirmed current reason to keep them.
+Requirements:
 
-Delete legacy Replit files only when they are clearly unused.
+- inspect current Vite, Vitest, plugin, and esbuild versions
+- determine whether the advisories can be resolved without unsafe force upgrades
+- avoid blind `npm audit fix --force` if it installs a breaking major version
+- if upgrading is safe, update dependencies and lockfile
+- run lint, typecheck, tests, build, production smoke, Docker build, and compose checks afterward
+- if a major upgrade is required, implement it only if it can be completed safely in this pass
+- if not safe, document exact remaining advisories and recommended upgrade path in `UPDATES.md`
 
-If uncertain, keep the file and document the uncertainty in `UPDATES.md`.
+### 2. Improve Docker production defaults
+
+The post-implementation audit says raw Docker image runs work, but without `NODE_ENV=production`, the app logs development environment. Compose already sets production.
+
+Improve this if safe.
+
+Preferred fix:
+
+- set `ENV NODE_ENV=production` in the Dockerfile runtime stage
+- verify raw `docker run` logs production by default
+- preserve compose behavior
+- update README and AGENTS.md if Docker behavior changes
+
+Do not break Unraid or compose deployment.
+
+### 3. Address GitHub Actions Node runtime deprecation
+
+The post-implementation audit says GitHub Actions emitted Node.js 20 action runtime deprecation annotations.
+
+Inspect `.github/workflows/`.
+
+If safe:
+
+- update action versions to current stable versions that avoid the warning
+- preserve GHCR multi-platform build/push behavior
+- verify workflow syntax locally as much as possible
+- after push, use GitHub CLI to check whether the workflow starts and succeeds if authenticated
+
+If not safe:
+
+- document the exact follow-up needed in `UPDATES.md`
+
+### 4. Add or document deployment security headers/CSP
+
+The post-implementation audit says security headers/CSP remain a future hardening task.
+
+Implement if safe.
+
+Options:
+
+- add appropriate server-side security headers if the app server owns them
+- document recommended reverse-proxy headers for Unraid if headers are expected to be set in NGINX Proxy Manager, SWAG, Cloudflare, or another proxy
+- add CSP only if it can be verified without breaking Vite assets, service worker behavior, canvas rendering, alert audio, profile import/export, or app startup
+
+Do not over-tighten CSP in a way that breaks the app.
+
+If full CSP needs real deployment testing, document the recommended header plan and manual verification steps.
+
+### 5. Manual classroom-device validation checklist
+
+The audit says real-device validation remains incomplete.
+
+Because Codex cannot physically test classroom devices, update documentation with a clear manual validation checklist.
+
+README should include or link to a checklist for:
+
+- iOS Safari microphone permission
+- Android Chrome microphone permission
+- Chromebook microphone permission
+- school-managed browser permission behavior
+- projector/smartboard display mode
+- fullscreen behavior
+- reduced-motion behavior
+- alert audio after teacher start
+- stop microphone cleanup
+- long-running session behavior
+- Unraid reverse proxy HTTPS behavior
+- `/api/health` from final production URL
+
+### 6. Organize markdown reference files
+
+Create a `references/` folder and move historical/reference markdown files into it.
+
+Move files such as:
+
+- `AUDIT-*.md`
+- `POST_IMPLEMENTATION_AUDIT-*.md`
+- old audit briefs
+- old Codex prompt briefs
+- other markdown files that are clearly historical/reference material rather than active root documentation
+
+Keep these files at repository root unless there is an explicit project reason to move them:
+
+- `README.md`
+- `AGENTS.md`
+- `TASKS.md`
+- `UPDATES.md`
+
+After moving markdown files:
+
+- update any links or references that point to the old file locations
+- update README.md if it references audit files
+- update AGENTS.md so future agents know to look in `references/`
+- update UPDATES.md with what was moved
+- make sure future agents can still find latest audits in `references/`
+- do not move files blindly if a tool or convention expects them at root
+
+### 7. Replit cleanup verification
+
+Search again for Replit references.
+
+Use:
+
+```bash
+rg -n "replit|\.replit|replit\.nix" . --glob '!node_modules/**' --glob '!.git/**' --glob '!dist/**'
+```
+
+If `rg` is unavailable, use:
+
+```bash
+grep -Rni "replit" . --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=dist
+```
+
+No active Replit config, scripts, setup instructions, deployment guidance, or runtime HTML should remain.
+
+Historical mentions inside audit/task/update/reference records may remain if they are clearly historical.
+
+Document the result in `UPDATES.md`.
 
 ## README Requirement
 
 Update `README.md`.
 
-The README should accurately reflect the current state of the app after implementation.
+The README should accurately reflect the final app after this pass.
 
 Include or update:
 
-- project description
-- current local development instructions
-- package manager and commands
-- environment variables by name only, with no secret values
-- build instructions
-- Docker/GHCR usage if applicable
+- current project description
+- local development commands
+- package manager
+- validation commands
+- lint/typecheck/test/build commands
+- microphone privacy behavior
+- local-only audio analysis
+- explicit start/stop flow
+- alert audio behavior
+- reduced-motion/display mode
+- calibration behavior
+- room profiles/import/export behavior
+- browser compatibility notes
+- manual classroom-device validation checklist
+- Docker/GHCR usage
 - Unraid deployment notes
-- example `docker run` or compose guidance if appropriate
-- expected GHCR image name, if discoverable
+- expected GHCR image name
 - required ports
 - required environment variables by name only
 - restart policy recommendation
-- reverse proxy notes if applicable
-- deployment notes
-- microphone/privacy notes
-- browser compatibility notes
-- reduced-motion/accessibility notes
+- reverse proxy/HTTPS notes
+- `/api/health` behavior
 - known limitations
-- removal of stale Replit references
+- no active Replit guidance
 
 Keep the README human-friendly. Put agent-specific details in `AGENTS.md`, not the README.
 
 ## AGENTS.md Requirement
 
-Update `AGENTS.md` if implementation changes:
+Update `AGENTS.md` if any of these changed:
 
 - commands
 - architecture
+- validation workflow
+- test locations
+- linting/tooling
+- dependency audit status
 - microphone behavior
-- audio processing behavior
-- storage behavior
+- audio alert behavior
 - Docker/GHCR/Unraid behavior
-- privacy rules
-- testing expectations
-- project conventions
-- known risks
+- CSP/security header guidance
+- manual validation expectations
+- references folder location
 - future-agent instructions
 
 Keep `AGENTS.md` concise and practical.
 
-## Docker, GHCR, and Unraid Deployment Verification
+## Docker, GHCR, and Unraid Verification
 
-This app is deployed on the owner’s Unraid server.
+Verify the deployment path again after changes.
 
-Verify the container/GHCR build path as much as possible, and make sure the resulting documentation is useful for an Unraid-based deployment.
-
-Inspect:
-
-- `Dockerfile`
-- `.dockerignore`
-- `docker-compose.yml`
-- `compose.yml`
-- `.github/workflows/`
-- GHCR references such as `ghcr.io`
-- package scripts
-- deployment documentation
-- Unraid-specific notes, if any
-- reverse proxy assumptions, if any
-- exposed ports
-- volume mounts
-- required environment variables
-- runtime configuration patterns
-
-Check:
-
-1. whether a Dockerfile exists
-2. whether GHCR publishing is configured
-3. the expected image name, if discoverable
-4. whether the local Docker image builds
-5. whether compose config/build works, if applicable
-6. whether the GitHub Actions GHCR workflow exists and appears valid
-7. whether the workflow starts/succeeds after push, if GitHub CLI access is available
-8. whether the README explains how to run the app from GHCR on Unraid
-9. whether any compose examples or Docker run examples are accurate for Unraid
-10. whether ports, environment variables, volumes, reverse proxy notes, and restart policy are documented clearly
-
-Use commands only when appropriate:
+Run appropriate checks, such as:
 
 ```bash
-docker build -t yap-o-meter-audit-verify .
+docker build -t yap-o-meter-final-verify .
 docker compose config
 docker compose build
-gh workflow list
-gh run list --limit 5
-gh run view --log
 ```
 
-Do not invent a GHCR workflow unless the audit explicitly recommends it or the repo clearly expects it.
+If safe and available, also verify:
 
-Do not manually push a GHCR image unless the repo already has an established publishing process and credentials are available.
+```bash
+gh workflow list
+gh run list --limit 5 --branch main
+```
 
-If Unraid-specific deployment cannot be fully verified from inside the repo, document what was verified and what the owner should manually confirm on the Unraid server.
+If you can run a local container, verify `/api/health`:
 
-## Git Checkpoint Rules
+```bash
+docker run --rm -p 5055:5000 yap-o-meter-final-verify
+curl -fsS http://localhost:5055/api/health
+```
 
-Use git throughout the task.
+If testing production env explicitly:
+
+```bash
+docker run --rm -e NODE_ENV=production -p 5056:5000 yap-o-meter-final-verify
+curl -fsS http://localhost:5056/api/health
+```
+
+Document exactly what passed and what could not be verified.
+
+Do not manually push a GHCR image unless the repo already has an established process and credentials are available. Prefer the existing GitHub Actions workflow.
+
+## Validation
+
+Run the full available validation set.
+
+Use the repo’s actual package manager.
+
+Run commands such as:
+
+```bash
+npm run lint
+npm run check
+npm test
+npm run build
+npm audit --omit=dev
+npm audit
+```
+
+Run Docker/compose verification as described above.
+
+Fix failures caused by your changes.
+
+If a command cannot run, document why.
+
+## Git Checkpoint Requirements
 
 Before changes:
 
 ```bash
-git status --short
+git status --short --branch
 git branch --show-current
 git remote -v
 ```
 
-If pre-existing uncommitted changes exist, do not overwrite or discard them. Document them.
+Do not discard or overwrite unrelated uncommitted work.
 
-Commit after major checkpoints, such as:
+Commit after major checkpoints.
 
-- audit findings implementation
-- functionality improvements
-- Replit cleanup
-- README/AGENTS updates
-- Docker/GHCR/Unraid fixes
-- final validation updates
+Suggested checkpoint commits:
+
+```bash
+git commit -m "Resolve Yap-o-Meter dependency audit follow-up"
+git commit -m "Improve Yap-o-Meter Docker production defaults"
+git commit -m "Update GHCR workflow actions"
+git commit -m "Document classroom device validation checklist"
+git commit -m "Organize markdown reference files"
+git commit -m "Update README AGENTS and implementation notes"
+git commit -m "Verify Docker GHCR and Unraid deployment path"
+```
 
 Before each commit:
 
 1. run `git status --short`
 2. review changed files
-3. make sure no secrets, raw audio, generated junk, or unnecessary build artifacts are staged
-4. stage only intended files
+3. ensure no secrets, `.env` values, tokens, credentials, raw audio, generated junk, or unnecessary build artifacts are staged
+4. stage only intentional files
 5. commit with a clear message
-
-Example commit messages:
-
-```bash
-git commit -m "Implement voice meter audit findings"
-git commit -m "Improve microphone privacy and cleanup"
-git commit -m "Add classroom display functionality improvements"
-git commit -m "Remove unused Replit legacy files"
-git commit -m "Update README and agent documentation"
-git commit -m "Verify Docker GHCR and Unraid deployment docs"
-```
 
 At the end:
 
 1. run final validation
 2. commit remaining intentional changes
 3. push to the current branch with `git push` if remote/auth are available
-4. never force push
+4. do not force push
 
-If push fails, document why in `UPDATES.md` and the final response.
+If push fails, document why.
 
-## Validation
+## UPDATES.md Entry
 
-Run the safest available validation commands from the repo.
+Append a dated entry to UPDATES.md with:
 
-Prefer commands listed in `AGENTS.md` or `package.json`.
+- summary
+- files changed
+- prior findings addressed
+- functionality or deployment improvements implemented
+- items deferred and why
+- README updates
+- AGENTS.md updates
+- markdown files moved to `references/`
+- Replit cleanup result
+- Docker/GHCR/Unraid verification
+- commands run and results
+- git checkpoint commits
+- push result
+- remaining follow-up
 
-Examples, only when appropriate:
-
-```bash
-npm run lint
-npm run typecheck
-npm test
-npm run test
-npm run build
-docker build -t yap-o-meter-audit-verify .
-docker compose config
-docker compose build
-```
-
-Use the actual package manager based on the lockfile.
-
-Fix failures caused by your changes.
-
-If a command cannot run, document why.
-
-## UPDATES.md Requirement
-
-Append a dated entry to `UPDATES.md`. Do not erase previous entries.
-
-Use this structure:
-
-```md
-## [CURRENT-DATE] - Audit implementation
-
-### Summary
-
-Briefly describe what was implemented.
-
-### Files Changed
-
-List files changed.
-
-### Audit Findings Addressed
-
-List finding IDs addressed.
-
-### Functionality Opportunities Implemented
-
-Group by:
-
-- Immediate
-- Next
-- Later/Future
-
-### README Updates
-
-Summarize README changes.
-
-### AGENTS.md Updates
-
-Summarize AGENTS.md changes.
-
-### Replit Cleanup
-
-Document removed Replit references/files and anything intentionally kept.
-
-### Docker, GHCR, and Unraid Verification
-
-Document what was checked, what passed, and what could not be verified.
-
-### Git Checkpoints
-
-List branch, commit hashes, and whether push succeeded.
-
-### Commands Run
-
-| Command        | Result                              | Notes       |
-| -------------- | ----------------------------------- | ----------- |
-| `command here` | Passed/Failed/Blocked/Not available | Brief notes |
-
-### Remaining Follow-Up
-
-List every audit recommendation or functionality suggestion not implemented.
-
-For each item, include:
-
-- finding ID or functionality ID
-- reason deferred
-- what is needed before implementation
-- recommended next action
-```
-
-Do not silently omit skipped items.
+Do not erase previous entries.
 
 ## Final Response
 
-When finished, respond with:
+When finished, summarize:
 
 1. files changed
-2. audit findings addressed
-3. functionality opportunities implemented
+2. findings addressed
+3. functionality/deployment improvements implemented
 4. items deferred and why
-5. README updates completed
-6. AGENTS.md updates completed
-7. Replit cleanup completed
-8. Docker/GHCR/Unraid verification result
-9. git commits created
-10. whether final push succeeded
-11. commands run and whether they passed
-12. remaining risks or follow-up items
+5. README updates
+6. AGENTS.md updates
+7. markdown files moved to `references/`
+8. Replit cleanup result
+9. Docker/GHCR/Unraid verification result
+10. validation commands and results
+11. git commits created
+12. whether push succeeded
+13. remaining follow-up
+
+Do not include huge logs. Be specific and honest.

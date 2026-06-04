@@ -304,3 +304,138 @@ Completed a post-implementation audit against `AGENTS.md`, `TASKS.md`, `AUDIT-20
 - Push status: succeeded to `main`.
 - Post-push GHCR workflow: run `26948319127` succeeded in 3m39s for commit `7ca9c8c`.
 - Workflow note: the run emitted the GitHub Actions Node.js 20 deprecation annotation for checkout/setup-node/Docker actions; this remains a CI maintenance follow-up.
+
+## 2026-06-04 - Final implementation follow-up
+
+### Summary
+
+Implemented the remaining safe post-audit roadmap from `TASKS.md`. Resolved the full Vite/esbuild dev-toolchain audit issue, improved Docker production defaults, added production security headers, updated CI runtime settings, expanded manual classroom validation documentation, and moved historical markdown into `references/`.
+
+### Files Changed
+
+- `.github/workflows/build-and-deploy.yml`
+- `AGENTS.md`
+- `Dockerfile`
+- `README.md`
+- `TASKS.md`
+- `UPDATES.md`
+- `client/src/hooks/use-microphone.test.tsx`
+- `package-lock.json`
+- `package.json`
+- `server/production.ts`
+- `vitest.config.ts`
+- `references/AUDIT-2026-06-03.md`
+- `references/CODEX_AUDIT_BRIEF.md`
+- `references/POST_IMPLEMENTATION_AUDIT-2026-06-04.md`
+
+### Prior Findings Addressed
+
+- `REM-001`: Resolved full `npm audit` dev-toolchain advisories by upgrading to Vite 8, Vitest 4, plugin-react 6, direct esbuild 0.28, and Node 22-compatible types. Removed unused `@tailwindcss/vite`.
+- `REM-002`: Still requires physical devices, but README now contains a concrete manual classroom/device validation checklist.
+- `REM-003`: Docker runtime now defaults to `NODE_ENV=production` in the image.
+- `REM-004`: Workflow now uses Node.js 22 for the app build and opts JavaScript actions into the Node 24 runtime with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`.
+
+### Functionality Or Deployment Improvements Implemented
+
+- Added production CSP, referrer policy, content-type sniffing protection, frame blocking, and permissions policy headers in `server/production.ts`.
+- Updated Docker build and runtime stages from Node 18 Alpine to Node 22 Alpine.
+- Changed final image install from `npm ci --only=production` to `npm ci --omit=dev`.
+- Added package `engines` for Node/npm compatibility.
+- Updated Vitest config for the Vite 8/Vitest 4 JSX transform behavior.
+- Updated the microphone hook test mock so `AudioContext` remains constructable under Vitest 4.
+
+### Items Deferred And Why
+
+- Physical classroom-device validation remains deferred because it requires actual iOS Safari, Android Chrome, Chromebooks, school-managed browsers, projectors, smartboards, and classroom hardware.
+- Physical Unraid/reverse-proxy validation remains deferred because it requires owner access to the Unraid server, proxy config, DNS, TLS, and GHCR pull environment.
+- HSTS is recommended at the HTTPS reverse proxy rather than hard-coded in Express, because the owner should confirm the final public domain and certificate first.
+
+### README Updates
+
+- Updated Node requirement to `^20.19.0 || >=22.12.0`, noting local/Docker/CI verification use Node 22.
+- Added audit commands to validation commands.
+- Updated Docker/GHCR/Unraid examples now that Docker defaults to production.
+- Documented production security headers and HSTS-at-proxy guidance.
+- Expanded the manual classroom-device validation checklist.
+- Added a reference documents note for `references/`.
+- Updated known limitations to say both production and full npm audits are clean.
+
+### AGENTS.md Updates
+
+- Updated stack guidance for Vite 8 and Node 22.
+- Added `references/` to the repository map.
+- Documented production security headers/CSP.
+- Updated dependency audit status to clean.
+- Updated Docker production-default guidance.
+- Added full `npm audit` to the future-agent checklist after dependency changes.
+
+### Markdown Files Moved To `references/`
+
+- `AUDIT-2026-06-03.md` -> `references/AUDIT-2026-06-03.md`
+- `CODEX_AUDIT_BRIEF.md` -> `references/CODEX_AUDIT_BRIEF.md`
+- `POST_IMPLEMENTATION_AUDIT-2026-06-04.md` -> `references/POST_IMPLEMENTATION_AUDIT-2026-06-04.md`
+
+Root markdown files retained:
+
+- `README.md`
+- `AGENTS.md`
+- `TASKS.md`
+- `UPDATES.md`
+
+### Replit Cleanup Result
+
+`rg -n "replit|\\.replit|replit\\.nix" . --glob '!node_modules/**' --glob '!.git/**' --glob '!dist/**'` passed for active cleanup. Remaining matches are historical/task/update/reference records only, not active app code, runtime HTML, README deployment guidance, Docker files, compose files, or workflow files.
+
+### Docker, GHCR, And Unraid Verification
+
+- `docker compose config` passed.
+- `docker build -t yap-o-meter-final-verify .` passed using Node 22 Alpine; builder and production installs reported 0 vulnerabilities.
+- `docker compose build` passed.
+- Local production server smoke passed on port 5054; `/api/health` returned `{"status":"ok"}`.
+- Local production and Docker smoke responses included the new CSP/security headers.
+- Raw Docker image smoke passed on port 5055; `/api/health` returned `{"status":"ok"}` and logs showed `Environment: production` without passing `NODE_ENV`.
+- `gh workflow list` passed and showed `Build and Push Docker Image` active.
+- `gh run list --limit 5 --branch main` passed and showed recent main-branch workflow runs successful before this pass's push.
+- Physical Unraid server, reverse proxy, final HTTPS URL, and classroom devices were not locally verifiable.
+
+### Commands Run
+
+| Command | Result | Notes |
+| --- | --- | --- |
+| `git status --short --branch` | Passed | Found pre-existing user change in `TASKS.md`; preserved it and updated only required source-of-truth paths. |
+| `git branch --show-current` | Passed | Returned `main`. |
+| `git remote -v` | Passed | Confirmed GitHub origin. |
+| `date +%F` | Passed | Returned `2026-06-04`. |
+| `npm ls vite vitest esbuild @vitejs/plugin-react @tailwindcss/vite` | Passed | Confirmed clean Vite 8/Vitest 4/esbuild 0.28 tree and removed unused `@tailwindcss/vite`. |
+| `npm view ...` | Passed | Used to verify Vite/Vitest/plugin engine and peer compatibility before upgrading. |
+| `npm install --force` | Passed | Used only for the inspected targeted toolchain transition, not as a blind audit force fix. |
+| `npm install` | Passed | Refreshed lockfile after removing unused Vite plugin and updating direct esbuild. |
+| `npm run lint` | Passed | ESLint completed cleanly. |
+| `npm run check` | Passed | TypeScript completed cleanly. |
+| `npm test` | Passed | 5 test files, 16 tests. |
+| `npm run build` | Passed | Vite 8/esbuild production bundle completed. |
+| `npm audit --omit=dev` | Passed | 0 vulnerabilities. |
+| `npm audit` | Passed | 0 vulnerabilities. |
+| `rg -n "replit|\\.replit|replit\\.nix" ...` | Passed | Historical/task/update/reference matches only. |
+| `docker compose config` | Passed | Normalized compose config uses production env, port, restart policy, and `/api/health`. |
+| `docker build -t yap-o-meter-final-verify .` | Passed | Final image built successfully. |
+| `PORT=5054 npm run start` plus `curl /api/health` | Passed | Returned `{"status":"ok"}`. |
+| `curl -fsSI http://localhost:5054/` | Passed | Confirmed production security headers. |
+| `docker compose build` | Passed | Compose image build completed. |
+| `docker run --rm -p 5055:5000 yap-o-meter-final-verify` plus `curl /api/health` | Passed | Health returned `{"status":"ok"}`; image logged production environment by default. |
+| `curl -fsSI http://localhost:5055/` | Passed | Confirmed container security headers. |
+| `gh workflow list` | Passed | GHCR workflow is active. |
+| `gh run list --limit 5 --branch main` | Passed | Recent main-branch workflow runs were successful before this pass's push. |
+
+### Git Checkpoint Commits
+
+- `2d2b2ac` - `Resolve dependency audit and harden deployment defaults`
+- Documentation/reference organization checkpoint: pending final commit.
+- Push result: pending final push.
+- Post-push workflow result: pending final workflow verification.
+
+### Remaining Follow-Up
+
+- Run the README manual checklist on real iOS Safari, Android Chrome, Chromebooks, school-managed browsers, projectors, and smartboards.
+- Verify Unraid deployment, reverse proxy HTTPS behavior, GHCR pull permissions, and `/api/health` from the final production URL.
+- Configure HSTS at the HTTPS reverse proxy after confirming the final public domain and certificate.
