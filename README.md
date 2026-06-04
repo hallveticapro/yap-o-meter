@@ -1,199 +1,175 @@
-# Yap-o-Meter 🎤
+# Yap-o-Meter
 
-A dynamic classroom voice monitoring application that provides real-time visual feedback for audio levels. This interactive tool helps educators and students manage classroom noise levels through engaging visual themes and responsive animations.
+Yap-o-Meter is a classroom voice meter for teachers. It uses the browser microphone to measure live room volume locally, then turns the derived volume level into a projector-friendly visualizer.
 
-## Purpose
+Production URL: [https://yap.ahall.dev](https://yap.ahall.dev)
 
-The Yap-o-Meter is designed specifically for educational environments where managing classroom noise levels is essential for learning. By providing immediate visual feedback through fun, animated themes, it encourages students to be mindful of their volume levels while making the process engaging and interactive.
+## What It Does
 
-## ✨ Recent Updates (August 2025)
+- Explicit microphone start/stop flow for each browser session.
+- Local Web Audio API volume analysis; raw audio is not recorded, stored, uploaded, or sent to the server.
+- Animated classroom visual themes with threshold feedback and optional audio alerts.
+- Classroom presets for silent work, partner talk, group work, transitions, and indoor recess.
+- Calibration suggestions that teachers can review before applying.
+- Reduced-motion and low-stimulation display options.
+- Display mode for fullscreen/projector use with teacher controls hidden.
+- Short in-memory volume trend display.
+- Local room profiles plus JSON settings import/export.
+- Static-asset service worker for production PWA/offline readiness.
 
-- **Performance Breakthrough**: Canvas emoji caching system enables smooth dynamic sizing (30-60px) without lag
-- **Enhanced Visual Themes**: Each theme now has unique, vibrant gradient backgrounds
-- **Explosive Interactions**: Click anywhere to launch particles with smart threshold alert prevention  
-- **Professional Branding**: Complete SEO setup with favicons, social cards, and metadata
-- **Docker Deployment**: Production-ready containerization with GitHub Actions CI/CD
-- **Open Source**: Full source code available with proper attribution and social links
-- **Reading Theme**: New educational theme with books, pencils, and library emojis
-- **Organized Theme Groups**: Nested categories for School and Seasons themes
-- **FontAwesome Icons**: Clean, professional social media and GitHub icons
+## Privacy And Microphone Behavior
 
-## Features
+The microphone is only requested after the teacher presses Start Microphone. If permission was granted in a previous browser session, Yap-o-Meter still waits for that in-app action before opening the microphone.
 
-### 🎨 Visual Themes
+Audio processing happens in the browser with the Web Audio API. The app uses derived volume levels for the visualizer and alert logic. It does not use `MediaRecorder`, does not keep raw audio buffers, does not upload audio, and does not add analytics or tracking.
 
-Each theme features unique, vibrant gradient backgrounds that create immersive visual experiences without distracting animations.
+Settings and room profiles are stored in the browser's `localStorage`. Recent volume history is short-lived, aggregate, and in memory only.
 
-#### General Themes
-- **Bouncing Balls**: Colorful geometric balls that bounce with increased volume (subtle gradient background)
-- **Emojis**: Fun emoji particles that dance and move with sound (bright rainbow gradient background)
-- **Stars**: Twinkling star emojis that respond to audio levels (deep space background with nebula and planets)
-- **Hearts**: Loving heart emojis bouncing with joy (Valentine's Day pink-to-red gradient background)
-- **Geometric Shapes**: Various colorful geometric patterns in motion (modern tech purple-to-blue gradient background)
+Microphone access requires a secure browser context. Use HTTPS for hosted deployments such as Unraid behind a reverse proxy. `localhost` is acceptable for local development.
 
-#### School Themes
-- **Science Lab**: Science-themed emojis perfect for STEM classrooms
-- **Math Class**: Mathematical symbols and numbers for math lessons
-- **Reading Time**: Books, pencils, teachers, and library learning elements
+## Local Development
 
-#### Seasonal Themes
-- **Spring Garden**: Flowers and spring elements with pink-to-green-to-forest green gradient
-- **Summer Beach**: Sun and beach vibes with gold-to-orange-to-pink-to-violet sunset gradient
-- **Fall Leaves**: Fall colors with crimson-to-orange-to-gold-to-brown gradient
-- **Winter Wonderland**: Ice and snow with light blue-to-purple-to-white gradient
+Requirements:
 
-### 🔊 Audio Features
-- **Real-time Audio Processing**: Uses Web Audio API for instant volume detection
-- **Automatic Calibration**: Adjusts to ambient noise levels
-- **Configurable Thresholds**: Set custom volume limits
-- **Audio Alerts**: Optional sound notifications when thresholds are exceeded
-- **Microphone Permission Handling**: Graceful fallback when mic access is denied
+- Node.js 18 or newer
+- npm, using the checked-in `package-lock.json`
 
-### ⚙️ Interactive Features
-- **Explosive Click Effects**: Click anywhere to create particle explosions
-- **Threshold Line**: Visual indicator for volume limits
-- **Pause/Resume System**: Control the animation at any time
-- **Performance Optimized**: Canvas caching for smooth 60fps animations
-- **Dynamic Particle Sizing**: Variety in particle sizes for visual appeal
-
-### 🎛️ Settings & Controls
-- **Hidden Settings Sidebar**: Collapsible panel with all controls
-- **Theme Selection**: Easy switching between visual themes
-- **Volume Sensitivity**: Adjustable microphone sensitivity
-- **Threshold Configuration**: Set custom noise level limits
-- **Alert Volume Control**: Adjust notification sound levels
-- **Auto-hiding Status Panel**: Displays current settings and volume levels
-
-## How to Use
-
-### Getting Started
-1. **Grant Microphone Permission**: Click "Allow" when prompted for microphone access
-2. **Choose a Theme**: Open the settings sidebar and select your preferred visual theme
-3. **Calibrate**: Use the calibration feature to adjust for your room's ambient noise
-4. **Set Thresholds**: Configure volume limits appropriate for your classroom
-
-### During Class
-- **Monitor Volume**: Watch the visual feedback respond to classroom noise levels
-- **Interactive Fun**: Click anywhere on the screen to create particle explosions
-- **Threshold Alerts**: Receive notifications when volume exceeds set limits
-- **Pause if Needed**: Use the pause button during quiet activities
-
-### Customization
-- **Seasonal Themes**: Switch themes to match holidays or seasons
-- **Subject-Specific Themes**: Use Science or Math themes for relevant lessons
-- **Sensitivity Adjustment**: Fine-tune microphone sensitivity for your environment
-- **Alert Preferences**: Enable/disable audio notifications as needed
-
-## Technical Requirements
-
-- **Modern Web Browser**: Chrome, Firefox, Safari, or Edge
-- **Microphone Access**: Required for audio level detection
-- **JavaScript Enabled**: Essential for application functionality
-- **Audio Context Support**: Modern browsers with Web Audio API support
-
-## Installation & Setup
-
-### Web Browser (Recommended)
-This application runs entirely in the browser with no installation required:
-
-1. Open the application in your web browser
-2. Grant microphone permissions when prompted
-3. Start using immediately with default settings
-4. Customize themes and settings as desired
-
-### Docker Deployment
-For self-hosting or production deployment:
+Install dependencies:
 
 ```bash
-# Pull and run the pre-built image
-docker run -p 5000:5000 ghcr.io/hallveticapro/yap-o-meter:main
-
-# Or build locally
-git clone https://github.com/hallveticapro/yap-o-meter.git
-cd yap-o-meter
-docker build -t yap-o-meter .
-docker run -p 5000:5000 yap-o-meter
-
-# With custom port (map external port 8080 to internal port set by PORT env var)
-docker run -p 8080:8080 -e PORT=8080 ghcr.io/hallveticapro/yap-o-meter:main
-
-# Using Docker Compose
-PORT=5000 docker-compose up -d
+npm ci
 ```
 
-The application will be available at `http://localhost:5000` (or your configured port).
+Start the local development server:
 
-#### Deployment Features
-- **Multi-platform builds** (amd64, arm64) via GitHub Actions
-- **Automatic tagging** with `latest` and branch names
-- **Health checks** built into container
-- **Non-root security** with proper signal handling
-- **Production optimization** with separate build and runtime stages
+```bash
+npm run dev
+```
 
-## Educational Benefits
+The app listens on `http://localhost:5000` by default unless `PORT` is set.
 
-- **Immediate Feedback**: Students see real-time visual responses to their volume levels
-- **Engaging Interface**: Fun themes keep students interested in managing noise
-- **Self-Regulation**: Encourages students to monitor their own behavior
-- **Classroom Management**: Helps teachers maintain appropriate learning environments
-- **STEM Integration**: Science and Math themes reinforce subject matter
-- **Seasonal Engagement**: Holiday themes maintain year-round interest
+Useful commands:
 
-## Technical Architecture
+```bash
+npm run lint
+npm run check
+npm run test
+npm run build
+```
 
-### Frontend
-- **React 18** with TypeScript for type safety
-- **Vite** for fast development and optimized builds
-- **Tailwind CSS** with shadcn/ui component library
-- **Web Audio API** for real-time microphone processing
-- **HTML5 Canvas** for smooth 60fps animations
+Run the production bundle locally after a build:
 
-### Backend  
-- **Express.js** server with TypeScript
-- **PostgreSQL** database with Drizzle ORM
-- **Session management** with secure storage
-- **RESTful API** design patterns
+```bash
+npm run build
+npm run start
+```
 
-### Performance Optimizations
-- **Canvas emoji caching** for smooth large-scale particle rendering
-- **RequestAnimationFrame** for consistent 60fps animations
-- **Efficient particle physics** with proper collision detection
-- **Memory management** with particle cleanup and recycling
+## Environment Variables
 
-### Deployment & DevOps
-- **Docker containerization** with multi-stage builds
-- **GitHub Actions** for automated CI/CD
-- **Multi-platform support** (amd64, arm64)
-- **Production optimizations** with separate dev/prod servers
-- **Security hardening** with non-root containers and health checks
+Only variable names are documented here; do not commit environment values.
 
-### Recent Technical Challenges & Solutions
+- `PORT`: optional server port. Defaults to `5000`.
+- `NODE_ENV`: set by the npm scripts; use `production` for the bundled server.
 
-#### Docker Production Build Issues (August 2025)
-**Challenge**: Vite development server caused runtime failures in Docker production builds due to missing dev dependencies.
+The current app does not require a database, session secret, account system, or persistent server-side storage.
 
-**Solution**: Created separate production server (`production.ts`) that serves static files without importing Vite, while maintaining development server (`index.ts`) with hot reload for local development.
+## Docker
 
-#### Canvas Performance Optimization
-**Challenge**: Rendering 120+ emoji particles at 60fps with dynamic sizing caused significant lag and memory issues.
+Build locally:
 
-**Solution**: Implemented canvas-based emoji caching system that pre-renders emojis at different sizes, eliminating repeated drawing operations and enabling smooth animations.
+```bash
+docker build -t yap-o-meter-audit-verify .
+```
 
-#### Stars Theme Visibility
-**Challenge**: Black star particles were nearly invisible against dark space backgrounds, reducing visual impact.
+Run a local image:
 
-**Solution**: Enhanced space theme with colorful nebula effects, planets with rings, and improved star contrast while maintaining authentic deep space aesthetic.
+```bash
+docker run --rm -p 5000:5000 -e PORT=5000 yap-o-meter-audit-verify
+```
 
----
+Run from GHCR:
+
+```bash
+docker run -d \
+  --name yap-o-meter \
+  --restart unless-stopped \
+  -p 5000:5000 \
+  -e PORT=5000 \
+  ghcr.io/hallveticapro/yap-o-meter:main
+```
+
+Health check endpoint:
+
+```text
+/api/health
+```
+
+Compose:
+
+```bash
+PORT=5000 docker compose up -d
+```
+
+No volume mounts are required for the app itself.
+
+## GHCR
+
+The repository includes `.github/workflows/build-and-deploy.yml`. On pushes to `main` or `master`, the workflow runs npm install/test/build steps, then builds and publishes a multi-platform Docker image to:
+
+```text
+ghcr.io/hallveticapro/yap-o-meter
+```
+
+Expected branch tag for the current main branch:
+
+```text
+ghcr.io/hallveticapro/yap-o-meter:main
+```
+
+The workflow also publishes `latest` on the default branch and SHA-prefixed tags.
+
+## Unraid Deployment Notes
+
+For an Unraid Docker template, use:
+
+- Repository: `ghcr.io/hallveticapro/yap-o-meter:main`
+- Network type: bridge, unless your reverse proxy setup needs a different network
+- Container port: `5000`
+- Host port: any free port, commonly `5000`
+- Environment variable: `PORT=5000`
+- Restart policy: `unless-stopped`
+- Volumes: none required
+- Health path for proxy checks: `/api/health`
+
+For microphone access from classroom devices, serve the app over HTTPS through your reverse proxy, for example at `https://yap.ahall.dev`. Confirm that the proxy forwards to the Unraid container's host port and that browser microphone prompts appear on the final public URL.
+
+After updating the image, pull the latest GHCR tag from Unraid and recreate/restart the container. If using a private package setting in GitHub Container Registry, make sure the Unraid server is authenticated to pull the image.
+
+## Browser And Classroom Compatibility
+
+Yap-o-Meter is designed for current Chrome, Edge, Firefox, Safari, Android Chrome, iOS Safari, Chromebooks, tablets, projectors, and smartboards. Browser support still depends on the device allowing microphone access through `navigator.mediaDevices.getUserMedia`.
+
+Classroom checks to perform before relying on it live:
+
+- Confirm microphone permission and input selection on the actual teacher device.
+- Confirm HTTPS access on the final deployed URL.
+- Test display mode on the projector or smartboard.
+- Test reduced-motion or low-stimulation mode for classrooms that need calmer visuals.
+- Leave a long session running on target hardware to watch battery/performance behavior.
+
+## Known Limitations
+
+- Manual cross-browser, smartboard, and Unraid-server validation still needs to be completed on the owner's actual hardware.
+- `npm audit --omit=dev` is clean after the dependency maintenance pass.
+- Full `npm audit` still reports Vite/esbuild dev-toolchain advisories that require a breaking major upgrade path.
+- Room profiles are local to one browser unless exported and imported manually.
+- The service worker caches static assets only. It intentionally does not cache microphone data or volume history.
 
 ## Connect
 
-Follow Andrew Hall for updates and more educational tools:
-- **GitHub**: [hallveticapro/yap-o-meter](https://github.com/hallveticapro/yap-o-meter)
-- **Threads**: [@hallveticapro](https://www.threads.net/@hallveticapro)
-- **Instagram**: [@hallveticapro](https://www.instagram.com/hallveticapro)
-- **TikTok**: [@hallveticapro](https://www.tiktok.com/@hallveticapro)
+- GitHub: [hallveticapro/yap-o-meter](https://github.com/hallveticapro/yap-o-meter)
+- Threads: [@hallveticapro](https://www.threads.net/@hallveticapro)
+- Instagram: [@hallveticapro](https://www.instagram.com/hallveticapro)
+- TikTok: [@hallveticapro](https://www.tiktok.com/@hallveticapro)
 
-**Made for educators with love** ❤️
-
-*Created by Andrew Hall using Replit AI*
+Created by Andrew Hall for classroom use.

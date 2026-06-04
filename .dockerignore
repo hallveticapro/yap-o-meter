@@ -54,10 +54,6 @@ pids/
 # ESLint cache
 .eslintcache
 
-# Replit specific files
-.replit
-replit.nix
-
 # GitHub workflows (not needed in container)
 .github/
 
