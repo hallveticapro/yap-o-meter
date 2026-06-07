@@ -1,75 +1,73 @@
 # AGENTS.md
 
-## Project Overview
+## Project
 
-Yap-o-Meter is a classroom voice meter for elementary teachers and students. It requests microphone access only after a teacher action, analyzes volume locally in the browser, and displays animated visual feedback for classroom volume.
+Yap-o-Meter is a classroom voice meter for elementary teachers and students.
+It requests microphone access only after a teacher action, analyzes volume locally
+in the browser, and displays animated visual feedback for classroom volume.
 
 - Production URL: https://yap.ahall.dev
-- Deployment target: owner's Unraid server, usually via Docker/GHCR and a reverse proxy.
-- Current primary flow: start microphone, tune preset/settings, optionally enter display mode, stop microphone when done.
+- Deployment target: owner's Unraid server via Docker/GHCR and a reverse proxy.
+- Main flow: start microphone, tune settings, optionally enter display mode, stop microphone.
 
-## Tech Stack
+## Stack
 
-- React 18 + TypeScript, built with Vite 8.
-- Wouter routes `/` to the voice meter.
-- Express serves the production bundle and `/api/health`.
-- Tailwind CSS with shadcn/Radix primitives.
+- React 18 + TypeScript + Vite 8.
+- Wouter route `/` renders the voice meter.
+- Express serves the production bundle, `/api/health`, and JSON `/api/*` 404s.
+- Tailwind CSS with a small retained shadcn/Radix primitive set.
 - npm with `package-lock.json`.
-- Vitest + Testing Library for tests.
-- ESLint flat config for linting.
-- Dockerfile and GitHub Actions use Node.js 22 and publish a GHCR image.
+- Vitest + Testing Library, ESLint flat config.
+- Dockerfile and GitHub Actions use Node.js 22.
 
-## Repository Map
+## Key Files
 
 - `client/src/pages/voice-meter.tsx`: main app state, settings, profiles, display mode, calibration, alerts.
-- `client/src/hooks/use-microphone.ts`: explicit microphone lifecycle, Web Audio analyser, cleanup, calibration sampling.
+- `client/src/hooks/use-microphone.ts`: microphone lifecycle, Web Audio analyser, cleanup, calibration.
 - `client/src/lib/voice-meter-settings.ts`: defaults, presets, sanitization, calibration/profile helpers.
 - `client/src/lib/audio-level.ts`: volume calculation helper.
-- `client/src/lib/audio-alerts.ts`: generated local alert sounds; primes/reuses an output AudioContext from the teacher start action.
-- `client/src/components/canvas-visualizer.tsx`: stable canvas loop, visual themes, reduced-motion rendering.
+- `client/src/lib/audio-alerts.ts`: generated local alert sounds from a teacher-initiated AudioContext.
+- `client/src/components/canvas-visualizer.tsx`: canvas loop, visual themes, reduced-motion rendering.
 - `client/src/components/settings-sidebar.tsx`: teacher settings, presets, profiles, import/export.
 - `client/src/components/status-panel.tsx`: live status, stop/pause controls, history, calibration review.
-- `client/public/sw.js`: static-asset service worker for production.
-- `server/routes.ts`: currently registers `/api/health`.
-- `server/production.ts`: production static server entry bundled by `npm run build`; sets conservative security headers/CSP.
-- `references/`: historical audits and prompt briefs. Latest audit files live here, not at repository root.
+- `client/public/sw.js`: service worker; navigation network-first, static assets cache-first.
+- `server/routes.ts`: API health and JSON API 404s.
+- `server/production.ts`: production static server with security headers/CSP.
 
 ## Commands
 
-| Purpose | Command | Current status |
-| --- | --- | --- |
-| Install dependencies | `npm ci` | Used by Docker/CI; local install currently present. |
-| Dev server | `npm run dev` | Script exists; serves on `PORT` or 5000. |
-| Lint | `npm run lint` | Passed on 2026-06-04. |
-| TypeScript check | `npm run check` | Passed on 2026-06-04. |
-| Tests | `npm run test` | Passed on 2026-06-04; 16 tests. |
-| Build | `npm run build` | Passed on 2026-06-04. |
-| Production start | `npm run start` | Passed via local smoke test on 2026-06-04 after build. |
-| Dependency audit | `npm audit` and `npm audit --omit=dev` | Passed on 2026-06-04 after Vite/Vitest maintenance. |
-| Docker build | `docker build -t yap-o-meter-final-verify .` | Passed on 2026-06-04. |
-| Compose validation | `docker compose config` | Passed on 2026-06-04. |
-| Compose build | `docker compose build` | Passed on 2026-06-04. |
-| Docker image smoke | run image and curl `/api/health` | Passed on 2026-06-04. |
+- Install: `npm ci`
+- Dev server: `npm run dev`
+- Lint: `npm run lint`
+- TypeScript: `npm run check`
+- Tests: `npm run test`
+- Build: `npm run build`
+- Production start after build: `npm run start`
+- Dependency audit: `npm audit --omit=dev` and `npm audit`
+- Compose validation: `docker compose config`
 
-## Environment Variables
+## Environment
 
-- `PORT`: optional server port, defaults to `5000`.
-- `NODE_ENV`: development or production; npm scripts, compose, and the Docker image set it for normal workflows.
+- `PORT`: server port, default `5000`.
+- `NODE_ENV`: set by scripts, compose, and Docker image.
+- `DEV_BIND_HOST`: dev bind host, default `127.0.0.1`.
+- `DEV_ALLOWED_HOSTS`: comma-separated Vite dev host allowlist.
+- `HOST_PORT`: Compose host port, default `5000`; container listens on `5000`.
 
-No database URL, session secret, account system, or server-side data store is required by the current app.
+No database, session secret, account system, or persistent server-side store is required.
 
 ## Privacy Rules
 
 - Do not request microphone access before a clear in-app teacher action.
 - Do not record, store, upload, transmit, or log raw audio.
 - Do not add analytics or tracking without explicit approval and a privacy update.
-- Keep derived live volume in memory unless a future product decision explicitly allows persistence.
+- Keep live volume derived data in memory unless a future product decision explicitly allows persistence.
 - Keep settings/profile exports limited to non-sensitive configuration values.
-- Preserve true stop behavior: stop tracks, disconnect nodes, close AudioContext, cancel rAF/timers.
-- Keep pause wording clear: pausing visuals is not the same as stopping the microphone.
-- Keep production security headers compatible with same-origin static assets, service worker behavior, and browser microphone access.
+- Preserve true stop behavior: stop tracks, disconnect nodes, close AudioContexts, cancel rAF/timers.
+- Keep pause wording clear: pausing visuals is not stopping the microphone.
+- Keep service worker behavior and security headers compatible with browser microphone access.
 
-## Development Conventions
+## Development Rules
 
 - Prefer small focused changes that follow existing React/Tailwind patterns.
 - Keep browser API lifecycle work inside hooks where practical.
@@ -78,34 +76,23 @@ No database URL, session secret, account system, or server-side data store is re
 - Avoid touching shadcn-generated primitives unless the requested behavior requires it.
 - Do not add dependencies without a concrete reason and validation.
 - Keep docs accurate when commands, privacy behavior, deployment, or storage behavior changes.
+- Check `git status --short` before finishing; do not stage unrelated work.
 
-## Docker, GHCR, And Unraid
+## Deployment Notes
 
 - Expected image: `ghcr.io/hallveticapro/yap-o-meter:main`.
-- Container listens on `PORT`, default `5000`.
+- Container listens on internal `PORT=5000`.
+- Compose maps `${HOST_PORT:-5000}:5000`.
 - Docker image defaults to `NODE_ENV=production`.
 - Health check endpoint: `/api/health`.
 - Restart policy recommendation: `unless-stopped`.
 - Volumes: none required.
-- Unraid should serve the app behind HTTPS for browser microphone access on the deployed URL.
-- If GHCR access is private, Unraid must be authenticated before pulling.
+- Serve behind HTTPS on Unraid so browser microphone access works.
 
-## Known Risks
-
-- Manual device validation remains important: iOS Safari, Android Chrome, Chromebooks, projectors, and smartboards.
-- `npm audit --omit=dev` is clean after the dependency maintenance pass.
-- Full `npm audit` is clean after the Vite/Vitest maintenance pass.
-- Service worker scope intentionally caches static assets only; do not cache audio-derived data.
-- Room profiles are local browser settings unless exported/imported manually.
-- HSTS should be configured at the HTTPS reverse proxy after confirming the final public domain and certificate.
-
-## Future Agent Checklist
-
-Before finishing code changes:
+## Before Finishing Code Changes
 
 1. Run `npm run lint`, `npm run check`, `npm run test`, and `npm run build`.
-2. Run `npm audit --omit=dev` and `npm audit` after dependency changes.
-3. Run Docker/compose checks when deployment behavior changed.
-4. Smoke test `npm run start` after a production build when server output changed.
-5. Check `git status --short` and stage only intentional files.
-6. Update `UPDATES.md` with commands, commits, deferred items, and honest verification results.
+2. Run both npm audit commands after dependency changes.
+3. Run Docker/compose checks when deployment behavior changes.
+4. Smoke test `npm run start` after a production build when server output changes.
+5. Update `UPDATES.md` with one line: `YYYY-MM-DD: Short description.`

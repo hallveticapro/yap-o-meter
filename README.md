@@ -169,7 +169,7 @@ Classroom checks to perform before relying on it live:
 
 ## Reference Documents
 
-Historical audits and prompt briefs are stored in `references/`. The active root documents are `README.md`, `AGENTS.md`, `TASKS.md`, and `UPDATES.md`.
+The active root documents are `README.md`, `AGENTS.md`, and `UPDATES.md`.
 
 ## Known Limitations
 
