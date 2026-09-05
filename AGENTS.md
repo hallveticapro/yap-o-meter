@@ -89,10 +89,9 @@ No database, session secret, account system, or persistent server-side store is 
 - Volumes: none required.
 - Serve behind HTTPS on Unraid so browser microphone access works.
 
-## Before Finishing Code Changes
+## Before Finishing Changes
 
-1. Run `npm run lint`, `npm run check`, `npm run test`, and `npm run build`.
-2. Run both npm audit commands after dependency changes.
-3. Run Docker/compose checks when deployment behavior changes.
-4. Smoke test `npm run start` after a production build when server output changes.
-5. Update `UPDATES.md` with one line: `YYYY-MM-DD: Short description.`
+- Choose checks for the affected behavior: lint/check for source changes, tests for changed behavior, build for client or server output, and `npm run start` after a build when server output changes.
+- Run both npm audit commands after dependency changes and Docker/Compose checks when deployment behavior changes.
+- Before a release, run the full relevant validation set and record any unavailable checks.
+- Update `UPDATES.md` with one line: `YYYY-MM-DD: Short description.`
